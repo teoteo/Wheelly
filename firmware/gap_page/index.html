@@ -1,0 +1,687 @@
+<!-- Wheelly - AS5600 air-gap test bench.
+     Local page: it talks to the ESP32 over Web Serial (Chrome), no server.
+     Texts in English and Italian (?lang=it), ?demo=0.75 for the guide's screenshot. -->
+<meta charset="utf-8">
+<title>Wheelly · air gap test</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --bg: #f6f6f4;     --card: #fff;       --line: #e3e3dd;
+    --text: #1b1b18;   --muted: #6b6b63;   --acc: #2f6fb2;
+    --ok: #2e7d4f;     --bad: #b3321f;     --warn: #a8761f;
+    --shadow: 0 1px 2px rgba(0,0,0,.06), 0 8px 24px rgba(0,0,0,.05);
+  }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+    --bg: #16171a;     --card: #1e2024;    --line: #33363c;
+    --text: #e9e9e4;   --muted: #9a9a92;   --acc: #6aa9e0;
+    --ok: #6cc08a;     --bad: #e8705c;     --warn: #d9a441;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+  }}
+  * { box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); padding-block: 24px; padding-left: 20px; padding-right: 20px;
+         font: 15px/1.5 ui-sans-serif, -apple-system, "Helvetica Neue", sans-serif; max-width: 1060px; margin: 0 auto; }
+  h1 { font-size: 20px; margin: 0 0 2px; letter-spacing: -.01em; }
+  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted);
+       margin: 0 0 12px; font-weight: 600; }
+  .subtitle { color: var(--muted); margin: 0 0 20px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+          padding: 18px; box-shadow: var(--shadow); margin-bottom: 18px; }
+  .bar { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  button { font: inherit; font-weight: 550; padding: 9px 16px; border-radius: 8px; cursor: pointer;
+           border: 1px solid var(--line); background: var(--card); color: var(--text); }
+  button.primary { background: var(--acc); border-color: var(--acc); color: #fff; }
+  button:disabled { opacity: .45; cursor: not-allowed; }
+  select, input { font: inherit; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line);
+                  background: var(--card); color: var(--text); }
+  .status { display: inline-flex; align-items: center; gap: 7px; color: var(--muted); }
+  .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--muted); }
+  .dot.on { background: var(--ok); }
+  .grid { display: grid; grid-template-columns: 1fr 260px; gap: 18px; align-items: start; }
+  @media (max-width: 760px) { .grid { grid-template-columns: 1fr; } }
+  .agc { font-variant-numeric: tabular-nums; font-size: 56px; font-weight: 600; line-height: 1;
+         letter-spacing: -.02em; }
+  .agc small { font-size: 15px; font-weight: 400; color: var(--muted); letter-spacing: 0; }
+  .values { display: flex; gap: 26px; flex-wrap: wrap; margin-top: 14px; }
+  .value b { display: block; font-variant-numeric: tabular-nums; font-size: 19px; font-weight: 600; }
+  .value span { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .06em; }
+  .lamps { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+  .lamp { border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; font-size: 13px;
+          color: var(--muted); }
+  .lamp.good { border-color: var(--ok); color: var(--ok); }
+  .lamp.bad { border-color: var(--bad); color: var(--bad); background: color-mix(in srgb, var(--bad) 10%, transparent); }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  th, td { text-align: right; padding: 8px 6px; border-bottom: 1px solid var(--line); font-size: 14px; }
+  th:first-child, td:first-child { text-align: left; }
+  th { color: var(--muted); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .05em; }
+  tr.chosen td { background: color-mix(in srgb, var(--ok) 12%, transparent); }
+  .verdict { padding: 12px 14px; border-radius: 8px; border: 1px solid var(--line); margin-top: 14px; }
+  .verdict.good { border-color: var(--ok); }
+  .verdict.bad { border-color: var(--bad); }
+  pre { background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 12px;
+        overflow: auto; max-height: 260px; font-size: 12.5px; margin: 0; }
+  .muted { color: var(--muted); }
+  .warning { border-color: var(--warn); }
+  details summary { cursor: pointer; color: var(--muted); }
+</style>
+
+<h1 data-t="h1"></h1>
+<p class="subtitle" data-t="subtitle"></p>
+
+<div class="card">
+  <div class="bar">
+    <button id="connect" class="primary" data-t="connect"></button>
+    <button id="disconnect" disabled data-t="disconnect"></button>
+    <span class="status"><span class="dot" id="dot"></span><span id="statusText" data-t="state_off"></span></span>
+    <span class="muted" id="count"></span>
+  </div>
+  <div id="no-serial" class="verdict bad" hidden data-th="no_serial"></div>
+</div>
+
+<div class="grid">
+  <div>
+    <div class="card">
+      <h2 data-t="reading"></h2>
+      <div class="agc"><span id="agc">—</span> <small>AGC &nbsp;·&nbsp; <span id="agcScale"></span></small></div>
+      <div id="mode5v" class="verdict warning" hidden data-th="mode5v"></div>
+      <svg viewBox="0 0 400 44" width="100%" height="44" style="margin-top:10px" aria-label="AGC">
+        <rect x="0" y="14" width="400" height="12" rx="6" fill="var(--line)"></rect>
+        <rect x="100" y="14" width="200" height="12" fill="color-mix(in srgb, var(--ok) 35%, transparent)"></rect>
+        <line x1="200" y1="8" x2="200" y2="32" stroke="var(--ok)" stroke-width="2"></line>
+        <polygon id="needle" points="0,6 -6,0 6,0" fill="var(--acc)" transform="translate(0,8)"></polygon>
+        <text x="2" y="42" font-size="10" fill="var(--muted)" data-t="field_strong"></text>
+        <text x="398" y="42" font-size="10" fill="var(--muted)" text-anchor="end" id="fullScale"></text>
+      </svg>
+      <div class="values">
+        <div class="value"><b id="angle">—</b><span data-t="angle"></span></div>
+        <div class="value"><b id="magnitude">—</b><span data-t="magnitude"></span></div>
+        <div class="value"><b id="agcmin">—</b><span data-t="agc_min"></span></div>
+        <div class="value"><b id="agcmean">—</b><span data-t="agc_mean"></span></div>
+        <div class="value"><b id="agcmax">—</b><span data-t="agc_max"></span></div>
+        <div class="value"><b id="swing">—</b><span data-t="swing"></span></div>
+      </div>
+      <div class="lamps">
+        <span class="lamp" id="lMD" data-t="lMD"></span>
+        <span class="lamp" id="lML" data-t="lML"></span>
+        <span class="lamp" id="lMH" data-t="lMH"></span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 data-t="measurement"></h2>
+      <div class="bar">
+        <label><span data-t="foot"></span>
+          <select id="height">
+            <option>4.8</option><option selected>5.0</option>
+            <option>5.2</option><option>5.4</option>
+          </select> mm
+        </label>
+        <span class="muted" id="gapSel"></span>
+        <button id="start" disabled data-t="start"></button>
+        <button id="save" disabled data-t="save"></button>
+      </div>
+      <div class="verdict" id="verdict" data-th="verdict_initial"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 data-t="turn_covered"></h2>
+    <svg viewBox="-60 -60 120 120" width="100%" aria-label="sectors">
+      <g id="sectors"></g>
+      <circle r="30" fill="none" stroke="var(--line)" stroke-width="1"></circle>
+      <line id="hand" x1="30" y1="0" x2="54" y2="0" stroke="var(--acc)" stroke-width="2.5"></line>
+      <text id="covered" y="4" text-anchor="middle" font-size="13" fill="var(--muted)">0 / 36</text>
+    </svg>
+    <p class="muted" style="font-size:13px;margin:8px 0 0" data-t="turn_note"></p>
+  </div>
+</div>
+
+<div class="card">
+  <h2 data-t="saved"></h2>
+  <table>
+    <thead><tr><th data-t="th_foot"></th><th data-t="th_gap"></th><th data-t="th_agcmin"></th>
+      <th data-t="th_mean"></th><th data-t="th_max"></th><th data-t="th_swing"></th>
+      <th data-t="th_magn"></th><th data-t="th_turn"></th><th data-t="th_result"></th></tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+  <div class="verdict" id="advice" hidden></div>
+  <div class="bar" style="margin-top:14px">
+    <button id="copy" disabled data-t="copy"></button>
+    <button id="csv" disabled data-t="csv"></button>
+    <button id="clear" disabled data-t="clear"></button>
+  </div>
+</div>
+
+<div class="card">
+  <details>
+    <summary data-t="raw"></summary>
+    <pre id="log" style="margin-top:12px"></pre>
+  </details>
+</div>
+
+<!-- The TEXTS live here, in two catalogues with the same keys: English (the
+     default) and Italian (?lang=it). They are JSON and not JavaScript because
+     firmware/test/test_gap_page.py reads them too, and checks that the two
+     catalogues have the same keys and that every key used exists. -->
+<script id="texts" type="application/json">
+{
+ "en": {
+  "title": "Wheelly · air gap test",
+  "h1": "Air gap test · AS5600",
+  "subtitle": "Keep the height that brings AGC close to 64. Low AGC = strong field = magnet close.",
+  "connect": "Connect the board",
+  "disconnect": "Disconnect",
+  "state_off": "not connected",
+  "state_on": "connected at 115200",
+  "state_demo": "simulated turn (demo)",
+  "no_serial": "This browser has no Web Serial. You need <b>Chrome</b> (or Edge): Safari and Firefox do not have it.",
+  "reading": "Live reading",
+  "scale": "target {b}, scale 0–{s}",
+  "mode5v": "Readings above 128: the module is in <b>5 V mode</b>, not 3.3. The AGC scale here is 0–255 and the target 128, and the page has adjusted. For the real assembly, though, the sensor runs at 3.3 V: redo the measurements once the supply is sorted.",
+  "field_strong": "0 · very strong field",
+  "field_weak": "{s} · very weak field",
+  "angle": "angle",
+  "magnitude": "magnitude",
+  "agc_min": "agc min",
+  "agc_mean": "agc mean",
+  "agc_max": "agc max",
+  "swing": "swing",
+  "lMD": "MD · magnet seen",
+  "lML": "ML · too weak",
+  "lMH": "MH · too strong",
+  "measurement": "Measurement",
+  "foot": "Foot",
+  "start": "Start the turn",
+  "restart": "Restart the turn",
+  "save": "Save the measurement",
+  "verdict_initial": "Connect the board, fit the foot, then <b>Start the turn</b> and turn the wheel by hand, slowly, for one whole turn.",
+  "turn_covered": "Turn covered",
+  "turn_note": "A turn counts when every sector has lit up: AGC must be seen over the whole turn, or an off-centre magnet looks good.",
+  "saved": "Saved measurements",
+  "th_foot": "Foot",
+  "th_gap": "Air gap",
+  "th_agcmin": "AGC min",
+  "th_mean": "mean",
+  "th_max": "max",
+  "th_swing": "swing",
+  "th_magn": "Magn. mean",
+  "th_turn": "turn",
+  "th_result": "result",
+  "none": "no measurements",
+  "copy": "Copy the summary",
+  "copied": "copied",
+  "csv": "Download the samples (CSV)",
+  "clear": "Clear the measurements",
+  "raw": "Raw lines from the board",
+  "samples": "{n} samples",
+  "waiting": "waiting for readings…",
+  "v_md": "<b>MD off</b>: the chip does not see the magnet. Check that it is there, and that it is diametric.",
+  "v_ml": "<b>ML</b>: field too weak. Lower foot.",
+  "v_full_scale": "<b>AGC at full scale ({s})</b>: the gain is at its maximum and still not enough. This is not a measurement, it is a \"further than this I cannot tell\". Lower foot; if it happens with the lowest one too, the magnet is too weak and a thicker one is needed.",
+  "v_mh": "<b>MH</b>: field too strong. Higher foot.",
+  "v_keep_turning": "Keep turning: <b>{m}</b> of {t} sectors to go.",
+  "v_swings": "Full turn, but AGC swings by <b>{d}</b>: magnet off-centre or not flat. The air gap will not fix that.",
+  "v_outside": "Full turn. Mean AGC <b>{m}</b>, outside the middle half: try {what}. Save it anyway, it helps the curve.",
+  "higher": "a higher foot",
+  "lower": "a lower one",
+  "v_inside": "Full turn and mean AGC <b>{m}</b>, inside the middle half. Save it and try the next foot.",
+  "r_no_magnet": "no magnet",
+  "r_weak": "too weak",
+  "r_strong": "too strong",
+  "r_incomplete": "incomplete turn",
+  "r_unstable": "unstable AGC",
+  "r_outside": "outside the middle",
+  "r_good": "good",
+  "c_none": "No usable measurement: see the result column.",
+  "c_best": "Best of those tried: foot <b>{h}</b>, mean AGC {m}, air gap <b>{g} mm</b>.",
+  "c_ideal": " Interpolating between the measurements, AGC would reach {b} at a height of <b>{h}</b>, that is an air gap of <b>{g} mm</b>.",
+  "c_project": "In the project: <code>Gap_nominal = {g}</code>, then <code>./.venv/bin/python build.py</code>.",
+  "gap_sel": "→ air gap <b>{g} mm</b>",
+  "below_min": "below the datasheet minimum ({m}): watch that the magnet does not rub",
+  "summary": "| foot | air gap | AGC min | mean | max | swing | magn. | turn | result |"
+ },
+ "it": {
+  "title": "Wheelly · prova del traferro",
+  "h1": "Prova del traferro · AS5600",
+  "subtitle": "Si tiene l'altezza che porta l'AGC vicino a 64. AGC basso = campo forte = magnete vicino.",
+  "connect": "Collega la scheda",
+  "disconnect": "Scollega",
+  "state_off": "non collegata",
+  "state_on": "collegata a 115200",
+  "state_demo": "giro simulato (demo)",
+  "no_serial": "Questo browser non ha la Web Serial. Serve <b>Chrome</b> (o Edge): Safari e Firefox non ce l'hanno.",
+  "reading": "Lettura in diretta",
+  "scale": "bersaglio {b}, scala 0–{s}",
+  "mode5v": "Letture oltre 128: il modulo sta in <b>modo 5 V</b>, non 3,3. La scala dell'AGC qui è 0–255 e il bersaglio 128, e la pagina si è regolata. Per il montaggio vero, però, il sensore va a 3,3 V: rifai le misure una volta sistemata l'alimentazione.",
+  "field_strong": "0 · campo fortissimo",
+  "field_weak": "{s} · campo debolissimo",
+  "angle": "angolo",
+  "magnitude": "magnitude",
+  "agc_min": "agc min",
+  "agc_mean": "agc medio",
+  "agc_max": "agc max",
+  "swing": "escursione",
+  "lMD": "MD · magnete visto",
+  "lML": "ML · troppo debole",
+  "lMH": "MH · troppo forte",
+  "measurement": "Misura",
+  "foot": "Piedino",
+  "start": "Comincia il giro",
+  "restart": "Ricomincia il giro",
+  "save": "Salva la misura",
+  "verdict_initial": "Collega la scheda, monta il piedino, poi <b>Comincia il giro</b> e gira la ruota a mano, piano, per un giro intero.",
+  "turn_covered": "Giro coperto",
+  "turn_note": "Un giro vale se si accendono tutti i settori: l'AGC va guardato su tutto il giro, se no un magnete scentrato sembra buono.",
+  "saved": "Misure salvate",
+  "th_foot": "Piedino",
+  "th_gap": "Traferro",
+  "th_agcmin": "AGC min",
+  "th_mean": "medio",
+  "th_max": "max",
+  "th_swing": "escurs.",
+  "th_magn": "MAGN. med",
+  "th_turn": "giro",
+  "th_result": "esito",
+  "none": "nessuna misura",
+  "copy": "Copia il riepilogo",
+  "copied": "copiato",
+  "csv": "Scarica i campioni (CSV)",
+  "clear": "Cancella le misure",
+  "raw": "Righe grezze dalla scheda",
+  "samples": "{n} campioni",
+  "waiting": "in attesa di letture…",
+  "v_md": "<b>MD spento</b>: il chip non vede il magnete. Controlla che ci sia, e che sia diametrale.",
+  "v_ml": "<b>ML</b>: campo troppo debole. Piedino più basso.",
+  "v_full_scale": "<b>AGC a fondo scala ({s})</b>: il guadagno è al massimo e non basta ancora. Non è una misura, è un \"più lontano di così non so dirti\". Piedino più basso; se succede anche col più basso, il magnete è troppo debole e serve più spesso.",
+  "v_mh": "<b>MH</b>: campo troppo forte. Piedino più alto.",
+  "v_keep_turning": "Gira ancora: mancano <b>{m}</b> settori su {t}.",
+  "v_swings": "Giro completo, ma l'AGC balla di <b>{d}</b>: magnete scentrato o non piano. Questo non lo aggiusta il traferro.",
+  "v_outside": "Giro completo. AGC medio <b>{m}</b>, fuori dalla metà centrale: prova {what}. Salvala lo stesso, serve alla curva.",
+  "higher": "un piedino più alto",
+  "lower": "uno più basso",
+  "v_inside": "Giro completo e AGC medio <b>{m}</b>, dentro la metà centrale. Salvala e prova il piedino accanto.",
+  "r_no_magnet": "niente magnete",
+  "r_weak": "troppo debole",
+  "r_strong": "troppo forte",
+  "r_incomplete": "giro incompleto",
+  "r_unstable": "AGC instabile",
+  "r_outside": "fuori dalla metà",
+  "r_good": "buona",
+  "c_none": "Nessuna misura utilizzabile: vedi la colonna esito.",
+  "c_best": "Migliore fra quelle provate: piedino <b>{h}</b>, AGC medio {m}, traferro <b>{g} mm</b>.",
+  "c_ideal": " Interpolando fra le misure, l'AGC arriverebbe a {b} a un'altezza di <b>{h}</b>, cioè traferro <b>{g} mm</b>.",
+  "c_project": "Nel progetto: <code>Gap_nominal = {g}</code>, poi <code>./.venv/bin/python build.py</code>.",
+  "gap_sel": "→ traferro <b>{g} mm</b>",
+  "below_min": "sotto il minimo da datasheet ({m}): occhio che il magnete non sfreghi",
+  "summary": "| piedino | traferro | AGC min | med | max | escurs. | magn. | giro | esito |"
+ }
+}
+</script>
+
+<script>
+// ---------------------------------------------------------------- texts
+// The language is chosen with ?lang=it; without it, English. Every text goes
+// through t(): a key missing from the catalogue shows up in square brackets,
+// it does not vanish silently.
+const QS = new URLSearchParams(location.search);
+const CATALOGUES = JSON.parse(document.getElementById("texts").textContent);
+const LANG = CATALOGUES[QS.get("lang")] ? QS.get("lang") : "en";
+function t(k, p = {}) {
+  const s = CATALOGUES[LANG][k];
+  if (s === undefined) return `[${k}]`;
+  return s.replace(/\{(\w+)\}/g, (_, n) => p[n] ?? "");
+}
+document.documentElement.lang = LANG;
+document.title = t("title");
+document.querySelectorAll("[data-t]").forEach(e => e.textContent = t(e.dataset.t));
+document.querySelectorAll("[data-th]").forEach(e => e.innerHTML = t(e.dataset.th));
+
+// ---------------------------------------------------------------- constants
+// air gap = foot height - everything between the face and the chip: the
+// spacer under the magnet, the magnet, and the chip body that protrudes
+// below the perfboard (1.63 measured, not the datasheet maximum).
+// TH_GLUE: the glued stack comes out taller than the sum of its parts.
+// Measured on the real assembly, it stands 2.3 above the face instead of
+// 1.8: half a millimetre goes into the two glue joints and the printed spacer.
+const TH_SPACER = 0.8, TH_MAGNET = 1.0, TH_GLUE = 0.5, CHIP_BODY = 1.63;
+const GAP_MIN = 0.5;                            // AS5600 datasheet minimum
+const SECTORS = 36;                             // the turn split into 10-degree sectors
+
+// The AGC scale depends on how the chip is powered: 0-128 at 3.3 V, 0-255
+// at 5 V. It starts from the design case and changes its mind by itself if
+// a reading above 128 arrives, which cannot exist at 3.3 V. The target is
+// always mid-scale, and the good band the middle half.
+let scale = 128;
+const TARGET = () => Math.round(scale / 2);     // 64 at 3.3 V, 128 at 5 V
+const INSIDE = () => [scale / 4, scale * 3 / 4];
+const SWING_MAX = () => scale / 6.4;            // swing beyond which it is not good
+
+const $ = (id) => document.getElementById(id);
+
+function writeScale() {
+  $("agcScale").textContent = t("scale", { b: TARGET(), s: scale });
+  $("fullScale").textContent = t("field_weak", { s: scale });
+}
+
+function watchScale(agc) {
+  if (agc <= 128 || scale === 255) return;
+  scale = 255;
+  writeScale();
+  $("mode5v").hidden = false;
+}
+
+const airGap = (h) => h - TH_SPACER - TH_MAGNET - TH_GLUE - CHIP_BODY;
+
+// ---------------------------------------------------------------- state
+let port = null, reader = null, writer = null, keepOpen = false;
+// THE ASSEMBLED WHEEL TOO (otherwise the page shows no data from it):
+// the page was written for the air_gap_test sketch, which streams CSV by
+// itself; the wheel's own firmware says nothing until asked. On connect the
+// page asks "version"; if a Wheelly answers, it asks "status" four times a
+// second and turns each answer into the sketch's sample, so everything below
+// works the same on the bench and on the machine, with nothing to flash.
+let wheel = false, poll = null;
+let samples = 0, agcMin = 999, agcMax = -1, agcSum = 0, magSum = 0;
+let md = null, ml = false, mh = false, seen = new Array(SECTORS).fill(false);
+let measuring = false, rawLines = [], measurements = [];
+// the samples in the sketch's CSV form, whoever sent them: what the file saves
+let csvLines = [], t0 = 0;
+
+// ---------------------------------------------------------------- drawing
+const gSectors = $("sectors");
+for (let i = 0; i < SECTORS; i++) {
+  const a0 = (i * 360 / SECTORS - 90) * Math.PI / 180, a1 = ((i + 1) * 360 / SECTORS - 90) * Math.PI / 180;
+  const p = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  const R = 52, r = 34;
+  p.setAttribute("d", `M${R*Math.cos(a0)},${R*Math.sin(a0)} A${R},${R} 0 0 1 ${R*Math.cos(a1)},${R*Math.sin(a1)}
+                       L${r*Math.cos(a1)},${r*Math.sin(a1)} A${r},${r} 0 0 0 ${r*Math.cos(a0)},${r*Math.sin(a0)} Z`);
+  p.setAttribute("fill", "var(--line)");
+  gSectors.appendChild(p);
+}
+
+function resetStats() {
+  samples = 0; agcMin = 999; agcMax = -1; agcSum = 0; magSum = 0;
+  md = null; ml = false; mh = false; seen.fill(false);
+  [...gSectors.children].forEach(p => p.setAttribute("fill", "var(--line)"));
+  update();
+}
+
+function update() {
+  const mean = samples ? agcSum / samples : null;
+  $("agc").textContent = samples ? Math.round(agcSum / samples) : "—";
+  $("agcmin").textContent = samples ? agcMin : "—";
+  $("agcmean").textContent = mean === null ? "—" : mean.toFixed(1);
+  $("agcmax").textContent = samples ? agcMax : "—";
+  $("swing").textContent = samples ? (agcMax - agcMin) : "—";
+  $("magnitude").textContent = samples ? Math.round(magSum / samples) : "—";
+  const x = mean === null ? 0 : Math.max(0, Math.min(400, mean / scale * 400));
+  $("needle").setAttribute("transform", `translate(${x},8)`);
+  const n = seen.filter(Boolean).length;
+  $("covered").textContent = `${n} / ${SECTORS}`;
+  $("count").textContent = samples ? t("samples", { n: samples }) : "";
+  // until there is a reading the lamps stay off: green from the start they
+  // would say "all good" about a sensor that has not spoken yet
+  lamp($("lMD"), md === null ? null : md, true);
+  lamp($("lML"), samples ? ml : null, false);
+  lamp($("lMH"), samples ? mh : null, false);
+  $("save").disabled = !(measuring && samples > 20);
+  judge();
+}
+
+function lamp(el, lit, litIsGood) {
+  el.className = "lamp" + (lit === null ? "" : lit === litIsGood ? " good" : " bad");
+}
+
+function judge() {
+  const v = $("verdict");
+  if (!measuring) return;
+  const n = seen.filter(Boolean).length, mean = samples ? agcSum / samples : 0;
+  if (!samples) { v.className = "verdict"; v.textContent = t("waiting"); return; }
+  if (md === false) { v.className = "verdict bad"; v.innerHTML = t("v_md"); return; }
+  if (ml) { v.className = "verdict bad"; v.innerHTML = t("v_ml"); return; }
+  // AGC pinned to the ceiling: the chip has raised the gain to the maximum
+  // and it is not enough. It is not a measurement - the true value would be
+  // higher, if the scale went further - so it does not go into the curve.
+  if (agcMin >= scale) { v.className = "verdict bad"; v.innerHTML = t("v_full_scale", { s: scale }); return; }
+  if (mh) { v.className = "verdict bad"; v.innerHTML = t("v_mh"); return; }
+  if (n < SECTORS) { v.className = "verdict"; v.innerHTML = t("v_keep_turning", { m: SECTORS - n, t: SECTORS }); return; }
+  if (agcMax - agcMin > SWING_MAX()) { v.className = "verdict bad"; v.innerHTML = t("v_swings", { d: agcMax - agcMin }); return; }
+  const [g0, g1] = INSIDE(), outside = mean < g0 || mean > g1;
+  v.className = "verdict " + (outside ? "bad" : "good");
+  v.innerHTML = outside
+    ? t("v_outside", { m: mean.toFixed(1), what: t(mean < TARGET() ? "higher" : "lower") })
+    : t("v_inside", { m: mean.toFixed(1) });
+}
+
+// ---------------------------------------------------------------- serial
+async function connect() {
+  try {
+    port = await navigator.serial.requestPort();
+    await port.open({ baudRate: 115200 });
+  } catch (e) { return; }                       // the user cancelled the choice
+  const enc = new TextEncoderStream();
+  enc.readable.pipeTo(port.writable).catch(() => {});
+  writer = enc.writable.getWriter();
+  $("connect").disabled = true; $("disconnect").disabled = false; $("start").disabled = false;
+  $("dot").classList.add("on"); $("statusText").textContent = t("state_on");
+  keepOpen = true;
+  wheel = false; csvLines = []; t0 = Date.now();
+  read();
+  send("version\n");
+}
+
+async function read() {
+  const dec = new TextDecoderStream();
+  port.readable.pipeTo(dec.writable).catch(() => {});
+  reader = dec.readable.getReader();
+  let rest = "";
+  while (keepOpen) {
+    let out;
+    try { out = await reader.read(); } catch (e) { break; }
+    if (out.done) break;
+    rest += out.value;
+    const lines = rest.split("\n"); rest = lines.pop();
+    lines.forEach(r => line(r.trim()));
+  }
+}
+
+async function disconnect() {
+  keepOpen = false;
+  if (poll) { clearInterval(poll); poll = null; }
+  try { await reader?.cancel(); } catch (e) {}
+  try { writer?.releaseLock(); } catch (e) {}
+  try { await port?.close(); } catch (e) {}
+  port = null;
+  $("connect").disabled = false; $("disconnect").disabled = true;
+  $("start").disabled = true; $("save").disabled = true;
+  $("dot").classList.remove("on"); $("statusText").textContent = t("state_off");
+}
+
+function send(c) { writer?.write(c).catch(() => {}); }
+
+// ---------------------------------------------------------------- samples
+// One line from the sketch (firmware/air_gap_test): comments start with "#",
+// the header with "ms,"; a sample is ms,angle_deg,raw,agc,magnitude,MD,ML,MH.
+function line(r) {
+  if (!r) return;
+  rawLines.push(r);
+  if (rawLines.length > 400) rawLines.shift();
+  $("log").textContent = rawLines.slice(-200).join("\n");
+  $("log").scrollTop = $("log").scrollHeight;
+  if (r.startsWith("ok name=wheelly") && !wheel) {
+    wheel = true;
+    poll = setInterval(() => send("status\n"), 250);
+    return;
+  }
+  if (r.startsWith("#") || r.startsWith("ms,")) return;
+
+  let p;
+  if (wheel) {
+    // "ok pos=.. angle=.. agc=.. mag=.. md=.. ml=.. mh=.." -> the sketch's
+    // ms,angle,raw,agc,magnitude,MD,ML,MH
+    if (!r.startsWith("ok pos=")) return;
+    const f = Object.fromEntries(r.slice(3).split(/\s+/).filter(x => x.includes("="))
+                                    .map(x => x.split("=")));
+    p = [Date.now() - t0, f.angle, 0, f.agc, f.mag, f.md, f.ml, f.mh];
+  } else {
+    p = r.split(",");
+  }
+  if (p.length < 8) return;
+  const ang = parseFloat(p[1]), agc = +p[3], mag = +p[4];
+  if (!isFinite(ang) || !isFinite(agc)) return;
+  csvLines.push(p.join(","));
+  if (csvLines.length > 20000) csvLines.shift();
+  watchScale(agc);
+
+  $("hand").setAttribute("transform", `rotate(${ang - 90})`);
+  $("angle").textContent = ang.toFixed(1) + "°";
+  if (!measuring) { md = p[5] === "1"; update(); return; }
+
+  samples++; agcSum += agc; magSum += mag;
+  if (agc < agcMin) agcMin = agc;
+  if (agc > agcMax) agcMax = agc;
+  md = p[5] === "1" && md !== false;
+  if (p[6] === "1") ml = true;
+  if (p[7] === "1") mh = true;
+  const s = Math.floor((ang % 360 + 360) % 360 / (360 / SECTORS));
+  if (!seen[s]) { seen[s] = true; gSectors.children[s].setAttribute("fill", "var(--acc)"); }
+  update();
+}
+
+// ---------------------------------------------------------------- measurements
+$("start").onclick = () => {
+  measuring = true; resetStats(); if (!wheel) send("r");
+  $("start").textContent = t("restart");
+};
+
+$("save").onclick = () => {
+  const h = parseFloat($("height").value);
+  const m = { h, min: agcMin, mean: agcSum / samples, max: agcMax,
+              mag: magSum / samples, turn: seen.filter(Boolean).length,
+              md, ml, mh, n: samples };
+  measurements = measurements.filter(x => x.h !== h).concat(m).sort((a, b) => a.h - b.h);
+  measuring = false; resetStats();
+  $("start").textContent = t("start");
+  drawMeasurements();
+};
+
+function result(m) {
+  if (m.md === false) return [t("r_no_magnet"), "bad"];
+  if (m.ml) return [t("r_weak"), "bad"];
+  if (m.mh) return [t("r_strong"), "bad"];
+  if (m.turn < SECTORS) return [t("r_incomplete"), "bad"];
+  if (m.max - m.min > SWING_MAX()) return [t("r_unstable"), "bad"];
+  const [g0, g1] = INSIDE();
+  if (m.mean < g0 || m.mean > g1) return [t("r_outside"), ""];
+  return [t("r_good"), "good"];
+}
+
+function drawMeasurements() {
+  const tb = $("rows");
+  $("copy").disabled = $("csv").disabled = $("clear").disabled = measurements.length === 0;
+  if (!measurements.length) {
+    tb.innerHTML = `<tr><td colspan="9" class="muted">${t("none")}</td></tr>`;
+    $("advice").hidden = true;
+    return;
+  }
+  const usable = measurements.filter(m => result(m)[1] !== "bad");
+  const chosen = usable.slice().sort((a, b) => Math.abs(a.mean - TARGET()) - Math.abs(b.mean - TARGET()))[0];
+  tb.innerHTML = measurements.map(m => {
+    const [e] = result(m);
+    return `<tr class="${m === chosen ? "chosen" : ""}">
+      <td>${m.h.toFixed(1)}</td><td>${airGap(m.h).toFixed(2)}</td>
+      <td>${m.min}</td><td>${m.mean.toFixed(1)}</td><td>${m.max}</td><td>${m.max - m.min}</td>
+      <td>${Math.round(m.mag)}</td><td>${m.turn}/${SECTORS}</td><td>${e}</td></tr>`;
+  }).join("");
+
+  const c = $("advice"); c.hidden = false;
+  if (!chosen) { c.className = "verdict bad"; c.textContent = t("c_none"); return; }
+  // if two heights sit one above and one below the target, the right height
+  // lies in between: interpolate it, it is more precise than the nearest foot
+  let ideal = null;
+  for (let i = 1; i < usable.length; i++) {
+    const a = usable[i - 1], b = usable[i];
+    if ((a.mean - TARGET()) * (b.mean - TARGET()) < 0)
+      ideal = a.h + (TARGET() - a.mean) * (b.h - a.h) / (b.mean - a.mean);
+  }
+  c.className = "verdict good";
+  c.innerHTML = t("c_best", { h: chosen.h.toFixed(1), m: chosen.mean.toFixed(1), g: airGap(chosen.h).toFixed(2) })
+    + (ideal ? t("c_ideal", { b: TARGET(), h: ideal.toFixed(2), g: airGap(ideal).toFixed(2) }) : "")
+    + `<br><span class="muted">${t("c_project", { g: airGap(ideal || chosen.h).toFixed(2) })}</span>`;
+}
+
+$("copy").onclick = () => {
+  const lines = [t("summary"), "|---|---|---|---|---|---|---|---|---|"];
+  measurements.forEach(m => lines.push(`| ${m.h.toFixed(1)} | ${airGap(m.h).toFixed(2)} | ${m.min} | ${m.mean.toFixed(1)} | ${m.max} | ${m.max - m.min} | ${Math.round(m.mag)} | ${m.turn}/${SECTORS} | ${result(m)[0]} |`));
+  navigator.clipboard.writeText(lines.join("\n"));
+  $("copy").textContent = t("copied");
+  setTimeout(() => $("copy").textContent = t("copy"), 1200);
+};
+
+$("csv").onclick = () => {
+  // the CSV of the samples, not the raw lines: from the wheel those are its
+  // "ok pos=..." answers, which a spreadsheet does not read
+  const b = new Blob(["ms,angle_deg,raw,agc,magnitude,MD,ML,MH\n" + csvLines.join("\n") + "\n"],
+                     { type: "text/csv" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(b);
+  // date and time in the name, as every file the project makes for looking at
+  const d = new Date(), z = n => String(n).padStart(2, "0");
+  a.download = `air_gap_samples_${d.getFullYear()}${z(d.getMonth() + 1)}${z(d.getDate())}_` +
+               `${z(d.getHours())}${z(d.getMinutes())}.csv`;
+  a.click();
+};
+
+// The menu gives the foot height, which is the number engraved on the tab;
+// what matters to the sensor, though, is the air gap, and below the 0.5 mm
+// of the datasheet the measurement is taken in a condition that is not
+// guaranteed - with a magnet turning a hair away from the still chip.
+// Better to see it written before the turn.
+function showAirGap() {
+  const g = airGap(parseFloat($("height").value));
+  const below = g < GAP_MIN;
+  $("gapSel").innerHTML = t("gap_sel", { g: g.toFixed(2) })
+    + (below ? ` · <span style="color:var(--bad)">${t("below_min", { m: GAP_MIN })}</span>` : "");
+}
+$("height").onchange = showAirGap;
+
+$("clear").onclick = () => { measurements = []; drawMeasurements(); };
+$("connect").onclick = connect;
+$("disconnect").onclick = disconnect;
+
+if (!("serial" in navigator)) {
+  $("no-serial").hidden = false;
+  $("connect").disabled = true;
+}
+writeScale();
+drawMeasurements();
+showAirGap();
+update();
+
+// ---------------------------------------------------------------- demo
+// ?demo=0.75 simulates a turn covered up to that fraction, with one
+// measurement already saved: it is the assembly guide's screenshot (chapter
+// 10). The fake lines go through line(), that is the same code as the real
+// lines, so the screenshot shows the page as it is and not an imitation of
+// it. Without the parameter nothing happens here.
+if (QS.has("demo")) {
+  const f = Math.max(0, Math.min(1, parseFloat(QS.get("demo")) || 0.75));
+  measurements = [
+    { h: 4.8, min: 128, mean: 128, max: 128, mag: 612, turn: SECTORS, md: true, ml: false, mh: false, n: 398 },
+  ];
+  drawMeasurements();
+  $("height").value = "5.0"; showAirGap();
+  $("dot").classList.add("on"); $("statusText").textContent = t("state_demo");
+  $("connect").disabled = true; $("disconnect").disabled = true;
+  measuring = true; resetStats();
+  $("start").textContent = t("restart"); $("start").disabled = false;
+  const steps = Math.round(f * 360 / 2.5);
+  for (let i = 0; i < steps; i++) {
+    const a = i * 2.5;
+    // AGC at full scale and the magnitude moving: it is what the guide says
+    // to expect with the Ø8 x 1 magnet at 3.3 V, and the screenshot sits next to it
+    const agc = 128;
+    const mag = Math.round(548 + 14 * Math.cos(a * Math.PI / 180) + (i % 3) - 1);
+    line(`${i * 20},${a.toFixed(1)},${Math.round(a / 360 * 4096)},${agc},${mag},1,0,0`);
+  }
+}
+</script>

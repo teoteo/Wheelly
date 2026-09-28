@@ -1,0 +1,40 @@
+# SPDX-FileCopyrightText: 2026 Matteo Beretta
+# SPDX-License-Identifier: LGPL-2.1-or-later
+#
+# The lines to APPEND to indilib/indi's drivers/filter_wheel/CMakeLists.txt,
+# with this folder's driver sources copied to drivers/filter_wheel/wheelly/
+# (see upstream/README.md for which files). Not used by this repository's
+# build: it is here so that what is proposed to INDI is written, and tried
+# (upstream/README.md says how and when), not improvised on the day.
+#
+# Modelled on the filter wheels already there - xagyl_wheel, rasa_filtercube:
+# one executable linked to indidriver, installed to bin - and on the Shelyak
+# driver in drivers/spectrograph/, which keeps its sources in a subfolder and
+# names them from the category's CMakeLists.txt, without a CMakeLists.txt of
+# its own. A subfolder because the driver has seven files, two of them with
+# names (translations, plot) too generic for a folder shared by fifteen
+# drivers.
+#
+# WHEELLY_ITALIAN is 0: INDI's drivers are English only. The Italian catalogue
+# (translations_it.cpp) is then neither listed nor copied, and the driver has
+# no Language switch.
+
+# ############### Wheelly Filter Wheel ################
+set(WHEELLY_VERSION_MAJOR 0)
+set(WHEELLY_VERSION_MINOR 1)
+set(WHEELLY_DEVICE_NAME "Wheelly")
+set(WHEELLY_ITALIAN OFF)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/wheelly/wheelly_config.h.cmake
+               ${CMAKE_CURRENT_BINARY_DIR}/wheelly/wheelly_config.h)
+
+SET(wheelly_SRC
+    ${CMAKE_CURRENT_SOURCE_DIR}/wheelly/wheelly.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/wheelly/translations.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/wheelly/plot.cpp)
+
+add_executable(indi_wheelly ${wheelly_SRC})
+target_include_directories(indi_wheelly PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/wheelly
+    ${CMAKE_CURRENT_BINARY_DIR}/wheelly)
+target_link_libraries(indi_wheelly indidriver)
+install(TARGETS indi_wheelly RUNTIME DESTINATION bin)

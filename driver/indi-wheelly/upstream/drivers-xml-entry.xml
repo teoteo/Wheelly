@@ -1,0 +1,10 @@
+<!-- SPDX-FileCopyrightText: 2026 Matteo Beretta -->
+<!-- SPDX-License-Identifier: LGPL-2.1-or-later -->
+<!-- The entry to add inside <devGroup group="Filter Wheels"> of indilib/indi's
+     drivers.xml (after the last device of the group). manufacturer="DIY" as
+     INDI files the other self-built devices (MyFocuserPro2, ESP32go, AAF2);
+     the version is WHEELLY_VERSION_MAJOR.MINOR of CMakeLists.txt. -->
+        <device label="Wheelly" manufacturer="DIY">
+            <driver name="Wheelly">indi_wheelly</driver>
+            <version>0.1</version>
+        </device>

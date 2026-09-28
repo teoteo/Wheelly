@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="542" viewBox="0 0 760 542" role="img">
+<title>Collegamenti XIAO · TMC2209</title><desc>I collegamenti fra lo XIAO e il driver, con R1 come pull-up di EN e R2 in serie sul TX della UART. Fori nella griglia stampata sulla basetta.</desc>
+<style>
+text{font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;fill:#2A2A28}
+.th{font-size:14px;font-weight:600}
+.ts{font-size:11.5px;fill:#55534E}
+.tn{font-size:10px;fill:#7A786F}
+.box{fill:#F6F5F1;stroke:#B0AEA6;stroke-width:1}
+.res{fill:#E4F1EB;stroke:#3E8C74;stroke-width:1}
+.filo{stroke-width:2.2;fill:none;stroke-linecap:round}
+.alone{stroke-width:5.4;fill:none;stroke:#FFFFFF;stroke-linecap:round}
+</style>
+<rect width="760" height="542" fill="#FFFFFF"/>
+<rect class="box" x="60.0" y="74.0" width="200.0" height="338.0" rx="8"/>
+<text class="th" x="160.0" y="62.0" text-anchor="middle">XIAO ESP32-S3</text>
+<rect class="box" x="500.0" y="74.0" width="200.0" height="338.0" rx="8"/>
+<text class="th" x="600.0" y="62.0" text-anchor="middle">TMC2209</text>
+<path class="alone" d="M260.0,100.0 Q380.0,113.2 500.0,100.0"/>
+<path class="filo" d="M260.0,100.0 Q380.0,113.2 500.0,100.0" stroke="#E08A1E"/>
+<text class="ts" x="250.0" y="104.0" text-anchor="end">3V3 · C08</text>
+<text class="ts" x="510.0" y="104.0">VDD · J03</text>
+<text class="tn" x="380.0" y="120.0" text-anchor="middle">alimentazione logica del driver</text>
+<path class="alone" d="M260.0,146.0 Q380.0,159.2 500.0,146.0"/>
+<path class="filo" d="M260.0,146.0 Q380.0,159.2 500.0,146.0" stroke="#7B4FB5"/>
+<text class="ts" x="250.0" y="150.0" text-anchor="end">D0 · A02</text>
+<text class="ts" x="510.0" y="150.0">STEP · J08</text>
+<text class="tn" x="380.0" y="166.0" text-anchor="middle">un impulso, un microstep</text>
+<path class="alone" d="M260.0,192.0 Q380.0,205.2 500.0,192.0"/>
+<path class="filo" d="M260.0,192.0 Q380.0,205.2 500.0,192.0" stroke="#7B4FB5"/>
+<text class="ts" x="250.0" y="196.0" text-anchor="end">D1 · B02</text>
+<text class="ts" x="510.0" y="196.0">DIR · I08</text>
+<text class="tn" x="380.0" y="212.0" text-anchor="middle">verso di rotazione</text>
+<path class="alone" d="M260.0,238.0 Q380.0,251.2 500.0,238.0"/>
+<path class="filo" d="M260.0,238.0 Q380.0,251.2 500.0,238.0" stroke="#7B4FB5"/>
+<text class="ts" x="250.0" y="242.0" text-anchor="end">D3 · D02</text>
+<text class="ts" x="510.0" y="242.0">EN · P08</text>
+<text class="tn" x="380.0" y="258.0" text-anchor="middle">abilitazione: bassa abilita</text>
+<path class="alone" d="M260.0,284.0 Q309.0,293.8 358.0,284.0"/>
+<path class="filo" d="M260.0,284.0 Q309.0,293.8 358.0,284.0" stroke="#7B4FB5"/>
+<path class="alone" d="M402.0,284.0 Q451.0,274.2 500.0,284.0"/>
+<path class="filo" d="M402.0,284.0 Q451.0,274.2 500.0,284.0" stroke="#7B4FB5"/>
+<rect class="res" x="358.0" y="274.0" width="44" height="20" rx="5"/>
+<text class="ts" x="380.0" y="288.0" text-anchor="middle">R1</text>
+<text class="ts" x="250.0" y="288.0" text-anchor="end">3V3 · C08</text>
+<text class="ts" x="510.0" y="288.0">EN · P08</text>
+<text class="tn" x="380.0" y="310.0" text-anchor="middle">pull-up fra 3V3 e EN, capi in M09 e P09</text>
+<path class="alone" d="M260.0,330.0 Q309.0,339.8 358.0,330.0"/>
+<path class="filo" d="M260.0,330.0 Q309.0,339.8 358.0,330.0" stroke="#7B4FB5"/>
+<path class="alone" d="M402.0,330.0 Q451.0,320.2 500.0,330.0"/>
+<path class="filo" d="M402.0,330.0 Q451.0,320.2 500.0,330.0" stroke="#7B4FB5"/>
+<rect class="res" x="358.0" y="320.0" width="44" height="20" rx="5"/>
+<text class="ts" x="380.0" y="334.0" text-anchor="middle">R2</text>
+<text class="ts" x="250.0" y="334.0" text-anchor="end">D8 · F08</text>
+<text class="ts" x="510.0" y="334.0">UART · M08</text>
+<text class="tn" x="380.0" y="356.0" text-anchor="middle">TX verso la UART, serie con i capi in L10 e P10</text>
+<path class="alone" d="M260.0,376.0 Q380.0,389.2 500.0,376.0"/>
+<path class="filo" d="M260.0,376.0 Q380.0,389.2 500.0,376.0" stroke="#7B4FB5"/>
+<text class="ts" x="250.0" y="380.0" text-anchor="end">D9 · E08</text>
+<text class="ts" x="510.0" y="380.0">UART · M08</text>
+<text class="tn" x="380.0" y="396.0" text-anchor="middle">RX dalla stessa UART, diretto</text>
+<text class="tn" x="60.0" y="446.0">LA MASSA NON PASSA DA QUI. Il GND del driver (I02) e il GND dello XIAO (B08)</text>
+<text class="tn" x="60.0" y="464.0">partono entrambi dal nodo, il negativo di C1 (S02), con un filo per ciascuno.</text>
+<text class="tn" x="60.0" y="482.0">Collegarli fra loro chiuderebbe l'anello che pcb/README dice di non chiudere.</text>
+<text class="tn" x="60.0" y="500.0">MS1 e MS2 del driver vanno alla sua massa logica, dentro il suo ramo.</text>
+</svg>

@@ -1,0 +1,5 @@
+SPDX-FileCopyrightText: 2026 Matteo Beretta
+SPDX-License-Identifier: LGPL-2.1-or-later
+
+See ../LICENSING.md. Full text: ../LICENSES/LGPL-2.1-or-later.txt
+(wheelly_protocol.h, shared with the firmware, is MIT: ../LICENSES/MIT.txt)

@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="806" viewBox="0 0 760 806" role="img">
+<title>Potenza · TMC2209, morsettiere, motore e nodo di massa</title><desc>Le quattro fasi, il ramo dei 12 V e la massa a stella. Non è un diagramma a blocchi ma un ELENCO DI FILI: le due colonne sono i due capi, e un componente sta all'una o all'altra a seconda del filo. Fori nella griglia stampata sulla basetta.</desc>
+<style>
+text{font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;fill:#2A2A28}
+.th{font-size:14px;font-weight:600}
+.ts{font-size:11.5px;fill:#55534E}
+.tn{font-size:10px;fill:#7A786F}
+.box{fill:#F6F5F1;stroke:#B0AEA6;stroke-width:1}
+.res{fill:#E4F1EB;stroke:#3E8C74;stroke-width:1}
+.filo{stroke-width:2.2;fill:none;stroke-linecap:round}
+.alone{stroke-width:5.4;fill:none;stroke:#FFFFFF;stroke-linecap:round}
+</style>
+<rect width="760" height="806" fill="#FFFFFF"/>
+<rect class="box" x="60.0" y="74.0" width="200.0" height="522.0" rx="8"/>
+<text class="th" x="160.0" y="62.0" text-anchor="middle">da questo capo</text>
+<rect class="box" x="500.0" y="74.0" width="200.0" height="522.0" rx="8"/>
+<text class="th" x="600.0" y="62.0" text-anchor="middle">a quest'altro</text>
+<path class="alone" d="M260.0,100.0 Q380.0,113.2 500.0,100.0"/>
+<path class="filo" d="M260.0,100.0 Q380.0,113.2 500.0,100.0" stroke="#1E1E1C"/>
+<text class="ts" x="250.0" y="104.0" text-anchor="end">A1 · L03</text>
+<text class="ts" x="510.0" y="104.0">A+ · X07</text>
+<text class="tn" x="380.0" y="120.0" text-anchor="middle">fase A+, filo nero</text>
+<path class="alone" d="M260.0,146.0 Q380.0,159.2 500.0,146.0"/>
+<path class="filo" d="M260.0,146.0 Q380.0,159.2 500.0,146.0" stroke="#5E9022"/>
+<text class="ts" x="250.0" y="150.0" text-anchor="end">A2 · K03</text>
+<text class="ts" x="510.0" y="150.0">A− · X06</text>
+<text class="tn" x="380.0" y="166.0" text-anchor="middle">fase A−, filo verde</text>
+<path class="alone" d="M260.0,192.0 Q380.0,205.2 500.0,192.0"/>
+<path class="filo" d="M260.0,192.0 Q380.0,205.2 500.0,192.0" stroke="#C0392B"/>
+<text class="ts" x="250.0" y="196.0" text-anchor="end">B1 · M03</text>
+<text class="ts" x="510.0" y="196.0">B+ · X05</text>
+<text class="tn" x="380.0" y="212.0" text-anchor="middle">fase B+, filo rosso</text>
+<path class="alone" d="M260.0,238.0 Q380.0,251.2 500.0,238.0"/>
+<path class="filo" d="M260.0,238.0 Q380.0,251.2 500.0,238.0" stroke="#2F6FC4"/>
+<text class="ts" x="250.0" y="242.0" text-anchor="end">B2 · N03</text>
+<text class="ts" x="510.0" y="242.0">B− · X04</text>
+<text class="tn" x="380.0" y="258.0" text-anchor="middle">fase B−, filo blu</text>
+<path class="alone" d="M260.0,284.0 Q380.0,297.2 500.0,284.0"/>
+<path class="filo" d="M260.0,284.0 Q380.0,297.2 500.0,284.0" stroke="#E0457B"/>
+<text class="ts" x="250.0" y="288.0" text-anchor="end">VM · P03</text>
+<text class="ts" x="510.0" y="288.0">C1 + · S03</text>
+<text class="tn" x="380.0" y="304.0" text-anchor="middle">VM al + di C1: reoforo CORTO, è l'anello che conta</text>
+<path class="alone" d="M260.0,330.0 Q380.0,343.2 500.0,330.0"/>
+<path class="filo" d="M260.0,330.0 Q380.0,343.2 500.0,330.0" stroke="#E0457B"/>
+<text class="ts" x="250.0" y="334.0" text-anchor="end">C1 + · S03</text>
+<text class="ts" x="510.0" y="334.0">12V + · U10</text>
+<text class="tn" x="380.0" y="350.0" text-anchor="middle">dal + di C1 al + del morsetto 12 V</text>
+<path class="alone" d="M260.0,376.0 Q380.0,389.2 500.0,376.0"/>
+<path class="filo" d="M260.0,376.0 Q380.0,389.2 500.0,376.0" stroke="#E0457B"/>
+<text class="ts" x="250.0" y="380.0" text-anchor="end">C2 + · S05</text>
+<text class="ts" x="510.0" y="380.0">12V + · U10</text>
+<text class="tn" x="380.0" y="396.0" text-anchor="middle">C2 in parallelo sull'ingresso, opzionale</text>
+<path class="alone" d="M260.0,422.0 Q380.0,435.2 500.0,422.0"/>
+<path class="filo" d="M260.0,422.0 Q380.0,435.2 500.0,422.0" stroke="#3A3A38"/>
+<text class="ts" x="250.0" y="426.0" text-anchor="end">GND · O03</text>
+<text class="ts" x="510.0" y="426.0">C1 − · S02</text>
+<text class="tn" x="380.0" y="442.0" text-anchor="middle">GND di potenza al − di C1: reoforo CORTO</text>
+<path class="alone" d="M260.0,468.0 Q380.0,481.2 500.0,468.0"/>
+<path class="filo" d="M260.0,468.0 Q380.0,481.2 500.0,468.0" stroke="#8A4F0E"/>
+<text class="ts" x="250.0" y="472.0" text-anchor="end">C1 − · S02</text>
+<text class="ts" x="510.0" y="472.0">12V − · U08</text>
+<text class="tn" x="380.0" y="488.0" text-anchor="middle">dal nodo al − del morsetto: primo filo della stella</text>
+<path class="alone" d="M260.0,514.0 Q380.0,527.2 500.0,514.0"/>
+<path class="filo" d="M260.0,514.0 Q380.0,527.2 500.0,514.0" stroke="#8A4F0E"/>
+<text class="ts" x="250.0" y="518.0" text-anchor="end">C1 − · S02</text>
+<text class="ts" x="510.0" y="518.0">GND · I03</text>
+<text class="tn" x="380.0" y="534.0" text-anchor="middle">dal nodo al GND logico del driver: secondo filo</text>
+<path class="alone" d="M260.0,560.0 Q380.0,573.2 500.0,560.0"/>
+<path class="filo" d="M260.0,560.0 Q380.0,573.2 500.0,560.0" stroke="#8A4F0E"/>
+<text class="ts" x="250.0" y="564.0" text-anchor="end">C1 − · S02</text>
+<text class="ts" x="510.0" y="564.0">GND · B08</text>
+<text class="tn" x="380.0" y="580.0" text-anchor="middle">dal nodo al GND dello XIAO: terzo filo</text>
+<text class="tn" x="60.0" y="630.0">IL NODO DI MASSA È IL NEGATIVO DI C1, IN S02, e da lì partono TRE FILI E SOLO TRE.</text>
+<text class="tn" x="60.0" y="648.0">Nessun ramo si collega a un altro ramo: due masse che si toccano in due punti chiudono</text>
+<text class="tn" x="60.0" y="666.0">un anello, e parte del ritorno del motore se ne va per la calza dell'USB fino in camera.</text>
+<text class="tn" x="60.0" y="684.0">I due reofori di C1 vanno tagliati corti, a cavallo dei pin VM e GND dello zoccolo:</text>
+<text class="tn" x="60.0" y="702.0">l'area di quell'anello conta più di qualunque schermatura a valle, e viene prima</text>
+<text class="tn" x="60.0" y="720.0">dell'ingombro. È il motivo per cui C1 è rimasto qui e si è spostato C2.</text>
+<text class="tn" x="60.0" y="738.0">I colori delle fasi sono quelli del motore, non una scelta: nero e verde una fase,</text>
+<text class="tn" x="60.0" y="756.0">rosso e blu l'altra. Scambiare i due fili di UNA fase inverte il verso di rotazione.</text>
+</svg>

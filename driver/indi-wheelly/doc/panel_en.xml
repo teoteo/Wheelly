@@ -1,0 +1,813 @@
+<indi>
+<defSwitchVector device="Wheelly" name="CONNECTION" label="Connection" group="Main Control" state="Idle" perm="rw" rule="OneOfMany" timeout="60" timestamp="2026-09-28T12:51:07">
+    <defSwitch name="CONNECT" label="Connect">
+Off
+    </defSwitch>
+    <defSwitch name="DISCONNECT" label="Disconnect">
+On
+    </defSwitch>
+</defSwitchVector>
+<defTextVector device="Wheelly" name="DRIVER_INFO" label="Driver Info" group="Connection" state="Idle" perm="ro" timeout="60" timestamp="2026-09-28T12:51:07">
+    <defText name="DRIVER_NAME" label="Name">
+Wheelly
+    </defText>
+    <defText name="DRIVER_EXEC" label="Exec">
+indi_wheelly
+    </defText>
+    <defText name="DRIVER_VERSION" label="Version">
+0.1
+    </defText>
+    <defText name="DRIVER_INTERFACE" label="Interface">
+16
+    </defText>
+</defTextVector>
+<defSwitchVector device="Wheelly" name="DEBUG" label="Debug" group="Options" state="Idle" perm="rw" rule="OneOfMany" timeout="0" timestamp="2026-09-28T12:51:07">
+    <defSwitch name="ENABLE" label="Enable">
+Off
+    </defSwitch>
+    <defSwitch name="DISABLE" label="Disable">
+On
+    </defSwitch>
+</defSwitchVector>
+<defSwitchVector device="Wheelly" name="SIMULATION" label="Simulation" group="Options" state="Idle" perm="rw" rule="OneOfMany" timeout="0" timestamp="2026-09-28T12:51:07">
+    <defSwitch name="ENABLE" label="Enable">
+Off
+    </defSwitch>
+    <defSwitch name="DISABLE" label="Disable">
+On
+    </defSwitch>
+</defSwitchVector>
+<defSwitchVector device="Wheelly" name="CONFIG_PROCESS" label="Configuration" group="Options" state="Idle" perm="rw" rule="AtMostOne" timeout="0" timestamp="2026-09-28T12:51:07">
+    <defSwitch name="CONFIG_LOAD" label="Load">
+Off
+    </defSwitch>
+    <defSwitch name="CONFIG_SAVE" label="Save">
+Off
+    </defSwitch>
+    <defSwitch name="CONFIG_DEFAULT" label="Default">
+Off
+    </defSwitch>
+    <defSwitch name="CONFIG_PURGE" label="Purge">
+Off
+    </defSwitch>
+</defSwitchVector>
+<defSwitchVector device="Wheelly" name="WHEELLY_CONFIG" label="Wheel configuration" group="Options" state="Idle" perm="rw" rule="AtMostOne" timeout="60" timestamp="2026-09-28T12:51:07">
+    <defSwitch name="SAVE" label="Save to the wheel">
+Off
+    </defSwitch>
+</defSwitchVector>
+<defNumberVector device="Wheelly" name="POLLING_PERIOD" label="Polling" group="Options" state="Idle" perm="rw" timeout="0" timestamp="2026-09-28T12:51:07">
+    <defNumber name="PERIOD_MS" label="Period (ms)" format="%.f" min="10" max="600000" step="1000">
+250
+    </defNumber>
+</defNumberVector>
+<defSwitchVector device="Wheelly" name="CONNECTION_MODE" label="Connection Mode" group="Connection" state="Idle" perm="rw" rule="OneOfMany" timeout="60" timestamp="2026-09-28T12:51:07">
+    <defSwitch name="CONNECTION_SERIAL" label="Serial">
+On
+    </defSwitch>
+</defSwitchVector>
+<defSwitchVector device="Wheelly" name="SYSTEM_PORTS" label="System Ports" group="Connection" state="Idle" perm="rw" rule="AtMostOne" timeout="60" timestamp="2026-09-28T12:51:07">
+    <defSwitch name="Espressif_USB_JTAG_serial_debug_unit_00:00:00:00:00:00" label="Espressif_JTAG_serial_debug_unit_00:00:00:00:00:00">
+Off
+    </defSwitch>
+</defSwitchVector>
+<defTextVector device="Wheelly" name="DEVICE_PORT" label="Ports" group="Connection" state="Idle" perm="rw" timeout="60" timestamp="2026-09-28T12:51:07">
+    <defText name="PORT" label="Port">
+/dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_00:00:00:00:00:00-if00
+    </defText>
+</defTextVector>
+<defSwitchVector device="Wheelly" name="DEVICE_BAUD_RATE" label="Baud Rate" group="Connection" state="Idle" perm="rw" rule="OneOfMany" timeout="60" timestamp="2026-09-28T12:51:07">
+    <defSwitch name="9600" label="9600">
+Off
+    </defSwitch>
+    <defSwitch name="19200" label="19200">
+Off
+    </defSwitch>
+    <defSwitch name="38400" label="38400">
+Off
+    </defSwitch>
+    <defSwitch name="57600" label="57600">
+Off
+    </defSwitch>
+    <defSwitch name="115200" label="115200">
+On
+    </defSwitch>
+    <defSwitch name="230400" label="230400">
+Off
+    </defSwitch>
+</defSwitchVector>
+<defSwitchVector device="Wheelly" name="DEVICE_AUTO_SEARCH" label="Auto Search" group="Connection" state="Idle" perm="rw" rule="OneOfMany" timeout="60" timestamp="2026-09-28T12:51:07">
+    <defSwitch name="INDI_ENABLED" label="Enabled">
+On
+    </defSwitch>
+    <defSwitch name="INDI_DISABLED" label="Disabled">
+Off
+    </defSwitch>
+</defSwitchVector>
+<defSwitchVector device="Wheelly" name="DEVICE_PORT_SCAN" label="Refresh" group="Connection" state="Idle" perm="rw" rule="OneOfMany" timeout="60" timestamp="2026-09-28T12:51:07">
+    <defSwitch name="Scan Ports" label="Scan Ports">
+Off
+    </defSwitch>
+</defSwitchVector>
+<setTextVector device="Wheelly" name="DEVICE_PORT" state="Ok" timeout="60" timestamp="2026-09-28T12:51:08">
+    <oneText name="PORT">
+/tmp/wheelly_link_32462
+    </oneText>
+</setTextVector>
+<setSwitchVector device="Wheelly" name="DEVICE_AUTO_SEARCH" state="Ok" timeout="60" timestamp="2026-09-28T12:51:08">
+    <oneSwitch name="INDI_ENABLED">
+Off
+    </oneSwitch>
+    <oneSwitch name="INDI_DISABLED">
+On
+    </oneSwitch>
+</setSwitchVector>
+<message device="Wheelly" timestamp="2026-09-28T12:51:09" message="[INFO] Connected to Wheelly, firmware 0.1.0-sim, protocol 2."/>
+<message device="Wheelly" timestamp="2026-09-28T12:51:09" message="[INFO] Wheelly is online."/>
+<message device="Wheelly" timestamp="2026-09-28T12:51:09" message="[INFO] Saving device configuration..."/>
+<message device="Wheelly" timestamp="2026-09-28T12:51:09" message="[INFO] Device configuration saved."/>
+<setSwitchVector device="Wheelly" name="CONNECTION" state="Ok" timeout="60" timestamp="2026-09-28T12:51:09">
+    <oneSwitch name="CONNECT">
+On
+    </oneSwitch>
+    <oneSwitch name="DISCONNECT">
+Off
+    </oneSwitch>
+</setSwitchVector>
+<setNumberVector device="Wheelly" name="FILTER_SLOT" state="Idle" timeout="60" timestamp="2026-09-28T12:51:09">
+    <oneNumber name="FILTER_SLOT_VALUE" min="1" max="5" step="1">
+1
+    </oneNumber>
+</setNumberVector>
+<defNumberVector device="Wheelly" name="FILTER_SLOT" label="Filter slot" group="Main Control" state="Idle" perm="rw" timeout="60" timestamp="2026-09-28T12:51:09">
+    <defNumber name="FILTER_SLOT_VALUE" label="Filter" format="%.f" min="1" max="5" step="1">
+1
+    </defNumber>
+</defNumberVector>
+<defTextVector device="Wheelly" name="FILTER_NAME" label="Filter names" group="Main Control" state="Idle" perm="rw" timeout="60" timestamp="2026-09-28T12:51:09">
+    <defText name="FILTER_SLOT_NAME_1" label="1">
+Lum
+    </defText>
+    <defText name="FILTER_SLOT_NAME_2" label="2">
+Red
+    </defText>
+    <defText name="FILTER_SLOT_NAME_3" label="3">
+Green
+    </defText>
+    <defText name="FILTER_SLOT_NAME_4" label="4">
+Blue
+    </defText>
+    <defText name="FILTER_SLOT_NAME_5" label="5">
+Ha
+    </defText>
+</defTextVector>
+<defSwitchVector device="Wheelly" name="USEJOYSTICK" label="Joystick" group="Options" state="Idle" perm="rw" rule="OneOfMany" timeout="0" timestamp="2026-09-28T12:51:09">
+    <defSwitch name="ENABLE" label="Enable">
+Off
+    </defSwitch>
+    <defSwitch name="DISABLE" label="Disable">
+On
+    </defSwitch>
+</defSwitchVector>
+<defTextVector device="Wheelly" name="SNOOP_JOYSTICK" label="Snoop Joystick" group="Options" state="Idle" perm="rw" timeout="60" timestamp="2026-09-28T12:51:09">
+    <defText name="SNOOP_JOYSTICK_DEVICE" label="Device">
+Joystick
+    </defText>
+</defTextVector>
+<defTextVector device="Wheelly" name="WHEELLY_FIRMWARE" label="Firmware" group="Options" state="Idle" perm="ro" timeout="60" timestamp="2026-09-28T12:51:09">
+    <defText name="FW" label="Version">
+0.1.0-sim
+    </defText>
+    <defText name="PROTO" label="Protocol">
+2
+    </defText>
+    <defText name="SERIAL" label="Serial number">
+51MUL470
+    </defText>
+</defTextVector>
+<message device="Wheelly" timestamp="2026-09-28T12:51:09" message="[INFO] From now on this profile looks for the wheel with serial 51MUL470."/>
+<defNumberVector device="Wheelly" name="WHEELLY_POSITION" label="Where the wheel is" group="Main Control" state="Idle" perm="ro" timeout="60" timestamp="2026-09-28T12:51:09">
+    <defNumber name="ANGLE" label="Angle" format="%.2f" min="0" max="360" step="0">
+0
+    </defNumber>
+    <defNumber name="ERROR" label="Residual error" format="%.2f" min="-180" max="180" step="0">
+0
+    </defNumber>
+    <defNumber name="RETRIES" label="Retries" format="%.0f" min="0" max="99" step="0">
+0
+    </defNumber>
+</defNumberVector>
+<defNumberVector device="Wheelly" name="WHEELLY_SENSOR" label="Magnetic sensor" group="Main Control" state="Idle" perm="ro" timeout="60" timestamp="2026-09-28T12:51:09">
+    <defNumber name="AGC" label="Gain" format="%.0f" min="0" max="255" step="0">
+0
+    </defNumber>
+    <defNumber name="MAGNITUDE" label="Magnitude" format="%.0f" min="0" max="4095" step="0">
+0
+    </defNumber>
+    <defNumber name="MD" label="Magnet detected" format="%.0f" min="0" max="1" step="0">
+0
+    </defNumber>
+    <defNumber name="ML" label="Field too weak" format="%.0f" min="0" max="1" step="0">
+0
+    </defNumber>
+    <defNumber name="MH" label="Field too strong" format="%.0f" min="0" max="1" step="0">
+0
+    </defNumber>
+</defNumberVector>
+<defNumberVector device="Wheelly" name="WHEELLY_SLOTS" label="Number of slots" group="Calibration and Diagnostics" state="Idle" perm="rw" timeout="60" timestamp="2026-09-28T12:51:09">
+    <defNumber name="COUNT" label="Slots" format="%.0f" min="2" max="12" step="1">
+5
+    </defNumber>
+</defNumberVector>
+<defNumberVector device="Wheelly" name="WHEELLY_ANGLE_1" label="▶ 1" group="Calibration and Diagnostics" state="Idle" perm="rw" timeout="60" timestamp="2026-09-28T12:51:09">
+    <defNumber name="ANGLE" label="Calibration angle (°)" format="%.2f" min="0" max="360" step="0.010000000000000000208">
+0
+    </defNumber>
+</defNumberVector>
+<defNumberVector device="Wheelly" name="WHEELLY_ANGLE_2" label="2" group="Calibration and Diagnostics" state="Idle" perm="rw" timeout="60" timestamp="2026-09-28T12:51:09">
+    <defNumber name="ANGLE" label="Calibration angle (°)" format="%.2f" min="0" max="360" step="0.010000000000000000208">
+0
+    </defNumber>
+</defNumberVector>
+<defNumberVector device="Wheelly" name="WHEELLY_ANGLE_3" label="3" group="Calibration and Diagnostics" state="Idle" perm="rw" timeout="60" timestamp="2026-09-28T12:51:09">
+    <defNumber name="ANGLE" label="Calibration angle (°)" format="%.2f" min="0" max="360" step="0.010000000000000000208">
+0
+    </defNumber>
+</defNumberVector>
+<defNumberVector device="Wheelly" name="WHEELLY_ANGLE_4" label="4" group="Calibration and Diagnostics" state="Idle" perm="rw" timeout="60" timestamp="2026-09-28T12:51:09">
+    <defNumber name="ANGLE" label="Calibration angle (°)" format="%.2f" min="0" max="360" step="0.010000000000000000208">
+0
+    </defNumber>
+</defNumberVector>
+<defNumberVector device="Wheelly" name="WHEELLY_ANGLE_5" label="5" group="Calibration and Diagnostics" state="Idle" perm="rw" timeout="60" timestamp="2026-09-28T12:51:09">
+    <defNumber name="ANGLE" label="Calibration angle (°)" format="%.2f" min="0" max="360" step="0.010000000000000000208">
+0
+    </defNumber>
+</defNumberVector>
+<defSwitchVector device="Wheelly" name="WHEELLY_JOG_DOWN" label="Step back" group="Calibration and Diagnostics" state="Idle" perm="rw" rule="AtMostOne" timeout="60" timestamp="2026-09-28T12:51:09">
+    <defSwitch name="JOG_M_PITCH" label="-72°">
+Off
+    </defSwitch>
+    <defSwitch name="JOG_M10" label="-10°">
+Off
+    </defSwitch>
+    <defSwitch name="JOG_M1" label="-1°">
+Off
+    </defSwitch>
+    <defSwitch name="JOG_M0_1" label="-0.1°">
+Off
+    </defSwitch>
+</defSwitchVector>
+<defSwitchVector device="Wheelly" name="WHEELLY_JOG_UP" label="Step forward" group="Calibration and Diagnostics" state="Idle" perm="rw" rule="AtMostOne" timeout="60" timestamp="2026-09-28T12:51:09">
+    <defSwitch name="JOG_P0_1" label="+0.1°">
+Off
+    </defSwitch>
+    <defSwitch name="JOG_P1" label="+1°">
+Off
+    </defSwitch>
+    <defSwitch name="JOG_P10" label="+10°">
+Off
+    </defSwitch>
+    <defSwitch name="JOG_P_PITCH" label="+72°">
+Off
+    </defSwitch>
+</defSwitchVector>
+<defSwitchVector device="Wheelly" name="WHEELLY_SAVE" label="Calibration actions" group="Calibration and Diagnostics" state="Idle" perm="rw" rule="AtMostOne" timeout="60" timestamp="2026-09-28T12:51:09">
+    <defSwitch name="SAVE" label="Save to the wheel">
+Off
+    </defSwitch>
+</defSwitchVector>
+<defNumberVector device="Wheelly" name="WHEELLY_TOLERANCE" label="Tolerances" group="Calibration and Diagnostics" state="Idle" perm="rw" timeout="60" timestamp="2026-09-28T12:51:09">
+    <defNumber name="GOOD" label="Good (deg)" format="%.2f" min="0.010000000000000000208" max="45" step="0.010000000000000000208">
+0.30000001192092895508
+    </defNumber>
+    <defNumber name="WARN" label="Alert (deg)" format="%.2f" min="0.010000000000000000208" max="45" step="0.010000000000000000208">
+0.80000001192092895508
+    </defNumber>
+    <defNumber name="RETRIES" label="Max retries" format="%.0f" min="0" max="20" step="1">
+3
+    </defNumber>
+</defNumberVector>
+<defNumberVector device="Wheelly" name="WHEELLY_MOTOR" label="Motor" group="Options" state="Idle" perm="rw" timeout="60" timestamp="2026-09-28T12:51:09">
+    <defNumber name="RUN_MA" label="Run current (mA)" format="%.0f" min="1" max="800" step="5">
+350
+    </defNumber>
+    <defNumber name="SPEED" label="Speed" format="%.0f" min="1" max="5000" step="10">
+300
+    </defNumber>
+    <defNumber name="ACCEL" label="Acceleration" format="%.0f" min="1" max="50000" step="50">
+1200
+    </defNumber>
+</defNumberVector>
+<defNumberVector device="Wheelly" name="WHEELLY_HOLD" label="Holding current at rest" group="Options" state="Idle" perm="rw" timeout="60" timestamp="2026-09-28T12:51:09">
+    <defNumber name="HOLD_MA" label="Current (mA, 0 = released)" format="%.0f" min="0" max="800" step="5">
+0
+    </defNumber>
+    <defNumber name="SETTLE_MS" label="Hold after arrival (ms)" format="%.0f" min="0" max="2000" step="50">
+300
+    </defNumber>
+</defNumberVector>
+<defSwitchVector device="Wheelly" name="WHEELLY_DIRECTION" label="Direction of travel" group="Options" state="Idle" perm="rw" rule="OneOfMany" timeout="60" timestamp="2026-09-28T12:51:09">
+    <defSwitch name="DIR_SHORTEST" label="Shortest way">
+On
+    </defSwitch>
+    <defSwitch name="DIR_UP" label="Increasing angles only">
+Off
+    </defSwitch>
+    <defSwitch name="DIR_DOWN" label="Decreasing angles only">
+Off
+    </defSwitch>
+</defSwitchVector>
+<defSwitchVector device="Wheelly" name="WHEELLY_LED" label="LED" group="Options" state="Idle" perm="rw" rule="AtMostOne" timeout="60" timestamp="2026-09-28T12:51:09">
+    <defSwitch name="LED_ON" label="Steady on">
+Off
+    </defSwitch>
+    <defSwitch name="LED_PULSE" label="Pulses while moving">
+On
+    </defSwitch>
+    <defSwitch name="LED_OFF" label="Off">
+Off
+    </defSwitch>
+    <defSwitch name="LED_TEST" label="Test (blinks WHEELLY)">
+Off
+    </defSwitch>
+</defSwitchVector>
+<defSwitchVector device="Wheelly" name="WHEELLY_DIAG" label="Hardware check" group="Calibration and Diagnostics" state="Idle" perm="rw" rule="AtMostOne" timeout="60" timestamp="2026-09-28T12:51:09">
+    <defSwitch name="RUN" label="Ask the wheel">
+Off
+    </defSwitch>
+</defSwitchVector>
+<defSwitchVector device="Wheelly" name="WHEELLY_SWEEP" label="Magnet sweep" group="Calibration and Diagnostics" state="Idle" perm="rw" rule="AtMostOne" timeout="60" timestamp="2026-09-28T12:51:09">
+    <defSwitch name="RUN" label="Turn all the way round">
+Off
+    </defSwitch>
+</defSwitchVector>
+<defBLOBVector device="Wheelly" name="WHEELLY_SWEEP_PLOT" label="Last sweep" group="Calibration and Diagnostics" state="Idle" perm="ro" timeout="60" timestamp="2026-09-28T12:51:09">
+    <defBLOB name="PLOT" label="Plot"/>
+</defBLOBVector>
+<defTextVector device="Wheelly" name="WHEELLY_SWEEP_DIR" label="Sweeps folder" group="Calibration and Diagnostics" state="Idle" perm="rw" timeout="60" timestamp="2026-09-28T12:51:09">
+    <defText name="DIR" label="Folder">
+/tmp/wheelly-bench-monty84n/Documents
+    </defText>
+</defTextVector>
+<defSwitchVector device="Wheelly" name="WHEELLY_LOG" label="Movement log" group="Calibration and Diagnostics" state="Idle" perm="rw" rule="OneOfMany" timeout="60" timestamp="2026-09-28T12:51:09">
+    <defSwitch name="LOG_ON" label="On">
+Off
+    </defSwitch>
+    <defSwitch name="LOG_OFF" label="Off">
+On
+    </defSwitch>
+</defSwitchVector>
+<defTextVector device="Wheelly" name="WHEELLY_FILES" label="Files on disk" group="Calibration and Diagnostics" state="Idle" perm="ro" timeout="60" timestamp="2026-09-28T12:51:09">
+    <defText name="PATH" label="Movement log">
+/tmp/wheelly-bench-monty84n/.indi/wheelly_movements.csv
+    </defText>
+    <defText name="SWEEP" label="Last sweep">
+not written yet
+    </defText>
+</defTextVector>
+<defSwitchVector device="Wheelly" name="WHEELLY_LANGUAGE" label="Language" group="Options" state="Idle" perm="rw" rule="OneOfMany" timeout="60" timestamp="2026-09-28T12:51:09">
+    <defSwitch name="AUTO" label="From the system">
+On
+    </defSwitch>
+    <defSwitch name="EN" label="English">
+Off
+    </defSwitch>
+    <defSwitch name="IT" label="Italian">
+Off
+    </defSwitch>
+</defSwitchVector>
+<setNumberVector device="Wheelly" name="WHEELLY_ANGLE_1" state="Ok" timeout="60" timestamp="2026-09-28T12:51:09">
+    <oneNumber name="ANGLE">
+0
+    </oneNumber>
+</setNumberVector>
+<setNumberVector device="Wheelly" name="WHEELLY_ANGLE_2" state="Ok" timeout="60" timestamp="2026-09-28T12:51:09">
+    <oneNumber name="ANGLE">
+72
+    </oneNumber>
+</setNumberVector>
+<setNumberVector device="Wheelly" name="WHEELLY_ANGLE_3" state="Ok" timeout="60" timestamp="2026-09-28T12:51:09">
+    <oneNumber name="ANGLE">
+144
+    </oneNumber>
+</setNumberVector>
+<setNumberVector device="Wheelly" name="WHEELLY_ANGLE_4" state="Ok" timeout="60" timestamp="2026-09-28T12:51:09">
+    <oneNumber name="ANGLE">
+216
+    </oneNumber>
+</setNumberVector>
+<setNumberVector device="Wheelly" name="WHEELLY_ANGLE_5" state="Ok" timeout="60" timestamp="2026-09-28T12:51:09">
+    <oneNumber name="ANGLE">
+288
+    </oneNumber>
+</setNumberVector>
+<setNumberVector device="Wheelly" name="WHEELLY_TOLERANCE" state="Ok" timeout="60" timestamp="2026-09-28T12:51:09">
+    <oneNumber name="GOOD">
+0.2999999999999999889
+    </oneNumber>
+    <oneNumber name="WARN">
+0.80000000000000004441
+    </oneNumber>
+    <oneNumber name="RETRIES">
+3
+    </oneNumber>
+</setNumberVector>
+<setNumberVector device="Wheelly" name="WHEELLY_MOTOR" state="Ok" timeout="60" timestamp="2026-09-28T12:51:09">
+    <oneNumber name="RUN_MA">
+350
+    </oneNumber>
+    <oneNumber name="SPEED">
+300
+    </oneNumber>
+    <oneNumber name="ACCEL">
+1200
+    </oneNumber>
+</setNumberVector>
+<setNumberVector device="Wheelly" name="WHEELLY_HOLD" state="Idle" timeout="60" timestamp="2026-09-28T12:51:09">
+    <oneNumber name="HOLD_MA">
+0
+    </oneNumber>
+    <oneNumber name="SETTLE_MS">
+300
+    </oneNumber>
+</setNumberVector>
+<setNumberVector device="Wheelly" name="WHEELLY_HOLD" state="Idle" timeout="60" timestamp="2026-09-28T12:51:09">
+    <oneNumber name="HOLD_MA">
+0
+    </oneNumber>
+    <oneNumber name="SETTLE_MS">
+300
+    </oneNumber>
+</setNumberVector>
+<setSwitchVector device="Wheelly" name="WHEELLY_DIRECTION" state="Ok" timeout="60" timestamp="2026-09-28T12:51:09">
+    <oneSwitch name="DIR_SHORTEST">
+On
+    </oneSwitch>
+    <oneSwitch name="DIR_UP">
+Off
+    </oneSwitch>
+    <oneSwitch name="DIR_DOWN">
+Off
+    </oneSwitch>
+</setSwitchVector>
+<setSwitchVector device="Wheelly" name="WHEELLY_LED" state="Ok" timeout="60" timestamp="2026-09-28T12:51:09">
+    <oneSwitch name="LED_ON">
+Off
+    </oneSwitch>
+    <oneSwitch name="LED_PULSE">
+On
+    </oneSwitch>
+    <oneSwitch name="LED_OFF">
+Off
+    </oneSwitch>
+    <oneSwitch name="LED_TEST">
+Off
+    </oneSwitch>
+</setSwitchVector>
+<setSwitchVector device="Wheelly" name="DEVICE_AUTO_SEARCH" state="Ok" timeout="60" timestamp="2026-09-28T12:51:09">
+    <oneSwitch name="INDI_ENABLED">
+On
+    </oneSwitch>
+    <oneSwitch name="INDI_DISABLED">
+Off
+    </oneSwitch>
+</setSwitchVector>
+<setNumberVector device="Wheelly" name="WHEELLY_POSITION" state="Ok" timeout="60" timestamp="2026-09-28T12:51:09">
+    <oneNumber name="ANGLE">
+0
+    </oneNumber>
+    <oneNumber name="ERROR">
+0
+    </oneNumber>
+    <oneNumber name="RETRIES">
+0
+    </oneNumber>
+</setNumberVector>
+<setNumberVector device="Wheelly" name="WHEELLY_SENSOR" state="Ok" timeout="60" timestamp="2026-09-28T12:51:09">
+    <oneNumber name="AGC">
+128
+    </oneNumber>
+    <oneNumber name="MAGNITUDE">
+807
+    </oneNumber>
+    <oneNumber name="MD">
+1
+    </oneNumber>
+    <oneNumber name="ML">
+1
+    </oneNumber>
+    <oneNumber name="MH">
+0
+    </oneNumber>
+</setNumberVector>
+<setNumberVector device="Wheelly" name="WHEELLY_POSITION" state="Ok" timeout="60" timestamp="2026-09-28T12:51:09">
+    <oneNumber name="ANGLE">
+0
+    </oneNumber>
+    <oneNumber name="ERROR">
+0
+    </oneNumber>
+    <oneNumber name="RETRIES">
+0
+    </oneNumber>
+</setNumberVector>
+<setNumberVector device="Wheelly" name="WHEELLY_SENSOR" state="Ok" timeout="60" timestamp="2026-09-28T12:51:09">
+    <oneNumber name="AGC">
+128
+    </oneNumber>
+    <oneNumber name="MAGNITUDE">
+812
+    </oneNumber>
+    <oneNumber name="MD">
+1
+    </oneNumber>
+    <oneNumber name="ML">
+1
+    </oneNumber>
+    <oneNumber name="MH">
+0
+    </oneNumber>
+</setNumberVector>
+<setNumberVector device="Wheelly" name="WHEELLY_POSITION" state="Ok" timeout="60" timestamp="2026-09-28T12:51:09">
+    <oneNumber name="ANGLE">
+0
+    </oneNumber>
+    <oneNumber name="ERROR">
+0
+    </oneNumber>
+    <oneNumber name="RETRIES">
+0
+    </oneNumber>
+</setNumberVector>
+<setNumberVector device="Wheelly" name="WHEELLY_SENSOR" state="Ok" timeout="60" timestamp="2026-09-28T12:51:09">
+    <oneNumber name="AGC">
+128
+    </oneNumber>
+    <oneNumber name="MAGNITUDE">
+812
+    </oneNumber>
+    <oneNumber name="MD">
+1
+    </oneNumber>
+    <oneNumber name="ML">
+1
+    </oneNumber>
+    <oneNumber name="MH">
+0
+    </oneNumber>
+</setNumberVector>
+<setNumberVector device="Wheelly" name="WHEELLY_POSITION" state="Ok" timeout="60" timestamp="2026-09-28T12:51:10">
+    <oneNumber name="ANGLE">
+0
+    </oneNumber>
+    <oneNumber name="ERROR">
+0
+    </oneNumber>
+    <oneNumber name="RETRIES">
+0
+    </oneNumber>
+</setNumberVector>
+<setNumberVector device="Wheelly" name="WHEELLY_SENSOR" state="Ok" timeout="60" timestamp="2026-09-28T12:51:10">
+    <oneNumber name="AGC">
+128
+    </oneNumber>
+    <oneNumber name="MAGNITUDE">
+808
+    </oneNumber>
+    <oneNumber name="MD">
+1
+    </oneNumber>
+    <oneNumber name="ML">
+1
+    </oneNumber>
+    <oneNumber name="MH">
+0
+    </oneNumber>
+</setNumberVector>
+<setNumberVector device="Wheelly" name="WHEELLY_POSITION" state="Ok" timeout="60" timestamp="2026-09-28T12:51:10">
+    <oneNumber name="ANGLE">
+0
+    </oneNumber>
+    <oneNumber name="ERROR">
+0
+    </oneNumber>
+    <oneNumber name="RETRIES">
+0
+    </oneNumber>
+</setNumberVector>
+<setNumberVector device="Wheelly" name="WHEELLY_SENSOR" state="Ok" timeout="60" timestamp="2026-09-28T12:51:10">
+    <oneNumber name="AGC">
+128
+    </oneNumber>
+    <oneNumber name="MAGNITUDE">
+809
+    </oneNumber>
+    <oneNumber name="MD">
+1
+    </oneNumber>
+    <oneNumber name="ML">
+1
+    </oneNumber>
+    <oneNumber name="MH">
+0
+    </oneNumber>
+</setNumberVector>
+<setNumberVector device="Wheelly" name="WHEELLY_POSITION" state="Ok" timeout="60" timestamp="2026-09-28T12:51:10">
+    <oneNumber name="ANGLE">
+0
+    </oneNumber>
+    <oneNumber name="ERROR">
+0
+    </oneNumber>
+    <oneNumber name="RETRIES">
+0
+    </oneNumber>
+</setNumberVector>
+<setNumberVector device="Wheelly" name="WHEELLY_SENSOR" state="Ok" timeout="60" timestamp="2026-09-28T12:51:10">
+    <oneNumber name="AGC">
+128
+    </oneNumber>
+    <oneNumber name="MAGNITUDE">
+809
+    </oneNumber>
+    <oneNumber name="MD">
+1
+    </oneNumber>
+    <oneNumber name="ML">
+1
+    </oneNumber>
+    <oneNumber name="MH">
+0
+    </oneNumber>
+</setNumberVector>
+<setNumberVector device="Wheelly" name="WHEELLY_POSITION" state="Ok" timeout="60" timestamp="2026-09-28T12:51:10">
+    <oneNumber name="ANGLE">
+0
+    </oneNumber>
+    <oneNumber name="ERROR">
+0
+    </oneNumber>
+    <oneNumber name="RETRIES">
+0
+    </oneNumber>
+</setNumberVector>
+<setNumberVector device="Wheelly" name="WHEELLY_SENSOR" state="Ok" timeout="60" timestamp="2026-09-28T12:51:10">
+    <oneNumber name="AGC">
+128
+    </oneNumber>
+    <oneNumber name="MAGNITUDE">
+811
+    </oneNumber>
+    <oneNumber name="MD">
+1
+    </oneNumber>
+    <oneNumber name="ML">
+1
+    </oneNumber>
+    <oneNumber name="MH">
+0
+    </oneNumber>
+</setNumberVector>
+<setNumberVector device="Wheelly" name="WHEELLY_POSITION" state="Ok" timeout="60" timestamp="2026-09-28T12:51:11">
+    <oneNumber name="ANGLE">
+0
+    </oneNumber>
+    <oneNumber name="ERROR">
+0
+    </oneNumber>
+    <oneNumber name="RETRIES">
+0
+    </oneNumber>
+</setNumberVector>
+<setNumberVector device="Wheelly" name="WHEELLY_SENSOR" state="Ok" timeout="60" timestamp="2026-09-28T12:51:11">
+    <oneNumber name="AGC">
+128
+    </oneNumber>
+    <oneNumber name="MAGNITUDE">
+812
+    </oneNumber>
+    <oneNumber name="MD">
+1
+    </oneNumber>
+    <oneNumber name="ML">
+1
+    </oneNumber>
+    <oneNumber name="MH">
+0
+    </oneNumber>
+</setNumberVector>
+<setNumberVector device="Wheelly" name="WHEELLY_POSITION" state="Ok" timeout="60" timestamp="2026-09-28T12:51:11">
+    <oneNumber name="ANGLE">
+0
+    </oneNumber>
+    <oneNumber name="ERROR">
+0
+    </oneNumber>
+    <oneNumber name="RETRIES">
+0
+    </oneNumber>
+</setNumberVector>
+<setNumberVector device="Wheelly" name="WHEELLY_SENSOR" state="Ok" timeout="60" timestamp="2026-09-28T12:51:11">
+    <oneNumber name="AGC">
+128
+    </oneNumber>
+    <oneNumber name="MAGNITUDE">
+806
+    </oneNumber>
+    <oneNumber name="MD">
+1
+    </oneNumber>
+    <oneNumber name="ML">
+1
+    </oneNumber>
+    <oneNumber name="MH">
+0
+    </oneNumber>
+</setNumberVector>
+<setNumberVector device="Wheelly" name="WHEELLY_POSITION" state="Ok" timeout="60" timestamp="2026-09-28T12:51:11">
+    <oneNumber name="ANGLE">
+0
+    </oneNumber>
+    <oneNumber name="ERROR">
+0
+    </oneNumber>
+    <oneNumber name="RETRIES">
+0
+    </oneNumber>
+</setNumberVector>
+<setNumberVector device="Wheelly" name="WHEELLY_SENSOR" state="Ok" timeout="60" timestamp="2026-09-28T12:51:11">
+    <oneNumber name="AGC">
+128
+    </oneNumber>
+    <oneNumber name="MAGNITUDE">
+806
+    </oneNumber>
+    <oneNumber name="MD">
+1
+    </oneNumber>
+    <oneNumber name="ML">
+1
+    </oneNumber>
+    <oneNumber name="MH">
+0
+    </oneNumber>
+</setNumberVector>
+<setNumberVector device="Wheelly" name="WHEELLY_POSITION" state="Ok" timeout="60" timestamp="2026-09-28T12:51:11">
+    <oneNumber name="ANGLE">
+0
+    </oneNumber>
+    <oneNumber name="ERROR">
+0
+    </oneNumber>
+    <oneNumber name="RETRIES">
+0
+    </oneNumber>
+</setNumberVector>
+<setNumberVector device="Wheelly" name="WHEELLY_SENSOR" state="Ok" timeout="60" timestamp="2026-09-28T12:51:11">
+    <oneNumber name="AGC">
+128
+    </oneNumber>
+    <oneNumber name="MAGNITUDE">
+812
+    </oneNumber>
+    <oneNumber name="MD">
+1
+    </oneNumber>
+    <oneNumber name="ML">
+1
+    </oneNumber>
+    <oneNumber name="MH">
+0
+    </oneNumber>
+</setNumberVector>
+<setNumberVector device="Wheelly" name="WHEELLY_POSITION" state="Ok" timeout="60" timestamp="2026-09-28T12:51:12">
+    <oneNumber name="ANGLE">
+0
+    </oneNumber>
+    <oneNumber name="ERROR">
+0
+    </oneNumber>
+    <oneNumber name="RETRIES">
+0
+    </oneNumber>
+</setNumberVector>
+<setNumberVector device="Wheelly" name="WHEELLY_SENSOR" state="Ok" timeout="60" timestamp="2026-09-28T12:51:12">
+    <oneNumber name="AGC">
+128
+    </oneNumber>
+    <oneNumber name="MAGNITUDE">
+809
+    </oneNumber>
+    <oneNumber name="MD">
+1
+    </oneNumber>
+    <oneNumber name="ML">
+1
+    </oneNumber>
+    <oneNumber name="MH">
+0
+    </oneNumber>
+</setNumberVector>
+
+</indi>

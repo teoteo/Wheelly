@@ -1,0 +1,5 @@
+# SPDX-FileCopyrightText: 2026 Matteo Beretta
+# SPDX-License-Identifier: CC-BY-4.0
+#
+# Turns on the "Sponsor" button at the top of the repository page.
+github: [teoteo]

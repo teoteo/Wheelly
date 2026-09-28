@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 150" width="320" height="150" role="img" color="#6b7178">
+<path d="M44,52 L44,78 A46,16 0 0 0 90,94 L90,68 A46,16 0 0 1 44,52 Z" fill="#d8453c" stroke="#1b1f23" stroke-opacity=".55" stroke-width="1"/>
+<path d="M136,52 L136,78 A46,16 0 0 1 90,94 L90,68 A46,16 0 0 0 136,52 Z" fill="#3a6fd8" stroke="#1b1f23" stroke-opacity=".55" stroke-width="1"/>
+<path d="M90,36 A46,16 0 0 0 90,68 Z" fill="#ea6a61" stroke="#1b1f23" stroke-opacity=".55" stroke-width="1"/>
+<path d="M90,36 A46,16 0 0 1 90,68 Z" fill="#6190ea" stroke="#1b1f23" stroke-opacity=".55" stroke-width="1"/>
+<text x="67" y="52" font-family="system-ui,sans-serif" font-size="15" font-weight="700" fill="#fff" text-anchor="middle" dominant-baseline="central">N</text>
+<text x="113" y="52" font-family="system-ui,sans-serif" font-size="15" font-weight="700" fill="#fff" text-anchor="middle" dominant-baseline="central">S</text>
+<line x1="118" y1="28" x2="62" y2="28" stroke="currentColor" stroke-width="2"/><path d="M62,28 L70.104,24.0853 L70.104,31.9147 Z" fill="currentColor"/>
+<circle cx="90" cy="126" r="13" fill="#2e9e5b"/><path d="M83,126 l5,5 l9,-10" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M184,52 L184,78 A46,16 0 0 0 276,78 L276,52 Z" fill="#3a6fd8" stroke="#1b1f23" stroke-opacity=".55" stroke-width="1"/>
+<path d="M184,52 L184,65 A46,16 0 0 0 276,65 L276,52 Z" fill="#d8453c" stroke="#1b1f23" stroke-opacity=".55" stroke-width="1"/>
+<ellipse cx="230" cy="52" rx="46" ry="16" fill="#ea6a61" stroke="#1b1f23" stroke-opacity=".55" stroke-width="1"/>
+<text x="230" y="52" font-family="system-ui,sans-serif" font-size="15" font-weight="700" fill="#fff" text-anchor="middle" dominant-baseline="central">N</text>
+<text x="230" y="85.2" font-family="system-ui,sans-serif" font-size="11" font-weight="700" fill="#fff" text-anchor="middle" dominant-baseline="central">S</text>
+<line x1="292" y1="94" x2="292" y2="34" stroke="currentColor" stroke-width="2"/><path d="M292,34 L295.915,42.104 L288.085,42.104 Z" fill="currentColor"/>
+<circle cx="230" cy="126" r="13" fill="#c0392b"/><path d="M224,120 l12,12 M236,120 l-12,12" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

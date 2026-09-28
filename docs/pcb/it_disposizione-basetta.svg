@@ -1,0 +1,1452 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="2419" viewBox="0 0 800 2419" role="img">
+<title>Disposizione e fili della basetta</title>
+<desc>Basetta 30 x 70 tagliata dal lato della testa: dove sta ogni componente sulla griglia 10 x 24, e gli stessi componenti con i fili e la massa a stella. Generata da electronics.py e wiring.py.</desc>
+<style>
+text{font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;fill:#2A2A28}
+.tt{font-size:16px;font-weight:600}
+.th{font-size:14px;font-weight:600}
+.thf{font-size:14px;font-weight:600;fill:#B0AEA6}
+.ts{font-size:12px;fill:#55534E}
+.tn{font-size:11.5px;fill:#3F3E3A}
+.tg{font-size:10px;fill:#8B8880}
+.pin{font-size:7.3px;fill:#2A2A28;font-weight:600;letter-spacing:-0.2px;paint-order:stroke;stroke:#FCFBF7;stroke-width:2.2px;stroke-linejoin:round}
+.perfboard{fill:#FBFAF7;stroke:#B0AEA6;stroke-width:1.2}
+.taglio{fill:none;stroke:#B0AEA6;stroke-width:1;stroke-dasharray:5 4}
+.strip{fill:#3A3A38;stroke:none;opacity:0.8}
+.modulo{fill:none;stroke:#2F6FC4;stroke-width:1.4;stroke-dasharray:6 3}
+.dis{fill:#DDE6F3;stroke:#2F6FC4;stroke-width:0.8;opacity:0.6}
+.box{fill:#F6F5F1;stroke:#8B8880;stroke-width:1}
+.res{fill:#E4F1EB;stroke:#3E8C74;stroke-width:1}
+.pow{fill:#FBF0DA;stroke:#B5751A;stroke-width:1.2}
+.smorto{opacity:0.45}
+.usb{fill:#C9C7BF;stroke:#55534E;stroke-width:1}
+.dente{fill:#D1483C;opacity:0.7}
+.filo{stroke-width:2.2;fill:none;opacity:0.9;stroke-linecap:round;stroke-linejoin:round}
+.alone-filo{stroke-width:5.2;fill:none;stroke:#FCFBF7;stroke-linecap:round;stroke-linejoin:round}
+.alone-filo-stella{stroke-width:7.8;fill:none;stroke:#FCFBF7;stroke-linecap:round;stroke-linejoin:round}
+.filo-stella{stroke-width:4.5;fill:none;stroke-linecap:round}
+.sig{font-size:11px;font-weight:600;fill:#2A2A28}
+.seg{font-size:11px;font-weight:700;fill:#FFFFFF}
+.segno{fill:#55534E}
+</style>
+<rect width="800" height="2419" fill="#FFFFFF"/>
+<text class="tt" x="400.0" y="34.0" text-anchor="middle">Basetta · vista dai componenti, testa a sinistra, asse della ruota in basso (riga 01)</text>
+<text class="th" x="40.0" y="48.0" text-anchor="start">1 · Dove sta ogni componente</text>
+<rect class="taglio" x="70.0" y="130.0" width="39.6" height="272.7" rx="4"/>
+<rect class="perfboard" x="109.6" y="130.0" width="590.4" height="272.7" rx="4"/>
+<circle cx="122.1" cy="163.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="122.1" cy="186.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="122.1" cy="209.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="122.1" cy="232.1" r="1.6" fill="#C4C2BA"/>
+<circle cx="122.1" cy="254.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="122.1" cy="277.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="122.1" cy="300.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="122.1" cy="323.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="122.1" cy="346.4" r="1.6" fill="#C4C2BA"/>
+<circle cx="122.1" cy="369.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="145.0" cy="163.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="145.0" cy="186.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="145.0" cy="209.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="145.0" cy="232.1" r="1.6" fill="#C4C2BA"/>
+<circle cx="145.0" cy="254.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="145.0" cy="277.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="145.0" cy="300.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="145.0" cy="323.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="145.0" cy="346.4" r="1.6" fill="#C4C2BA"/>
+<circle cx="145.0" cy="369.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="167.8" cy="163.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="167.8" cy="186.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="167.8" cy="209.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="167.8" cy="232.1" r="1.6" fill="#C4C2BA"/>
+<circle cx="167.8" cy="254.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="167.8" cy="277.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="167.8" cy="300.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="167.8" cy="323.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="167.8" cy="346.4" r="1.6" fill="#C4C2BA"/>
+<circle cx="167.8" cy="369.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="190.7" cy="163.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="190.7" cy="186.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="190.7" cy="209.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="190.7" cy="232.1" r="1.6" fill="#C4C2BA"/>
+<circle cx="190.7" cy="254.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="190.7" cy="277.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="190.7" cy="300.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="190.7" cy="323.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="190.7" cy="346.4" r="1.6" fill="#C4C2BA"/>
+<circle cx="190.7" cy="369.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="213.5" cy="163.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="213.5" cy="186.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="213.5" cy="209.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="213.5" cy="232.1" r="1.6" fill="#C4C2BA"/>
+<circle cx="213.5" cy="254.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="213.5" cy="277.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="213.5" cy="300.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="213.5" cy="323.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="213.5" cy="346.4" r="1.6" fill="#C4C2BA"/>
+<circle cx="213.5" cy="369.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="236.4" cy="163.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="236.4" cy="186.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="236.4" cy="209.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="236.4" cy="232.1" r="1.6" fill="#C4C2BA"/>
+<circle cx="236.4" cy="254.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="236.4" cy="277.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="236.4" cy="300.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="236.4" cy="323.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="236.4" cy="346.4" r="1.6" fill="#C4C2BA"/>
+<circle cx="236.4" cy="369.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="259.3" cy="163.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="259.3" cy="186.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="259.3" cy="209.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="259.3" cy="232.1" r="1.6" fill="#C4C2BA"/>
+<circle cx="259.3" cy="254.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="259.3" cy="277.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="259.3" cy="300.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="259.3" cy="323.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="259.3" cy="346.4" r="1.6" fill="#C4C2BA"/>
+<circle cx="259.3" cy="369.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="282.1" cy="163.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="282.1" cy="186.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="282.1" cy="209.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="282.1" cy="232.1" r="1.6" fill="#C4C2BA"/>
+<circle cx="282.1" cy="254.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="282.1" cy="277.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="282.1" cy="300.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="282.1" cy="323.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="282.1" cy="346.4" r="1.6" fill="#C4C2BA"/>
+<circle cx="282.1" cy="369.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="305.0" cy="163.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="305.0" cy="186.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="305.0" cy="209.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="305.0" cy="232.1" r="1.6" fill="#C4C2BA"/>
+<circle cx="305.0" cy="254.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="305.0" cy="277.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="305.0" cy="300.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="305.0" cy="323.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="305.0" cy="346.4" r="1.6" fill="#C4C2BA"/>
+<circle cx="305.0" cy="369.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="327.8" cy="163.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="327.8" cy="186.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="327.8" cy="209.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="327.8" cy="232.1" r="1.6" fill="#C4C2BA"/>
+<circle cx="327.8" cy="254.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="327.8" cy="277.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="327.8" cy="300.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="327.8" cy="323.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="327.8" cy="346.4" r="1.6" fill="#C4C2BA"/>
+<circle cx="327.8" cy="369.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="350.7" cy="163.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="350.7" cy="186.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="350.7" cy="209.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="350.7" cy="232.1" r="1.6" fill="#C4C2BA"/>
+<circle cx="350.7" cy="254.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="350.7" cy="277.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="350.7" cy="300.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="350.7" cy="323.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="350.7" cy="346.4" r="1.6" fill="#C4C2BA"/>
+<circle cx="350.7" cy="369.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="373.6" cy="163.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="373.6" cy="186.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="373.6" cy="209.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="373.6" cy="232.1" r="1.6" fill="#C4C2BA"/>
+<circle cx="373.6" cy="254.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="373.6" cy="277.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="373.6" cy="300.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="373.6" cy="323.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="373.6" cy="346.4" r="1.6" fill="#C4C2BA"/>
+<circle cx="373.6" cy="369.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="396.4" cy="163.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="396.4" cy="186.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="396.4" cy="209.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="396.4" cy="232.1" r="1.6" fill="#C4C2BA"/>
+<circle cx="396.4" cy="254.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="396.4" cy="277.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="396.4" cy="300.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="396.4" cy="323.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="396.4" cy="346.4" r="1.6" fill="#C4C2BA"/>
+<circle cx="396.4" cy="369.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="419.3" cy="163.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="419.3" cy="186.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="419.3" cy="209.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="419.3" cy="232.1" r="1.6" fill="#C4C2BA"/>
+<circle cx="419.3" cy="254.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="419.3" cy="277.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="419.3" cy="300.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="419.3" cy="323.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="419.3" cy="346.4" r="1.6" fill="#C4C2BA"/>
+<circle cx="419.3" cy="369.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="442.2" cy="163.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="442.2" cy="186.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="442.2" cy="209.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="442.2" cy="232.1" r="1.6" fill="#C4C2BA"/>
+<circle cx="442.2" cy="254.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="442.2" cy="277.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="442.2" cy="300.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="442.2" cy="323.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="442.2" cy="346.4" r="1.6" fill="#C4C2BA"/>
+<circle cx="442.2" cy="369.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="465.0" cy="163.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="465.0" cy="186.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="465.0" cy="209.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="465.0" cy="232.1" r="1.6" fill="#C4C2BA"/>
+<circle cx="465.0" cy="254.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="465.0" cy="277.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="465.0" cy="300.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="465.0" cy="323.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="465.0" cy="346.4" r="1.6" fill="#C4C2BA"/>
+<circle cx="465.0" cy="369.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="487.9" cy="163.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="487.9" cy="186.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="487.9" cy="209.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="487.9" cy="232.1" r="1.6" fill="#C4C2BA"/>
+<circle cx="487.9" cy="254.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="487.9" cy="277.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="487.9" cy="300.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="487.9" cy="323.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="487.9" cy="346.4" r="1.6" fill="#C4C2BA"/>
+<circle cx="487.9" cy="369.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="510.7" cy="163.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="510.7" cy="186.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="510.7" cy="209.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="510.7" cy="232.1" r="1.6" fill="#C4C2BA"/>
+<circle cx="510.7" cy="254.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="510.7" cy="277.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="510.7" cy="300.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="510.7" cy="323.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="510.7" cy="346.4" r="1.6" fill="#C4C2BA"/>
+<circle cx="510.7" cy="369.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="533.6" cy="163.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="533.6" cy="186.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="533.6" cy="209.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="533.6" cy="232.1" r="1.6" fill="#C4C2BA"/>
+<circle cx="533.6" cy="254.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="533.6" cy="277.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="533.6" cy="300.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="533.6" cy="323.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="533.6" cy="346.4" r="1.6" fill="#C4C2BA"/>
+<circle cx="533.6" cy="369.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="556.5" cy="163.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="556.5" cy="186.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="556.5" cy="209.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="556.5" cy="232.1" r="1.6" fill="#C4C2BA"/>
+<circle cx="556.5" cy="254.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="556.5" cy="277.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="556.5" cy="300.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="556.5" cy="323.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="556.5" cy="346.4" r="1.6" fill="#C4C2BA"/>
+<circle cx="556.5" cy="369.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="579.3" cy="163.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="579.3" cy="186.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="579.3" cy="209.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="579.3" cy="232.1" r="1.6" fill="#C4C2BA"/>
+<circle cx="579.3" cy="254.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="579.3" cy="277.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="579.3" cy="300.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="579.3" cy="323.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="579.3" cy="346.4" r="1.6" fill="#C4C2BA"/>
+<circle cx="579.3" cy="369.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="602.2" cy="163.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="602.2" cy="186.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="602.2" cy="209.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="602.2" cy="232.1" r="1.6" fill="#C4C2BA"/>
+<circle cx="602.2" cy="254.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="602.2" cy="277.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="602.2" cy="300.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="602.2" cy="323.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="602.2" cy="346.4" r="1.6" fill="#C4C2BA"/>
+<circle cx="602.2" cy="369.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="625.0" cy="163.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="625.0" cy="186.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="625.0" cy="209.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="625.0" cy="232.1" r="1.6" fill="#C4C2BA"/>
+<circle cx="625.0" cy="254.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="625.0" cy="277.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="625.0" cy="300.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="625.0" cy="323.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="625.0" cy="346.4" r="1.6" fill="#C4C2BA"/>
+<circle cx="625.0" cy="369.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="647.9" cy="163.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="647.9" cy="186.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="647.9" cy="209.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="647.9" cy="232.1" r="1.6" fill="#C4C2BA"/>
+<circle cx="647.9" cy="254.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="647.9" cy="277.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="647.9" cy="300.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="647.9" cy="323.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="647.9" cy="346.4" r="1.6" fill="#C4C2BA"/>
+<circle cx="647.9" cy="369.2" r="1.6" fill="#C4C2BA"/>
+<text class="tg" x="122.1" y="104.0" text-anchor="middle">A</text>
+<text class="tg" x="167.8" y="104.0" text-anchor="middle">C</text>
+<text class="tg" x="213.5" y="104.0" text-anchor="middle">E</text>
+<text class="tg" x="259.3" y="104.0" text-anchor="middle">G</text>
+<text class="tg" x="305.0" y="104.0" text-anchor="middle">I</text>
+<text class="tg" x="350.7" y="104.0" text-anchor="middle">K</text>
+<text class="tg" x="396.4" y="104.0" text-anchor="middle">M</text>
+<text class="tg" x="442.2" y="104.0" text-anchor="middle">O</text>
+<text class="tg" x="487.9" y="104.0" text-anchor="middle">Q</text>
+<text class="tg" x="533.6" y="104.0" text-anchor="middle">S</text>
+<text class="tg" x="579.3" y="104.0" text-anchor="middle">U</text>
+<text class="tg" x="625.0" y="104.0" text-anchor="middle">W</text>
+<text class="tg" x="710.0" y="167.5" text-anchor="start">10</text>
+<text class="tg" x="710.0" y="190.3" text-anchor="start">09</text>
+<text class="tg" x="710.0" y="213.2" text-anchor="start">08</text>
+<text class="tg" x="710.0" y="236.1" text-anchor="start">07</text>
+<text class="tg" x="710.0" y="258.9" text-anchor="start">06</text>
+<text class="tg" x="710.0" y="281.8" text-anchor="start">05</text>
+<text class="tg" x="710.0" y="304.6" text-anchor="start">04</text>
+<text class="tg" x="710.0" y="327.5" text-anchor="start">03</text>
+<text class="tg" x="710.0" y="350.4" text-anchor="start">02</text>
+<text class="tg" x="710.0" y="373.2" text-anchor="start">01</text>
+<rect class="strip" x="110.7" y="197.8" width="160.0" height="22.9" rx="2"/>
+<rect class="strip" x="110.7" y="334.9" width="160.0" height="22.9" rx="2"/>
+<rect class="strip" x="293.6" y="197.8" width="182.9" height="22.9" rx="2"/>
+<rect class="strip" x="293.6" y="312.1" width="182.9" height="22.9" rx="2"/>
+<rect class="modulo" x="96.4" y="197.8" width="188.6" height="160.0" rx="3"/>
+<rect class="modulo" x="293.6" y="197.8" width="182.9" height="137.2" rx="3"/>
+<rect class="dis" x="317.5" y="201.1" width="135.0" height="130.5" rx="2"/>
+<rect class="usb" x="82.6" y="237.5" width="13.8" height="80.5" rx="2"/>
+<text class="th" x="190.7" y="282.8" text-anchor="middle">XIAO</text>
+<text class="th" x="385.0" y="271.3" text-anchor="middle">TMC2209</text>
+<circle class="pow" cx="533.6" cy="334.9" r="28.6"/>
+<text class="sig" x="533.6" y="338.9" text-anchor="middle">C1</text>
+<circle cx="533.6" cy="323.5" r="2.4" fill="#2A2A28"/>
+<circle cx="533.6" cy="346.4" r="2.4" fill="#2A2A28"/>
+<circle class="pow" cx="533.6" cy="289.2" r="28.6"/>
+<text class="sig" x="533.6" y="293.2" text-anchor="middle">C2</text>
+<circle cx="533.6" cy="277.8" r="2.4" fill="#2A2A28"/>
+<circle cx="533.6" cy="300.6" r="2.4" fill="#2A2A28"/>
+<rect class="box" x="613.6" y="220.6" width="68.6" height="91.4" rx="3"/>
+<text class="sig" x="647.9" y="270.3" text-anchor="middle">J1</text>
+<circle cx="647.9" cy="232.1" r="2.4" fill="#2A2A28"/>
+<circle cx="647.9" cy="254.9" r="2.4" fill="#2A2A28"/>
+<circle cx="647.9" cy="277.8" r="2.4" fill="#2A2A28"/>
+<circle cx="647.9" cy="300.6" r="2.4" fill="#2A2A28"/>
+<rect class="box" x="545.0" y="140.6" width="68.6" height="91.4" rx="3"/>
+<text class="sig" x="579.3" y="190.3" text-anchor="middle">J3</text>
+<circle cx="579.3" cy="163.5" r="2.4" fill="#2A2A28"/>
+<circle cx="579.3" cy="209.2" r="2.4" fill="#2A2A28"/>
+<rect class="box" x="339.3" y="357.8" width="91.4" height="22.9" rx="3"/>
+<text class="sig" x="385.0" y="373.2" text-anchor="middle">J4</text>
+<circle cx="350.7" cy="369.2" r="2.4" fill="#2A2A28"/>
+<circle cx="373.6" cy="369.2" r="2.4" fill="#2A2A28"/>
+<circle cx="396.4" cy="369.2" r="2.4" fill="#2A2A28"/>
+<circle cx="419.3" cy="369.2" r="2.4" fill="#2A2A28"/>
+<rect class="box" x="179.3" y="152.0" width="45.7" height="45.7" rx="3"/>
+<text class="sig" x="202.1" y="178.9" text-anchor="middle">J5</text>
+<circle cx="190.7" cy="163.5" r="2.4" fill="#2A2A28"/>
+<circle cx="213.5" cy="163.5" r="2.4" fill="#2A2A28"/>
+<rect class="res" x="396.4" y="177.2" width="68.6" height="18.3" rx="3"/>
+<text class="sig" x="430.7" y="190.3" text-anchor="middle">R1</text>
+<circle cx="396.4" cy="186.3" r="2.4" fill="#2A2A28"/>
+<circle cx="465.0" cy="186.3" r="2.4" fill="#2A2A28"/>
+<rect class="res" x="373.6" y="154.3" width="91.4" height="18.3" rx="3"/>
+<text class="sig" x="419.3" y="167.5" text-anchor="middle">R2</text>
+<circle cx="373.6" cy="163.5" r="2.4" fill="#2A2A28"/>
+<circle cx="465.0" cy="163.5" r="2.4" fill="#2A2A28"/>
+<rect class="res" x="259.3" y="154.3" width="91.4" height="18.3" rx="3"/>
+<text class="sig" x="305.0" y="167.5" text-anchor="middle">R3</text>
+<circle cx="259.3" cy="163.5" r="2.4" fill="#2A2A28"/>
+<circle cx="350.7" cy="163.5" r="2.4" fill="#2A2A28"/>
+<circle cx="682.0" cy="383.3" r="9.0" fill="#FFFFFF" stroke="#55534E" stroke-width="1.2"/>
+<circle cx="682.0" cy="149.3" r="9.0" fill="#FFFFFF" stroke="#55534E" stroke-width="1.2"/>
+<circle cx="145.0" cy="277.8" r="11.2" fill="#FFFFFF" stroke="#B03A2E" stroke-width="2.0"/>
+<rect class="dente" x="109.6" y="405.4" width="90.0" height="15.3" rx="1"/>
+<rect class="dente" x="109.6" y="109.3" width="90.0" height="18.0" rx="1"/>
+<circle cx="533.6" cy="346.4" r="5" fill="#8A4F0E"/>
+<circle class="segno" cx="549.6" cy="360.4" r="9"/><text class="seg" x="549.6" y="364.4" text-anchor="middle">A</text>
+<circle class="segno" cx="70.6" cy="253.5" r="9"/><text class="seg" x="70.6" y="257.5" text-anchor="middle">B</text>
+<circle class="segno" cx="89.8" cy="157.0" r="9"/><text class="seg" x="89.8" y="161.0" text-anchor="middle">C</text>
+<circle class="segno" cx="660.0" cy="387.3" r="9"/><text class="seg" x="660.0" y="391.3" text-anchor="middle">D</text>
+<circle class="segno" cx="128.6" cy="414.7" r="9"/><text class="seg" x="128.6" y="418.7" text-anchor="middle">E</text>
+<circle class="segno" cx="121.0" cy="265.8" r="9"/><text class="seg" x="121.0" y="269.8" text-anchor="middle">F</text>
+<line x1="30" y1="438" x2="770" y2="438" stroke="#B0AEA6"/>
+<rect class="perfboard" x="40" y="451" width="22" height="14" rx="2"/>
+<text class="ts" x="70.0" y="462.7" text-anchor="start">basetta 30 × 70, 10 × 24 fori</text>
+<rect class="strip" x="420" y="451" width="22" height="14" rx="2"/>
+<text class="ts" x="450.0" y="462.7" text-anchor="start">zoccoli femmina, con le file di pin</text>
+<rect class="modulo" x="40" y="473" width="22" height="14" rx="2"/>
+<text class="ts" x="70.0" y="484.7" text-anchor="start">scheda di XIAO e driver, sopra gli zoccoli</text>
+<rect class="dis" x="420" y="473" width="22" height="14" rx="2"/>
+<text class="ts" x="450.0" y="484.7" text-anchor="start">dissipatore del driver</text>
+<rect class="pow" x="40" y="495" width="22" height="14" rx="2"/>
+<text class="ts" x="70.0" y="506.7" text-anchor="start">elettrolitici (C1, C2)</text>
+<rect class="box" x="420" y="495" width="22" height="14" rx="2"/>
+<text class="ts" x="450.0" y="506.7" text-anchor="start">morsetti e header</text>
+<rect class="res" x="40" y="517" width="22" height="14" rx="2"/>
+<text class="ts" x="70.0" y="528.7" text-anchor="start">resistenze, coricate</text>
+<rect class="dente" x="420" y="517" width="22" height="14" rx="2"/>
+<text class="ts" x="450.0" y="528.7" text-anchor="start">guide del pannellino</text>
+<text class="th" x="40.0" y="564.7" text-anchor="start">Componenti</text>
+<text class="th" x="40.0" y="584.7" text-anchor="start">C1</text>
+<text class="ts" x="80.0" y="584.7" text-anchor="start">47 µF 63 V, VM del driver</text>
+<text class="ts" x="400.0" y="584.7" text-anchor="start">piedini in S03, S02</text>
+<text class="th" x="40.0" y="601.7" text-anchor="start">C2</text>
+<text class="ts" x="80.0" y="601.7" text-anchor="start">47 µF 63 V, ingresso 12 V (opzionale)</text>
+<text class="ts" x="400.0" y="601.7" text-anchor="start">piedini in S05, S04</text>
+<text class="th" x="40.0" y="618.7" text-anchor="start">J1</text>
+<text class="ts" x="80.0" y="618.7" text-anchor="start">morsetto fasi A e B, quattro poli</text>
+<text class="ts" x="400.0" y="618.7" text-anchor="start">piedini in X07, X06, X05, X04</text>
+<text class="th" x="40.0" y="635.7" text-anchor="start">J3</text>
+<text class="ts" x="80.0" y="635.7" text-anchor="start">morsetto 12 V</text>
+<text class="ts" x="400.0" y="635.7" text-anchor="start">piedini in U10, U08</text>
+<text class="th" x="40.0" y="652.7" text-anchor="start">J4</text>
+<text class="ts" x="80.0" y="652.7" text-anchor="start">header sensore, 4 poli</text>
+<text class="ts" x="400.0" y="652.7" text-anchor="start">piedini in K01, L01, M01, N01</text>
+<text class="th" x="40.0" y="669.7" text-anchor="start">J5</text>
+<text class="ts" x="80.0" y="669.7" text-anchor="start">header LED, 2 poli</text>
+<text class="ts" x="400.0" y="669.7" text-anchor="start">piedini in D10, E10</text>
+<text class="th" x="40.0" y="686.7" text-anchor="start">R1</text>
+<text class="ts" x="80.0" y="686.7" text-anchor="start">10 kΩ, pull-up di EN</text>
+<text class="ts" x="400.0" y="686.7" text-anchor="start">piedini in M09, P09</text>
+<text class="th" x="40.0" y="703.7" text-anchor="start">R2</text>
+<text class="ts" x="80.0" y="703.7" text-anchor="start">1 kΩ in serie, UART</text>
+<text class="ts" x="400.0" y="703.7" text-anchor="start">piedini in L10, P10</text>
+<text class="th" x="40.0" y="720.7" text-anchor="start">R3</text>
+<text class="ts" x="80.0" y="720.7" text-anchor="start">1 kΩ in serie, LED</text>
+<text class="ts" x="400.0" y="720.7" text-anchor="start">piedini in G10, K10</text>
+<text class="th" x="40.0" y="749.7" text-anchor="start">Punti</text>
+<circle class="segno" cx="49.0" cy="765.7" r="9"/><text class="seg" x="49.0" y="769.7" text-anchor="middle">A</text>
+<text class="ts" x="70.0" y="769.7" text-anchor="start">nodo di massa unico: il negativo di C1, in S02. Da qui un filo per ramo.</text>
+<circle class="segno" cx="49.0" cy="787.7" r="9"/><text class="seg" x="49.0" y="791.7" text-anchor="middle">B</text>
+<text class="ts" x="70.0" y="791.7" text-anchor="start">presa USB dello XIAO: a filo della faccia esterna della testa.</text>
+<circle class="segno" cx="49.0" cy="809.7" r="9"/><text class="seg" x="49.0" y="813.7" text-anchor="middle">C</text>
+<text class="ts" x="70.0" y="813.7" text-anchor="start">parte tolta col taglio: la basetta finisce 1.38 mm oltre la colonna C0.</text>
+<circle class="segno" cx="49.0" cy="831.7" r="9"/><text class="seg" x="49.0" y="835.7" text-anchor="middle">D</text>
+<text class="ts" x="70.0" y="835.7" text-anchor="start">fori di fissaggio: solo al capo lontano, quelli della testa se ne vanno col taglio.</text>
+<circle class="segno" cx="49.0" cy="853.7" r="9"/><text class="seg" x="49.0" y="857.7" text-anchor="middle">E</text>
+<text class="ts" x="70.0" y="857.7" text-anchor="start">guide del pannellino: squadrano la basetta di lato, non la coprono. Si cala dall'alto.</text>
+<circle class="segno" cx="49.0" cy="875.7" r="9"/><text class="seg" x="49.0" y="879.7" text-anchor="middle">F</text>
+<text class="ts" x="70.0" y="879.7" text-anchor="start">foro B05, da aprire col trapano a Ø2,7: è la terza vite, quella che tiene il capo tagliato.</text>
+<line x1="30" y1="911" x2="770" y2="911" stroke="#B0AEA6" stroke-width="1.5"/>
+<text class="th" x="40.0" y="941.7" text-anchor="start">2 · I fili, con la massa a stella</text>
+<rect class="taglio" x="70.0" y="991.7" width="39.6" height="272.7" rx="4"/>
+<rect class="perfboard" x="109.6" y="991.7" width="590.4" height="272.7" rx="4"/>
+<circle cx="122.1" cy="1025.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="122.1" cy="1048.0" r="1.6" fill="#C4C2BA"/>
+<circle cx="122.1" cy="1070.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="122.1" cy="1093.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="122.1" cy="1116.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="122.1" cy="1139.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="122.1" cy="1162.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="122.1" cy="1185.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="122.1" cy="1208.1" r="1.6" fill="#C4C2BA"/>
+<circle cx="122.1" cy="1230.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="145.0" cy="1025.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="145.0" cy="1048.0" r="1.6" fill="#C4C2BA"/>
+<circle cx="145.0" cy="1070.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="145.0" cy="1093.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="145.0" cy="1116.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="145.0" cy="1139.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="145.0" cy="1162.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="145.0" cy="1185.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="145.0" cy="1208.1" r="1.6" fill="#C4C2BA"/>
+<circle cx="145.0" cy="1230.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="167.8" cy="1025.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="167.8" cy="1048.0" r="1.6" fill="#C4C2BA"/>
+<circle cx="167.8" cy="1070.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="167.8" cy="1093.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="167.8" cy="1116.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="167.8" cy="1139.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="167.8" cy="1162.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="167.8" cy="1185.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="167.8" cy="1208.1" r="1.6" fill="#C4C2BA"/>
+<circle cx="167.8" cy="1230.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="190.7" cy="1025.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="190.7" cy="1048.0" r="1.6" fill="#C4C2BA"/>
+<circle cx="190.7" cy="1070.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="190.7" cy="1093.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="190.7" cy="1116.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="190.7" cy="1139.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="190.7" cy="1162.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="190.7" cy="1185.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="190.7" cy="1208.1" r="1.6" fill="#C4C2BA"/>
+<circle cx="190.7" cy="1230.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="213.5" cy="1025.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="213.5" cy="1048.0" r="1.6" fill="#C4C2BA"/>
+<circle cx="213.5" cy="1070.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="213.5" cy="1093.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="213.5" cy="1116.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="213.5" cy="1139.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="213.5" cy="1162.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="213.5" cy="1185.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="213.5" cy="1208.1" r="1.6" fill="#C4C2BA"/>
+<circle cx="213.5" cy="1230.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="236.4" cy="1025.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="236.4" cy="1048.0" r="1.6" fill="#C4C2BA"/>
+<circle cx="236.4" cy="1070.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="236.4" cy="1093.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="236.4" cy="1116.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="236.4" cy="1139.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="236.4" cy="1162.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="236.4" cy="1185.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="236.4" cy="1208.1" r="1.6" fill="#C4C2BA"/>
+<circle cx="236.4" cy="1230.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="259.3" cy="1025.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="259.3" cy="1048.0" r="1.6" fill="#C4C2BA"/>
+<circle cx="259.3" cy="1070.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="259.3" cy="1093.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="259.3" cy="1116.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="259.3" cy="1139.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="259.3" cy="1162.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="259.3" cy="1185.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="259.3" cy="1208.1" r="1.6" fill="#C4C2BA"/>
+<circle cx="259.3" cy="1230.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="282.1" cy="1025.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="282.1" cy="1048.0" r="1.6" fill="#C4C2BA"/>
+<circle cx="282.1" cy="1070.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="282.1" cy="1093.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="282.1" cy="1116.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="282.1" cy="1139.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="282.1" cy="1162.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="282.1" cy="1185.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="282.1" cy="1208.1" r="1.6" fill="#C4C2BA"/>
+<circle cx="282.1" cy="1230.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="305.0" cy="1025.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="305.0" cy="1048.0" r="1.6" fill="#C4C2BA"/>
+<circle cx="305.0" cy="1070.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="305.0" cy="1093.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="305.0" cy="1116.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="305.0" cy="1139.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="305.0" cy="1162.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="305.0" cy="1185.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="305.0" cy="1208.1" r="1.6" fill="#C4C2BA"/>
+<circle cx="305.0" cy="1230.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="327.8" cy="1025.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="327.8" cy="1048.0" r="1.6" fill="#C4C2BA"/>
+<circle cx="327.8" cy="1070.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="327.8" cy="1093.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="327.8" cy="1116.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="327.8" cy="1139.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="327.8" cy="1162.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="327.8" cy="1185.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="327.8" cy="1208.1" r="1.6" fill="#C4C2BA"/>
+<circle cx="327.8" cy="1230.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="350.7" cy="1025.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="350.7" cy="1048.0" r="1.6" fill="#C4C2BA"/>
+<circle cx="350.7" cy="1070.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="350.7" cy="1093.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="350.7" cy="1116.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="350.7" cy="1139.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="350.7" cy="1162.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="350.7" cy="1185.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="350.7" cy="1208.1" r="1.6" fill="#C4C2BA"/>
+<circle cx="350.7" cy="1230.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="373.6" cy="1025.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="373.6" cy="1048.0" r="1.6" fill="#C4C2BA"/>
+<circle cx="373.6" cy="1070.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="373.6" cy="1093.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="373.6" cy="1116.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="373.6" cy="1139.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="373.6" cy="1162.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="373.6" cy="1185.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="373.6" cy="1208.1" r="1.6" fill="#C4C2BA"/>
+<circle cx="373.6" cy="1230.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="396.4" cy="1025.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="396.4" cy="1048.0" r="1.6" fill="#C4C2BA"/>
+<circle cx="396.4" cy="1070.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="396.4" cy="1093.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="396.4" cy="1116.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="396.4" cy="1139.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="396.4" cy="1162.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="396.4" cy="1185.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="396.4" cy="1208.1" r="1.6" fill="#C4C2BA"/>
+<circle cx="396.4" cy="1230.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="419.3" cy="1025.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="419.3" cy="1048.0" r="1.6" fill="#C4C2BA"/>
+<circle cx="419.3" cy="1070.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="419.3" cy="1093.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="419.3" cy="1116.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="419.3" cy="1139.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="419.3" cy="1162.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="419.3" cy="1185.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="419.3" cy="1208.1" r="1.6" fill="#C4C2BA"/>
+<circle cx="419.3" cy="1230.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="442.2" cy="1025.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="442.2" cy="1048.0" r="1.6" fill="#C4C2BA"/>
+<circle cx="442.2" cy="1070.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="442.2" cy="1093.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="442.2" cy="1116.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="442.2" cy="1139.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="442.2" cy="1162.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="442.2" cy="1185.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="442.2" cy="1208.1" r="1.6" fill="#C4C2BA"/>
+<circle cx="442.2" cy="1230.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="465.0" cy="1025.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="465.0" cy="1048.0" r="1.6" fill="#C4C2BA"/>
+<circle cx="465.0" cy="1070.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="465.0" cy="1093.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="465.0" cy="1116.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="465.0" cy="1139.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="465.0" cy="1162.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="465.0" cy="1185.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="465.0" cy="1208.1" r="1.6" fill="#C4C2BA"/>
+<circle cx="465.0" cy="1230.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="487.9" cy="1025.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="487.9" cy="1048.0" r="1.6" fill="#C4C2BA"/>
+<circle cx="487.9" cy="1070.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="487.9" cy="1093.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="487.9" cy="1116.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="487.9" cy="1139.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="487.9" cy="1162.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="487.9" cy="1185.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="487.9" cy="1208.1" r="1.6" fill="#C4C2BA"/>
+<circle cx="487.9" cy="1230.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="510.7" cy="1025.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="510.7" cy="1048.0" r="1.6" fill="#C4C2BA"/>
+<circle cx="510.7" cy="1070.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="510.7" cy="1093.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="510.7" cy="1116.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="510.7" cy="1139.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="510.7" cy="1162.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="510.7" cy="1185.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="510.7" cy="1208.1" r="1.6" fill="#C4C2BA"/>
+<circle cx="510.7" cy="1230.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="533.6" cy="1025.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="533.6" cy="1048.0" r="1.6" fill="#C4C2BA"/>
+<circle cx="533.6" cy="1070.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="533.6" cy="1093.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="533.6" cy="1116.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="533.6" cy="1139.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="533.6" cy="1162.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="533.6" cy="1185.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="533.6" cy="1208.1" r="1.6" fill="#C4C2BA"/>
+<circle cx="533.6" cy="1230.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="556.5" cy="1025.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="556.5" cy="1048.0" r="1.6" fill="#C4C2BA"/>
+<circle cx="556.5" cy="1070.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="556.5" cy="1093.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="556.5" cy="1116.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="556.5" cy="1139.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="556.5" cy="1162.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="556.5" cy="1185.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="556.5" cy="1208.1" r="1.6" fill="#C4C2BA"/>
+<circle cx="556.5" cy="1230.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="579.3" cy="1025.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="579.3" cy="1048.0" r="1.6" fill="#C4C2BA"/>
+<circle cx="579.3" cy="1070.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="579.3" cy="1093.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="579.3" cy="1116.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="579.3" cy="1139.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="579.3" cy="1162.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="579.3" cy="1185.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="579.3" cy="1208.1" r="1.6" fill="#C4C2BA"/>
+<circle cx="579.3" cy="1230.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="602.2" cy="1025.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="602.2" cy="1048.0" r="1.6" fill="#C4C2BA"/>
+<circle cx="602.2" cy="1070.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="602.2" cy="1093.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="602.2" cy="1116.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="602.2" cy="1139.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="602.2" cy="1162.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="602.2" cy="1185.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="602.2" cy="1208.1" r="1.6" fill="#C4C2BA"/>
+<circle cx="602.2" cy="1230.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="625.0" cy="1025.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="625.0" cy="1048.0" r="1.6" fill="#C4C2BA"/>
+<circle cx="625.0" cy="1070.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="625.0" cy="1093.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="625.0" cy="1116.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="625.0" cy="1139.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="625.0" cy="1162.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="625.0" cy="1185.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="625.0" cy="1208.1" r="1.6" fill="#C4C2BA"/>
+<circle cx="625.0" cy="1230.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="647.9" cy="1025.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="647.9" cy="1048.0" r="1.6" fill="#C4C2BA"/>
+<circle cx="647.9" cy="1070.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="647.9" cy="1093.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="647.9" cy="1116.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="647.9" cy="1139.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="647.9" cy="1162.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="647.9" cy="1185.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="647.9" cy="1208.1" r="1.6" fill="#C4C2BA"/>
+<circle cx="647.9" cy="1230.9" r="1.6" fill="#C4C2BA"/>
+<text class="tg" x="122.1" y="965.7" text-anchor="middle">A</text>
+<text class="tg" x="167.8" y="965.7" text-anchor="middle">C</text>
+<text class="tg" x="213.5" y="965.7" text-anchor="middle">E</text>
+<text class="tg" x="259.3" y="965.7" text-anchor="middle">G</text>
+<text class="tg" x="305.0" y="965.7" text-anchor="middle">I</text>
+<text class="tg" x="350.7" y="965.7" text-anchor="middle">K</text>
+<text class="tg" x="396.4" y="965.7" text-anchor="middle">M</text>
+<text class="tg" x="442.2" y="965.7" text-anchor="middle">O</text>
+<text class="tg" x="487.9" y="965.7" text-anchor="middle">Q</text>
+<text class="tg" x="533.6" y="965.7" text-anchor="middle">S</text>
+<text class="tg" x="579.3" y="965.7" text-anchor="middle">U</text>
+<text class="tg" x="625.0" y="965.7" text-anchor="middle">W</text>
+<text class="tg" x="710.0" y="1029.2" text-anchor="start">10</text>
+<text class="tg" x="710.0" y="1052.0" text-anchor="start">09</text>
+<text class="tg" x="710.0" y="1074.9" text-anchor="start">08</text>
+<text class="tg" x="710.0" y="1097.8" text-anchor="start">07</text>
+<text class="tg" x="710.0" y="1120.6" text-anchor="start">06</text>
+<text class="tg" x="710.0" y="1143.5" text-anchor="start">05</text>
+<text class="tg" x="710.0" y="1166.3" text-anchor="start">04</text>
+<text class="tg" x="710.0" y="1189.2" text-anchor="start">03</text>
+<text class="tg" x="710.0" y="1212.1" text-anchor="start">02</text>
+<text class="tg" x="710.0" y="1234.9" text-anchor="start">01</text>
+<rect class="strip" x="110.7" y="1059.5" width="160.0" height="22.9" rx="2"/>
+<rect class="strip" x="110.7" y="1196.6" width="160.0" height="22.9" rx="2"/>
+<rect class="strip" x="293.6" y="1059.5" width="182.9" height="22.9" rx="2"/>
+<rect class="strip" x="293.6" y="1173.8" width="182.9" height="22.9" rx="2"/>
+<rect class="modulo" x="96.4" y="1059.5" width="188.6" height="160.0" rx="3"/>
+<rect class="modulo" x="293.6" y="1059.5" width="182.9" height="137.2" rx="3"/>
+<rect class="usb" x="82.6" y="1099.2" width="13.8" height="80.5" rx="2"/>
+<text class="thf" x="190.7" y="1144.5" text-anchor="middle">XIAO</text>
+<text class="thf" x="385.0" y="1133.0" text-anchor="middle">TMC2209</text>
+<circle class="pow smorto" cx="533.6" cy="1196.6" r="28.6"/>
+<circle class="pow smorto" cx="533.6" cy="1150.9" r="28.6"/>
+<rect class="box smorto" x="613.6" y="1082.3" width="68.6" height="91.4" rx="3"/>
+<rect class="box smorto" x="545.0" y="1002.3" width="68.6" height="91.4" rx="3"/>
+<rect class="box smorto" x="339.3" y="1219.5" width="91.4" height="22.9" rx="3"/>
+<rect class="box smorto" x="179.3" y="1013.8" width="45.7" height="45.7" rx="3"/>
+<rect class="res smorto" x="396.4" y="1038.9" width="68.6" height="18.3" rx="3"/>
+<rect class="res smorto" x="373.6" y="1016.0" width="91.4" height="18.3" rx="3"/>
+<rect class="res smorto" x="259.3" y="1016.0" width="91.4" height="18.3" rx="3"/>
+<circle cx="682.0" cy="1245.0" r="9.0" fill="#FFFFFF" stroke="#55534E" stroke-width="1.2"/>
+<circle cx="682.0" cy="1011.0" r="9.0" fill="#FFFFFF" stroke="#55534E" stroke-width="1.2"/>
+<circle cx="145.0" cy="1139.5" r="11.2" fill="#FFFFFF" stroke="#B03A2E" stroke-width="2.0"/>
+<rect class="dente" x="109.6" y="1267.1" width="90.0" height="15.3" rx="1"/>
+<rect class="dente" x="109.6" y="971.0" width="90.0" height="18.0" rx="1"/>
+<path class="alone-filo" d="M465.0,1185.2 Q499.3,1188.3 533.6,1185.2"/>
+<path class="filo" d="M465.0,1185.2 Q499.3,1188.3 533.6,1185.2" stroke="#E0457B"/>
+<path class="alone-filo" d="M442.2,1185.2 Q486.8,1200.7 533.6,1208.1"/>
+<path class="filo" d="M442.2,1185.2 Q486.8,1200.7 533.6,1208.1" stroke="#3A3A38"/>
+<path class="alone-filo" d="M533.6,1185.2 Q563.7,1107.2 579.3,1025.2"/>
+<path class="filo" d="M533.6,1185.2 Q563.7,1107.2 579.3,1025.2" stroke="#E0457B"/>
+<path class="alone-filo" d="M533.6,1139.5 Q561.6,1084.4 579.3,1025.2"/>
+<path class="filo" d="M533.6,1139.5 Q561.6,1084.4 579.3,1025.2" stroke="#E0457B"/>
+<path class="alone-filo" d="M533.6,1162.3 Q560.6,1118.7 579.3,1070.9"/>
+<path class="filo" d="M533.6,1162.3 Q560.6,1118.7 579.3,1070.9" stroke="#3A3A38"/>
+<path class="alone-filo" d="M373.6,1185.2 Q514.8,1151.8 647.9,1093.8"/>
+<path class="filo" d="M373.6,1185.2 Q514.8,1151.8 647.9,1093.8" stroke="#1E1E1C"/>
+<path class="alone-filo" d="M350.7,1185.2 Q502.4,1164.3 647.9,1116.6"/>
+<path class="filo" d="M350.7,1185.2 Q502.4,1164.3 647.9,1116.6" stroke="#5E9022"/>
+<path class="alone-filo" d="M396.4,1185.2 Q524.2,1173.7 647.9,1139.5"/>
+<path class="filo" d="M396.4,1185.2 Q524.2,1173.7 647.9,1139.5" stroke="#C0392B"/>
+<path class="alone-filo" d="M419.3,1185.2 Q534.6,1184.1 647.9,1162.3"/>
+<path class="filo" d="M419.3,1185.2 Q534.6,1184.1 647.9,1162.3" stroke="#2F6FC4"/>
+<path class="alone-filo" d="M122.1,1208.1 Q231.2,1148.7 327.8,1070.9"/>
+<path class="filo" d="M122.1,1208.1 Q231.2,1148.7 327.8,1070.9" stroke="#7B4FB5"/>
+<path class="alone-filo" d="M145.0,1208.1 Q231.2,1146.7 305.0,1070.9"/>
+<path class="filo" d="M145.0,1208.1 Q231.2,1146.7 305.0,1070.9" stroke="#7B4FB5"/>
+<path class="alone-filo" d="M190.7,1208.1 Q334.0,1151.8 465.0,1070.9"/>
+<path class="filo" d="M190.7,1208.1 Q334.0,1151.8 465.0,1070.9" stroke="#7B4FB5"/>
+<path class="alone-filo" d="M465.0,1048.0 Q464.0,1059.5 465.0,1070.9"/>
+<path class="filo" d="M465.0,1048.0 Q464.0,1059.5 465.0,1070.9" stroke="#7B4FB5"/>
+<path class="alone-filo" d="M396.4,1048.0 C396.4,1050.9 434.5,1062.3 396.4,1065.2 C358.3,1068.0 205.9,1064.2 167.8,1065.2 C129.7,1066.1 167.8,1069.9 167.8,1070.9"/>
+<path class="filo" d="M396.4,1048.0 C396.4,1050.9 434.5,1062.3 396.4,1065.2 C358.3,1068.0 205.9,1064.2 167.8,1065.2 C129.7,1066.1 167.8,1069.9 167.8,1070.9" stroke="#E08A1E"/>
+<path class="alone-filo" d="M167.8,1070.9 Q242.7,1135.3 327.8,1185.2"/>
+<path class="filo" d="M167.8,1070.9 Q242.7,1135.3 327.8,1185.2" stroke="#E08A1E"/>
+<path class="alone-filo" d="M167.8,1070.9 Q274.9,1161.2 396.4,1230.9"/>
+<path class="filo" d="M167.8,1070.9 Q274.9,1161.2 396.4,1230.9" stroke="#E08A1E"/>
+<path class="alone-filo" d="M236.4,1070.9 Q307.0,1054.2 373.6,1025.2"/>
+<path class="filo" d="M236.4,1070.9 Q307.0,1054.2 373.6,1025.2" stroke="#7B4FB5"/>
+<path class="alone-filo" d="M465.0,1025.2 Q428.7,1045.0 396.4,1070.9"/>
+<path class="filo" d="M465.0,1025.2 Q428.7,1045.0 396.4,1070.9" stroke="#7B4FB5"/>
+<path class="alone-filo" d="M213.5,1070.9 C213.5,1068.8 183.1,1060.4 213.5,1058.3 C244.0,1056.2 365.9,1056.2 396.4,1058.3 C426.9,1060.4 396.4,1068.8 396.4,1070.9"/>
+<path class="filo" d="M213.5,1070.9 C213.5,1068.8 183.1,1060.4 213.5,1058.3 C244.0,1056.2 365.9,1056.2 396.4,1058.3 C426.9,1060.4 396.4,1068.8 396.4,1070.9" stroke="#7B4FB5"/>
+<path class="alone-filo" d="M213.5,1208.1 Q281.1,1225.7 350.7,1230.9"/>
+<path class="filo" d="M213.5,1208.1 Q281.1,1225.7 350.7,1230.9" stroke="#3E8C74"/>
+<path class="alone-filo" d="M236.4,1208.1 Q304.0,1225.7 373.6,1230.9"/>
+<path class="filo" d="M236.4,1208.1 Q304.0,1225.7 373.6,1230.9" stroke="#3E8C74"/>
+<path class="alone-filo" d="M190.7,1070.9 Q272.8,1055.2 350.7,1025.2"/>
+<path class="filo" d="M190.7,1070.9 Q272.8,1055.2 350.7,1025.2" stroke="#7B4FB5"/>
+<path class="alone-filo" d="M259.3,1025.2 Q225.0,1022.1 190.7,1025.2"/>
+<path class="filo" d="M259.3,1025.2 Q225.0,1022.1 190.7,1025.2" stroke="#7B4FB5"/>
+<path class="alone-filo" d="M145.0,1070.9 Q181.3,1051.1 213.5,1025.2"/>
+<path class="filo" d="M145.0,1070.9 Q181.3,1051.1 213.5,1025.2" stroke="#6E6C66"/>
+<path class="alone-filo" d="M145.0,1070.9 Q274.9,1163.3 419.3,1230.9"/>
+<path class="filo" d="M145.0,1070.9 Q274.9,1163.3 419.3,1230.9" stroke="#6E6C66"/>
+<path class="alone-filo" d="M305.0,1185.2 Q378.7,1134.2 442.2,1070.9"/>
+<path class="filo" d="M305.0,1185.2 Q378.7,1134.2 442.2,1070.9" stroke="#6E6C66"/>
+<path class="alone-filo" d="M305.0,1185.2 Q367.3,1133.2 419.3,1070.9"/>
+<path class="filo" d="M305.0,1185.2 Q367.3,1133.2 419.3,1070.9" stroke="#6E6C66"/>
+<path class="alone-filo-stella" d="M533.6,1208.1 Q562.6,1141.5 579.3,1070.9"/>
+<path class="filo-stella" d="M533.6,1208.1 Q562.6,1141.5 579.3,1070.9" stroke="#8A4F0E"/>
+<path class="alone-filo-stella" d="M533.6,1208.1 Q420.3,1186.3 305.0,1185.2"/>
+<path class="filo-stella" d="M533.6,1208.1 Q420.3,1186.3 305.0,1185.2" stroke="#8A4F0E"/>
+<path class="alone-filo-stella" d="M533.6,1208.1 Q345.5,1122.0 145.0,1070.9"/>
+<path class="filo-stella" d="M533.6,1208.1 Q345.5,1122.0 145.0,1070.9" stroke="#8A4F0E"/>
+<circle cx="122.1" cy="1070.9" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="122.1" y="1064.9" text-anchor="middle">5V</text>
+<circle cx="145.0" cy="1070.9" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="145.0" y="1064.9" text-anchor="middle">GND</text>
+<circle cx="167.8" cy="1070.9" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="167.8" y="1064.9" text-anchor="middle">3V3</text>
+<circle cx="190.7" cy="1070.9" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="190.7" y="1064.9" text-anchor="middle">D10</text>
+<circle cx="213.5" cy="1070.9" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="213.5" y="1064.9" text-anchor="middle">D9</text>
+<circle cx="236.4" cy="1070.9" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="236.4" y="1064.9" text-anchor="middle">D8</text>
+<circle cx="259.3" cy="1070.9" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="259.3" y="1064.9" text-anchor="middle">D7</text>
+<circle cx="122.1" cy="1208.1" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="122.1" y="1222.1" text-anchor="middle">D0</text>
+<circle cx="145.0" cy="1208.1" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="145.0" y="1222.1" text-anchor="middle">D1</text>
+<circle cx="167.8" cy="1208.1" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="167.8" y="1222.1" text-anchor="middle">D2</text>
+<circle cx="190.7" cy="1208.1" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="190.7" y="1222.1" text-anchor="middle">D3</text>
+<circle cx="213.5" cy="1208.1" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="213.5" y="1222.1" text-anchor="middle">D4</text>
+<circle cx="236.4" cy="1208.1" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="236.4" y="1222.1" text-anchor="middle">D5</text>
+<circle cx="259.3" cy="1208.1" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="259.3" y="1222.1" text-anchor="middle">D6</text>
+<circle cx="305.0" cy="1070.9" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="305.0" y="1064.9" text-anchor="middle">DIR</text>
+<circle cx="327.8" cy="1070.9" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="327.8" y="1064.9" text-anchor="middle">STEP</text>
+<circle cx="350.7" cy="1070.9" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="350.7" y="1064.9" text-anchor="middle">SLP</text>
+<circle cx="373.6" cy="1070.9" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="373.6" y="1064.9" text-anchor="middle">RST</text>
+<circle cx="396.4" cy="1070.9" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="396.4" y="1064.9" text-anchor="middle">UART</text>
+<circle cx="419.3" cy="1070.9" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="419.3" y="1064.9" text-anchor="middle">MS2</text>
+<circle cx="442.2" cy="1070.9" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="442.2" y="1064.9" text-anchor="middle">MS1</text>
+<circle cx="465.0" cy="1070.9" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="465.0" y="1064.9" text-anchor="middle">EN</text>
+<circle cx="305.0" cy="1185.2" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="305.0" y="1199.2" text-anchor="middle">GND</text>
+<circle cx="327.8" cy="1185.2" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="327.8" y="1199.2" text-anchor="middle">VDD</text>
+<circle cx="350.7" cy="1185.2" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="350.7" y="1199.2" text-anchor="middle">A2</text>
+<circle cx="373.6" cy="1185.2" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="373.6" y="1199.2" text-anchor="middle">A1</text>
+<circle cx="396.4" cy="1185.2" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="396.4" y="1199.2" text-anchor="middle">B1</text>
+<circle cx="419.3" cy="1185.2" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="419.3" y="1199.2" text-anchor="middle">B2</text>
+<circle cx="442.2" cy="1185.2" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="442.2" y="1199.2" text-anchor="middle">GND</text>
+<circle cx="465.0" cy="1185.2" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="465.0" y="1199.2" text-anchor="middle">VM</text>
+<circle cx="533.6" cy="1185.2" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="539.6" y="1188.2" text-anchor="start">C1 +</text>
+<circle cx="533.6" cy="1208.1" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="539.6" y="1211.1" text-anchor="start">C1 −</text>
+<circle cx="533.6" cy="1139.5" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="539.6" y="1142.5" text-anchor="start">C2 +</text>
+<circle cx="533.6" cy="1162.3" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="539.6" y="1165.3" text-anchor="start">C2 −</text>
+<circle cx="647.9" cy="1093.8" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="653.9" y="1096.8" text-anchor="start">A+</text>
+<circle cx="647.9" cy="1116.6" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="653.9" y="1119.6" text-anchor="start">A−</text>
+<circle cx="647.9" cy="1139.5" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="653.9" y="1142.5" text-anchor="start">B+</text>
+<circle cx="647.9" cy="1162.3" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="653.9" y="1165.3" text-anchor="start">B−</text>
+<circle cx="579.3" cy="1025.2" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="585.3" y="1028.2" text-anchor="start">12V +</text>
+<circle cx="579.3" cy="1070.9" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="585.3" y="1073.9" text-anchor="start">12V −</text>
+<circle cx="350.7" cy="1230.9" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="350.7" y="1244.9" text-anchor="middle">SDA</text>
+<rect x="344.7" y="1248.9" width="12" height="5" rx="1" fill="#2F5FB0" stroke="#8A887F" stroke-width="0.6"/>
+<circle cx="373.6" cy="1230.9" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="373.6" y="1244.9" text-anchor="middle">SCL</text>
+<rect x="367.6" y="1248.9" width="12" height="5" rx="1" fill="#3F8F3A" stroke="#8A887F" stroke-width="0.6"/>
+<circle cx="396.4" cy="1230.9" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="396.4" y="1244.9" text-anchor="middle">VCC</text>
+<rect x="390.4" y="1248.9" width="12" height="5" rx="1" fill="#7A4A24" stroke="#8A887F" stroke-width="0.6"/>
+<circle cx="419.3" cy="1230.9" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="419.3" y="1244.9" text-anchor="middle">GND</text>
+<rect x="413.3" y="1248.9" width="12" height="5" rx="1" fill="#FFFFFF" stroke="#8A887F" stroke-width="0.6"/>
+<rect x="413.3" y="1250.5" width="12" height="1.8" fill="#7A4A24"/>
+<circle cx="190.7" cy="1025.2" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="184.7" y="1028.2" text-anchor="end">LED +</text>
+<circle cx="213.5" cy="1025.2" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="219.5" y="1028.2" text-anchor="start">LED −</text>
+<circle cx="396.4" cy="1048.0" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="402.4" y="1051.0" text-anchor="start">R1</text>
+<circle cx="465.0" cy="1048.0" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="471.0" y="1051.0" text-anchor="start">R1</text>
+<circle cx="373.6" cy="1025.2" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="379.6" y="1028.2" text-anchor="start">R2</text>
+<circle cx="465.0" cy="1025.2" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="471.0" y="1028.2" text-anchor="start">R2</text>
+<circle cx="259.3" cy="1025.2" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="265.3" y="1028.2" text-anchor="start">R3</text>
+<circle cx="350.7" cy="1025.2" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="356.7" y="1028.2" text-anchor="start">R3</text>
+<circle cx="533.6" cy="1208.1" r="7" fill="#8A4F0E"/>
+<circle class="segno" cx="513.6" cy="1226.1" r="9"/><text class="seg" x="513.6" y="1230.1" text-anchor="middle">A</text>
+<circle class="segno" cx="70.6" cy="1115.2" r="9"/><text class="seg" x="70.6" y="1119.2" text-anchor="middle">B</text>
+<circle class="segno" cx="89.8" cy="1234.7" r="9"/><text class="seg" x="89.8" y="1238.7" text-anchor="middle">C</text>
+<circle class="segno" cx="660.0" cy="1249.0" r="9"/><text class="seg" x="660.0" y="1253.0" text-anchor="middle">D</text>
+<circle class="segno" cx="128.6" cy="1276.4" r="9"/><text class="seg" x="128.6" y="1280.4" text-anchor="middle">E</text>
+<circle class="segno" cx="121.0" cy="1127.5" r="9"/><text class="seg" x="121.0" y="1131.5" text-anchor="middle">F</text>
+<text class="th" x="40.0" y="1324.4" text-anchor="start">Reti</text>
+<line class="filo" x1="40" y1="1340" x2="64" y2="1340" stroke="#E0457B"/>
+<text class="ts" x="72.0" y="1344.4" text-anchor="start">12 V e VM</text>
+<line class="filo-stella" x1="420" y1="1340" x2="444" y2="1340" stroke="#8A4F0E"/>
+<text class="ts" x="452.0" y="1344.4" text-anchor="start">massa a stella: i fili che partono dal nodo</text>
+<line class="filo" x1="40" y1="1360" x2="64" y2="1360" stroke="#3A3A38"/>
+<text class="ts" x="72.0" y="1364.4" text-anchor="start">massa di potenza: reoforo di C1, − di C2</text>
+<line class="filo" x1="420" y1="1360" x2="444" y2="1360" stroke="#6E6C66"/>
+<text class="ts" x="452.0" y="1364.4" text-anchor="start">massa logica, bus locale del suo ramo</text>
+<line class="filo" x1="40" y1="1380" x2="64" y2="1380" stroke="#E08A1E"/>
+<text class="ts" x="72.0" y="1384.4" text-anchor="start">3V3 dello XIAO</text>
+<line class="filo" x1="420" y1="1380" x2="444" y2="1380" stroke="#7B4FB5"/>
+<text class="ts" x="452.0" y="1384.4" text-anchor="start">segnali</text>
+<line class="filo" x1="40" y1="1400" x2="64" y2="1400" stroke="#3E8C74"/>
+<text class="ts" x="72.0" y="1404.4" text-anchor="start">I²C del sensore</text>
+<line class="filo" x1="420" y1="1400" x2="444" y2="1400" stroke="#1E1E1C"/>
+<text class="ts" x="452.0" y="1404.4" text-anchor="start">fase A+ (nero)</text>
+<line class="filo" x1="40" y1="1420" x2="64" y2="1420" stroke="#5E9022"/>
+<text class="ts" x="72.0" y="1424.4" text-anchor="start">fase A− (verde)</text>
+<line class="filo" x1="420" y1="1420" x2="444" y2="1420" stroke="#C0392B"/>
+<text class="ts" x="452.0" y="1424.4" text-anchor="start">fase B+ (rosso)</text>
+<line class="filo" x1="40" y1="1440" x2="64" y2="1440" stroke="#2F6FC4"/>
+<text class="ts" x="72.0" y="1444.4" text-anchor="start">fase B− (blu)</text>
+<rect x="46" y="1457" width="12" height="5" rx="1" fill="#FFFFFF" stroke="#8A887F" stroke-width="0.6"/>
+<rect x="46" y="1459.0" width="12" height="1.8" fill="#7A4A24"/>
+<rect x="70" y="1457" width="12" height="5" rx="1" fill="#7A4A24" stroke="#8A887F" stroke-width="0.6"/>
+<rect x="94" y="1457" width="12" height="5" rx="1" fill="#3F8F3A" stroke="#8A887F" stroke-width="0.6"/>
+<rect x="118" y="1457" width="12" height="5" rx="1" fill="#2F5FB0" stroke="#8A887F" stroke-width="0.6"/>
+<text class="ts" x="144.0" y="1464.4" text-anchor="start">su J4: il colore del filo del cavo del sensore (CAT5) su ogni pin - bianco-marrone GND, marrone VCC, verde SCL, blu SDA</text>
+<text class="th" x="40.0" y="1496.4" text-anchor="start">La massa a stella, come si fa qui</text>
+<text class="tn" x="40.0" y="1516.4" text-anchor="start">Il nodo è il negativo di C1, in S02: il suo reoforo va corto al GND di potenza del driver (O03).</text>
+<text class="tn" x="40.0" y="1532.4" text-anchor="start">Dal nodo partono TRE fili, e solo tre: al − del morsetto 12 V, al GND logico del driver (I02), al GND dello XIAO (B08).</text>
+<text class="tn" x="40.0" y="1548.4" text-anchor="start">Ogni ramo ha poi il suo bus locale, che non tocca gli altri: dallo XIAO la massa del sensore e del LED,</text>
+<text class="tn" x="40.0" y="1564.4" text-anchor="start">dal GND logico del driver MS1 e MS2. Nessuna massa si collega a un'altra massa fuori dal nodo.</text>
+<text class="tn" x="40.0" y="1580.4" text-anchor="start">C2, se c'è, sta sui pin del morsetto: il suo − va al − del morsetto, non al nodo.</text>
+<text class="th" x="40.0" y="1608.4" text-anchor="start">Fili</text>
+<text class="tn" x="40.0" y="1626.4" text-anchor="start">Fra parentesi il foro: prima come si legge DA SOPRA, dal lato dei componenti, poi come si legge DA SOTTO, dal lato delle saldature.</text>
+<line class="filo" x1="40" y1="1642" x2="54" y2="1642" stroke="#E0457B"/>
+<text class="tn" x="60.0" y="1646.4" text-anchor="start">driver VM (P03/I03) → C1 + (S03/F03)</text>
+<line class="filo" x1="40" y1="1658" x2="54" y2="1658" stroke="#3A3A38"/>
+<text class="tn" x="60.0" y="1662.4" text-anchor="start">driver GND (O03/J03) → C1 − (S02/F02)</text>
+<line class="filo" x1="40" y1="1674" x2="54" y2="1674" stroke="#E0457B"/>
+<text class="tn" x="60.0" y="1678.4" text-anchor="start">C1 + (S03/F03) → 12V + (U10/D10)</text>
+<line class="filo" x1="40" y1="1690" x2="54" y2="1690" stroke="#E0457B"/>
+<text class="tn" x="60.0" y="1694.4" text-anchor="start">C2 + (S05/F05) → 12V + (U10/D10)</text>
+<line class="filo" x1="40" y1="1706" x2="54" y2="1706" stroke="#3A3A38"/>
+<text class="tn" x="60.0" y="1710.4" text-anchor="start">C2 − (S04/F04) → 12V − (U08/D08)</text>
+<line class="filo-stella" x1="40" y1="1722" x2="54" y2="1722" stroke="#8A4F0E"/>
+<text class="tn" x="60.0" y="1726.4" text-anchor="start">C1 − (S02/F02) → 12V − (U08/D08)</text>
+<line class="filo-stella" x1="40" y1="1738" x2="54" y2="1738" stroke="#8A4F0E"/>
+<text class="tn" x="60.0" y="1742.4" text-anchor="start">C1 − (S02/F02) → driver GND (I03/P03)</text>
+<line class="filo-stella" x1="40" y1="1754" x2="54" y2="1754" stroke="#8A4F0E"/>
+<text class="tn" x="60.0" y="1758.4" text-anchor="start">C1 − (S02/F02) → XIAO GND (B08/W08)</text>
+<line class="filo" x1="40" y1="1770" x2="54" y2="1770" stroke="#1E1E1C"/>
+<text class="tn" x="60.0" y="1774.4" text-anchor="start">driver A1 (L03/M03) → A+ (X07/A07)</text>
+<line class="filo" x1="40" y1="1786" x2="54" y2="1786" stroke="#5E9022"/>
+<text class="tn" x="60.0" y="1790.4" text-anchor="start">driver A2 (K03/N03) → A− (X06/A06)</text>
+<line class="filo" x1="40" y1="1802" x2="54" y2="1802" stroke="#C0392B"/>
+<text class="tn" x="60.0" y="1806.4" text-anchor="start">driver B1 (M03/L03) → B+ (X05/A05)</text>
+<line class="filo" x1="40" y1="1818" x2="54" y2="1818" stroke="#2F6FC4"/>
+<text class="tn" x="60.0" y="1822.4" text-anchor="start">driver B2 (N03/K03) → B− (X04/A04)</text>
+<line class="filo" x1="40" y1="1834" x2="54" y2="1834" stroke="#7B4FB5"/>
+<text class="tn" x="60.0" y="1838.4" text-anchor="start">XIAO D0 (A02/X02) → driver STEP (J08/O08)</text>
+<line class="filo" x1="40" y1="1850" x2="54" y2="1850" stroke="#7B4FB5"/>
+<text class="tn" x="60.0" y="1854.4" text-anchor="start">XIAO D1 (B02/W02) → driver DIR (I08/P08)</text>
+<line class="filo" x1="40" y1="1866" x2="54" y2="1866" stroke="#7B4FB5"/>
+<text class="tn" x="60.0" y="1870.4" text-anchor="start">XIAO D3 (D02/U02) → driver EN (P08/I08)</text>
+<line class="filo" x1="420" y1="1642" x2="434" y2="1642" stroke="#7B4FB5"/>
+<text class="tn" x="440.0" y="1646.4" text-anchor="start">R1 (P09/I09) → driver EN (P08/I08)</text>
+<line class="filo" x1="420" y1="1658" x2="434" y2="1658" stroke="#E08A1E"/>
+<text class="tn" x="440.0" y="1662.4" text-anchor="start">R1 (M09/L09) → XIAO 3V3 (C08/V08)</text>
+<line class="filo" x1="420" y1="1674" x2="434" y2="1674" stroke="#E08A1E"/>
+<text class="tn" x="440.0" y="1678.4" text-anchor="start">XIAO 3V3 (C08/V08) → driver VDD (J03/O03)</text>
+<line class="filo" x1="420" y1="1690" x2="434" y2="1690" stroke="#E08A1E"/>
+<text class="tn" x="440.0" y="1694.4" text-anchor="start">XIAO 3V3 (C08/V08) → VCC (M01/L01)</text>
+<line class="filo" x1="420" y1="1706" x2="434" y2="1706" stroke="#7B4FB5"/>
+<text class="tn" x="440.0" y="1710.4" text-anchor="start">XIAO D8 (F08/S08) → R2 (L10/M10)</text>
+<line class="filo" x1="420" y1="1722" x2="434" y2="1722" stroke="#7B4FB5"/>
+<text class="tn" x="440.0" y="1726.4" text-anchor="start">R2 (P10/I10) → driver UART (M08/L08)</text>
+<line class="filo" x1="420" y1="1738" x2="434" y2="1738" stroke="#7B4FB5"/>
+<text class="tn" x="440.0" y="1742.4" text-anchor="start">XIAO D9 (E08/T08) → driver UART (M08/L08)</text>
+<line class="filo" x1="420" y1="1754" x2="434" y2="1754" stroke="#3E8C74"/>
+<text class="tn" x="440.0" y="1758.4" text-anchor="start">XIAO D4 (E02/T02) → SDA (K01/N01)</text>
+<line class="filo" x1="420" y1="1770" x2="434" y2="1770" stroke="#3E8C74"/>
+<text class="tn" x="440.0" y="1774.4" text-anchor="start">XIAO D5 (F02/S02) → SCL (L01/M01)</text>
+<line class="filo" x1="420" y1="1786" x2="434" y2="1786" stroke="#7B4FB5"/>
+<text class="tn" x="440.0" y="1790.4" text-anchor="start">XIAO D10 (D08/U08) → R3 (K10/N10)</text>
+<line class="filo" x1="420" y1="1802" x2="434" y2="1802" stroke="#7B4FB5"/>
+<text class="tn" x="440.0" y="1806.4" text-anchor="start">R3 (G10/R10) → LED + (D10/U10)</text>
+<line class="filo" x1="420" y1="1818" x2="434" y2="1818" stroke="#6E6C66"/>
+<text class="tn" x="440.0" y="1822.4" text-anchor="start">XIAO GND (B08/W08) → LED − (E10/T10)</text>
+<line class="filo" x1="420" y1="1834" x2="434" y2="1834" stroke="#6E6C66"/>
+<text class="tn" x="440.0" y="1838.4" text-anchor="start">XIAO GND (B08/W08) → GND (N01/K01)</text>
+<line class="filo" x1="420" y1="1850" x2="434" y2="1850" stroke="#6E6C66"/>
+<text class="tn" x="440.0" y="1854.4" text-anchor="start">driver GND (I03/P03) → driver MS1 (O08/J08)</text>
+<line class="filo" x1="420" y1="1866" x2="434" y2="1866" stroke="#6E6C66"/>
+<text class="tn" x="440.0" y="1870.4" text-anchor="start">driver GND (I03/P03) → driver MS2 (N08/K08)</text>
+<line x1="30" y1="1916" x2="770" y2="1916" stroke="#B0AEA6" stroke-width="1.5"/>
+<text class="th" x="40.0" y="1936.4" text-anchor="start">3 · La stessa basetta vista DA SOTTO, dal lato delle saldature</text>
+<text class="tn" x="40.0" y="1954.4" text-anchor="start">Il disegno è ribaltato come si ribalta la basetta; le lettere restano da sinistra a destra, perché sono serigrafate anche su questa faccia.</text>
+<rect class="taglio" x="660.4" y="2000.4" width="39.6" height="272.7" rx="4"/>
+<rect class="perfboard" x="70.0" y="2000.4" width="590.4" height="272.7" rx="4"/>
+<circle cx="647.9" cy="2033.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="647.9" cy="2056.7" r="1.6" fill="#C4C2BA"/>
+<circle cx="647.9" cy="2079.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="647.9" cy="2102.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="647.9" cy="2125.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="647.9" cy="2148.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="647.9" cy="2171.0" r="1.6" fill="#C4C2BA"/>
+<circle cx="647.9" cy="2193.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="647.9" cy="2216.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="647.9" cy="2239.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="625.0" cy="2033.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="625.0" cy="2056.7" r="1.6" fill="#C4C2BA"/>
+<circle cx="625.0" cy="2079.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="625.0" cy="2102.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="625.0" cy="2125.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="625.0" cy="2148.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="625.0" cy="2171.0" r="1.6" fill="#C4C2BA"/>
+<circle cx="625.0" cy="2193.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="625.0" cy="2216.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="625.0" cy="2239.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="602.2" cy="2033.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="602.2" cy="2056.7" r="1.6" fill="#C4C2BA"/>
+<circle cx="602.2" cy="2079.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="602.2" cy="2102.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="602.2" cy="2125.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="602.2" cy="2148.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="602.2" cy="2171.0" r="1.6" fill="#C4C2BA"/>
+<circle cx="602.2" cy="2193.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="602.2" cy="2216.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="602.2" cy="2239.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="579.3" cy="2033.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="579.3" cy="2056.7" r="1.6" fill="#C4C2BA"/>
+<circle cx="579.3" cy="2079.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="579.3" cy="2102.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="579.3" cy="2125.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="579.3" cy="2148.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="579.3" cy="2171.0" r="1.6" fill="#C4C2BA"/>
+<circle cx="579.3" cy="2193.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="579.3" cy="2216.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="579.3" cy="2239.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="556.5" cy="2033.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="556.5" cy="2056.7" r="1.6" fill="#C4C2BA"/>
+<circle cx="556.5" cy="2079.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="556.5" cy="2102.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="556.5" cy="2125.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="556.5" cy="2148.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="556.5" cy="2171.0" r="1.6" fill="#C4C2BA"/>
+<circle cx="556.5" cy="2193.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="556.5" cy="2216.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="556.5" cy="2239.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="533.6" cy="2033.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="533.6" cy="2056.7" r="1.6" fill="#C4C2BA"/>
+<circle cx="533.6" cy="2079.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="533.6" cy="2102.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="533.6" cy="2125.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="533.6" cy="2148.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="533.6" cy="2171.0" r="1.6" fill="#C4C2BA"/>
+<circle cx="533.6" cy="2193.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="533.6" cy="2216.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="533.6" cy="2239.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="510.7" cy="2033.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="510.7" cy="2056.7" r="1.6" fill="#C4C2BA"/>
+<circle cx="510.7" cy="2079.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="510.7" cy="2102.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="510.7" cy="2125.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="510.7" cy="2148.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="510.7" cy="2171.0" r="1.6" fill="#C4C2BA"/>
+<circle cx="510.7" cy="2193.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="510.7" cy="2216.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="510.7" cy="2239.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="487.9" cy="2033.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="487.9" cy="2056.7" r="1.6" fill="#C4C2BA"/>
+<circle cx="487.9" cy="2079.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="487.9" cy="2102.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="487.9" cy="2125.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="487.9" cy="2148.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="487.9" cy="2171.0" r="1.6" fill="#C4C2BA"/>
+<circle cx="487.9" cy="2193.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="487.9" cy="2216.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="487.9" cy="2239.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="465.0" cy="2033.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="465.0" cy="2056.7" r="1.6" fill="#C4C2BA"/>
+<circle cx="465.0" cy="2079.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="465.0" cy="2102.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="465.0" cy="2125.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="465.0" cy="2148.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="465.0" cy="2171.0" r="1.6" fill="#C4C2BA"/>
+<circle cx="465.0" cy="2193.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="465.0" cy="2216.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="465.0" cy="2239.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="442.2" cy="2033.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="442.2" cy="2056.7" r="1.6" fill="#C4C2BA"/>
+<circle cx="442.2" cy="2079.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="442.2" cy="2102.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="442.2" cy="2125.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="442.2" cy="2148.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="442.2" cy="2171.0" r="1.6" fill="#C4C2BA"/>
+<circle cx="442.2" cy="2193.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="442.2" cy="2216.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="442.2" cy="2239.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="419.3" cy="2033.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="419.3" cy="2056.7" r="1.6" fill="#C4C2BA"/>
+<circle cx="419.3" cy="2079.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="419.3" cy="2102.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="419.3" cy="2125.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="419.3" cy="2148.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="419.3" cy="2171.0" r="1.6" fill="#C4C2BA"/>
+<circle cx="419.3" cy="2193.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="419.3" cy="2216.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="419.3" cy="2239.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="396.4" cy="2033.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="396.4" cy="2056.7" r="1.6" fill="#C4C2BA"/>
+<circle cx="396.4" cy="2079.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="396.4" cy="2102.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="396.4" cy="2125.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="396.4" cy="2148.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="396.4" cy="2171.0" r="1.6" fill="#C4C2BA"/>
+<circle cx="396.4" cy="2193.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="396.4" cy="2216.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="396.4" cy="2239.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="373.6" cy="2033.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="373.6" cy="2056.7" r="1.6" fill="#C4C2BA"/>
+<circle cx="373.6" cy="2079.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="373.6" cy="2102.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="373.6" cy="2125.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="373.6" cy="2148.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="373.6" cy="2171.0" r="1.6" fill="#C4C2BA"/>
+<circle cx="373.6" cy="2193.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="373.6" cy="2216.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="373.6" cy="2239.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="350.7" cy="2033.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="350.7" cy="2056.7" r="1.6" fill="#C4C2BA"/>
+<circle cx="350.7" cy="2079.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="350.7" cy="2102.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="350.7" cy="2125.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="350.7" cy="2148.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="350.7" cy="2171.0" r="1.6" fill="#C4C2BA"/>
+<circle cx="350.7" cy="2193.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="350.7" cy="2216.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="350.7" cy="2239.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="327.8" cy="2033.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="327.8" cy="2056.7" r="1.6" fill="#C4C2BA"/>
+<circle cx="327.8" cy="2079.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="327.8" cy="2102.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="327.8" cy="2125.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="327.8" cy="2148.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="327.8" cy="2171.0" r="1.6" fill="#C4C2BA"/>
+<circle cx="327.8" cy="2193.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="327.8" cy="2216.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="327.8" cy="2239.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="305.0" cy="2033.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="305.0" cy="2056.7" r="1.6" fill="#C4C2BA"/>
+<circle cx="305.0" cy="2079.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="305.0" cy="2102.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="305.0" cy="2125.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="305.0" cy="2148.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="305.0" cy="2171.0" r="1.6" fill="#C4C2BA"/>
+<circle cx="305.0" cy="2193.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="305.0" cy="2216.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="305.0" cy="2239.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="282.1" cy="2033.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="282.1" cy="2056.7" r="1.6" fill="#C4C2BA"/>
+<circle cx="282.1" cy="2079.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="282.1" cy="2102.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="282.1" cy="2125.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="282.1" cy="2148.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="282.1" cy="2171.0" r="1.6" fill="#C4C2BA"/>
+<circle cx="282.1" cy="2193.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="282.1" cy="2216.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="282.1" cy="2239.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="259.3" cy="2033.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="259.3" cy="2056.7" r="1.6" fill="#C4C2BA"/>
+<circle cx="259.3" cy="2079.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="259.3" cy="2102.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="259.3" cy="2125.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="259.3" cy="2148.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="259.3" cy="2171.0" r="1.6" fill="#C4C2BA"/>
+<circle cx="259.3" cy="2193.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="259.3" cy="2216.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="259.3" cy="2239.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="236.4" cy="2033.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="236.4" cy="2056.7" r="1.6" fill="#C4C2BA"/>
+<circle cx="236.4" cy="2079.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="236.4" cy="2102.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="236.4" cy="2125.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="236.4" cy="2148.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="236.4" cy="2171.0" r="1.6" fill="#C4C2BA"/>
+<circle cx="236.4" cy="2193.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="236.4" cy="2216.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="236.4" cy="2239.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="213.6" cy="2033.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="213.6" cy="2056.7" r="1.6" fill="#C4C2BA"/>
+<circle cx="213.6" cy="2079.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="213.6" cy="2102.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="213.6" cy="2125.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="213.6" cy="2148.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="213.6" cy="2171.0" r="1.6" fill="#C4C2BA"/>
+<circle cx="213.6" cy="2193.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="213.6" cy="2216.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="213.6" cy="2239.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="190.7" cy="2033.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="190.7" cy="2056.7" r="1.6" fill="#C4C2BA"/>
+<circle cx="190.7" cy="2079.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="190.7" cy="2102.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="190.7" cy="2125.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="190.7" cy="2148.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="190.7" cy="2171.0" r="1.6" fill="#C4C2BA"/>
+<circle cx="190.7" cy="2193.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="190.7" cy="2216.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="190.7" cy="2239.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="167.8" cy="2033.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="167.8" cy="2056.7" r="1.6" fill="#C4C2BA"/>
+<circle cx="167.8" cy="2079.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="167.8" cy="2102.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="167.8" cy="2125.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="167.8" cy="2148.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="167.8" cy="2171.0" r="1.6" fill="#C4C2BA"/>
+<circle cx="167.8" cy="2193.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="167.8" cy="2216.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="167.8" cy="2239.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="145.0" cy="2033.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="145.0" cy="2056.7" r="1.6" fill="#C4C2BA"/>
+<circle cx="145.0" cy="2079.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="145.0" cy="2102.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="145.0" cy="2125.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="145.0" cy="2148.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="145.0" cy="2171.0" r="1.6" fill="#C4C2BA"/>
+<circle cx="145.0" cy="2193.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="145.0" cy="2216.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="145.0" cy="2239.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="122.1" cy="2033.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="122.1" cy="2056.7" r="1.6" fill="#C4C2BA"/>
+<circle cx="122.1" cy="2079.6" r="1.6" fill="#C4C2BA"/>
+<circle cx="122.1" cy="2102.5" r="1.6" fill="#C4C2BA"/>
+<circle cx="122.1" cy="2125.3" r="1.6" fill="#C4C2BA"/>
+<circle cx="122.1" cy="2148.2" r="1.6" fill="#C4C2BA"/>
+<circle cx="122.1" cy="2171.0" r="1.6" fill="#C4C2BA"/>
+<circle cx="122.1" cy="2193.9" r="1.6" fill="#C4C2BA"/>
+<circle cx="122.1" cy="2216.8" r="1.6" fill="#C4C2BA"/>
+<circle cx="122.1" cy="2239.6" r="1.6" fill="#C4C2BA"/>
+<text class="tg" x="122.1" y="1974.4" text-anchor="middle">A</text>
+<text class="tg" x="167.8" y="1974.4" text-anchor="middle">C</text>
+<text class="tg" x="213.6" y="1974.4" text-anchor="middle">E</text>
+<text class="tg" x="259.3" y="1974.4" text-anchor="middle">G</text>
+<text class="tg" x="305.0" y="1974.4" text-anchor="middle">I</text>
+<text class="tg" x="350.7" y="1974.4" text-anchor="middle">K</text>
+<text class="tg" x="396.4" y="1974.4" text-anchor="middle">M</text>
+<text class="tg" x="442.2" y="1974.4" text-anchor="middle">O</text>
+<text class="tg" x="487.9" y="1974.4" text-anchor="middle">Q</text>
+<text class="tg" x="533.6" y="1974.4" text-anchor="middle">S</text>
+<text class="tg" x="579.3" y="1974.4" text-anchor="middle">U</text>
+<text class="tg" x="625.0" y="1974.4" text-anchor="middle">W</text>
+<text class="tg" x="710.0" y="2037.9" text-anchor="start">10</text>
+<text class="tg" x="710.0" y="2060.7" text-anchor="start">09</text>
+<text class="tg" x="710.0" y="2083.6" text-anchor="start">08</text>
+<text class="tg" x="710.0" y="2106.5" text-anchor="start">07</text>
+<text class="tg" x="710.0" y="2129.3" text-anchor="start">06</text>
+<text class="tg" x="710.0" y="2152.2" text-anchor="start">05</text>
+<text class="tg" x="710.0" y="2175.0" text-anchor="start">04</text>
+<text class="tg" x="710.0" y="2197.9" text-anchor="start">03</text>
+<text class="tg" x="710.0" y="2220.8" text-anchor="start">02</text>
+<text class="tg" x="710.0" y="2243.6" text-anchor="start">01</text>
+<rect class="strip" x="499.3" y="2068.2" width="160.0" height="22.9" rx="2"/>
+<rect class="strip" x="499.3" y="2205.3" width="160.0" height="22.9" rx="2"/>
+<rect class="strip" x="293.6" y="2068.2" width="182.9" height="22.9" rx="2"/>
+<rect class="strip" x="293.6" y="2182.5" width="182.9" height="22.9" rx="2"/>
+<rect class="modulo" x="485.0" y="2068.2" width="188.6" height="160.0" rx="3"/>
+<rect class="modulo" x="293.6" y="2068.2" width="182.9" height="137.2" rx="3"/>
+<rect class="usb" x="673.6" y="2107.9" width="13.8" height="80.5" rx="2"/>
+<text class="thf" x="579.3" y="2153.2" text-anchor="middle">XIAO</text>
+<text class="thf" x="385.0" y="2141.8" text-anchor="middle">TMC2209</text>
+<circle class="pow smorto" cx="236.4" cy="2205.3" r="28.6"/>
+<circle class="pow smorto" cx="236.4" cy="2159.6" r="28.6"/>
+<rect class="box smorto" x="87.8" y="2091.0" width="68.6" height="91.4" rx="3"/>
+<rect class="box smorto" x="156.4" y="2011.0" width="68.6" height="91.4" rx="3"/>
+<rect class="box smorto" x="339.3" y="2228.2" width="91.4" height="22.9" rx="3"/>
+<rect class="box smorto" x="545.0" y="2022.5" width="45.7" height="45.7" rx="3"/>
+<rect class="res smorto" x="305.0" y="2047.6" width="68.6" height="18.3" rx="3"/>
+<rect class="res smorto" x="305.0" y="2024.7" width="91.4" height="18.3" rx="3"/>
+<rect class="res smorto" x="419.3" y="2024.7" width="91.4" height="18.3" rx="3"/>
+<circle cx="88.0" cy="2253.8" r="9.0" fill="#FFFFFF" stroke="#55534E" stroke-width="1.2"/>
+<circle cx="88.0" cy="2019.8" r="9.0" fill="#FFFFFF" stroke="#55534E" stroke-width="1.2"/>
+<circle cx="625.0" cy="2148.2" r="11.2" fill="#FFFFFF" stroke="#B03A2E" stroke-width="2.0"/>
+<rect class="dente" x="570.4" y="2275.8" width="90.0" height="15.3" rx="1"/>
+<rect class="dente" x="570.4" y="1979.7" width="90.0" height="18.0" rx="1"/>
+<path class="alone-filo" d="M305.0,2193.9 Q270.7,2190.8 236.4,2193.9"/>
+<path class="filo" d="M305.0,2193.9 Q270.7,2190.8 236.4,2193.9" stroke="#E0457B"/>
+<path class="alone-filo" d="M327.8,2193.9 Q281.1,2201.2 236.4,2216.8"/>
+<path class="filo" d="M327.8,2193.9 Q281.1,2201.2 236.4,2216.8" stroke="#3A3A38"/>
+<path class="alone-filo" d="M236.4,2193.9 Q220.8,2111.8 190.7,2033.9"/>
+<path class="filo" d="M236.4,2193.9 Q220.8,2111.8 190.7,2033.9" stroke="#E0457B"/>
+<path class="alone-filo" d="M236.4,2148.2 Q218.7,2089.0 190.7,2033.9"/>
+<path class="filo" d="M236.4,2148.2 Q218.7,2089.0 190.7,2033.9" stroke="#E0457B"/>
+<path class="alone-filo" d="M236.4,2171.0 Q217.7,2123.3 190.7,2079.6"/>
+<path class="filo" d="M236.4,2171.0 Q217.7,2123.3 190.7,2079.6" stroke="#3A3A38"/>
+<path class="alone-filo" d="M396.4,2193.9 Q263.4,2135.8 122.1,2102.5"/>
+<path class="filo" d="M396.4,2193.9 Q263.4,2135.8 122.1,2102.5" stroke="#1E1E1C"/>
+<path class="alone-filo" d="M419.3,2193.9 Q273.8,2146.2 122.1,2125.3"/>
+<path class="filo" d="M419.3,2193.9 Q273.8,2146.2 122.1,2125.3" stroke="#5E9022"/>
+<path class="alone-filo" d="M373.6,2193.9 Q249.9,2159.7 122.1,2148.2"/>
+<path class="filo" d="M373.6,2193.9 Q249.9,2159.7 122.1,2148.2" stroke="#C0392B"/>
+<path class="alone-filo" d="M350.7,2193.9 Q237.4,2172.2 122.1,2171.0"/>
+<path class="filo" d="M350.7,2193.9 Q237.4,2172.2 122.1,2171.0" stroke="#2F6FC4"/>
+<path class="alone-filo" d="M647.9,2216.8 Q551.2,2138.9 442.2,2079.6"/>
+<path class="filo" d="M647.9,2216.8 Q551.2,2138.9 442.2,2079.6" stroke="#7B4FB5"/>
+<path class="alone-filo" d="M625.0,2216.8 Q551.2,2141.0 465.0,2079.6"/>
+<path class="filo" d="M625.0,2216.8 Q551.2,2141.0 465.0,2079.6" stroke="#7B4FB5"/>
+<path class="alone-filo" d="M579.3,2216.8 Q448.3,2135.8 305.0,2079.6"/>
+<path class="filo" d="M579.3,2216.8 Q448.3,2135.8 305.0,2079.6" stroke="#7B4FB5"/>
+<path class="alone-filo" d="M305.0,2056.7 Q304.0,2068.2 305.0,2079.6"/>
+<path class="filo" d="M305.0,2056.7 Q304.0,2068.2 305.0,2079.6" stroke="#7B4FB5"/>
+<path class="alone-filo" d="M373.6,2056.7 C373.6,2059.6 335.5,2071.0 373.6,2073.9 C411.7,2076.7 564.1,2072.9 602.2,2073.9 C640.3,2074.8 602.2,2078.6 602.2,2079.6"/>
+<path class="filo" d="M373.6,2056.7 C373.6,2059.6 335.5,2071.0 373.6,2073.9 C411.7,2076.7 564.1,2072.9 602.2,2073.9 C640.3,2074.8 602.2,2078.6 602.2,2079.6" stroke="#E08A1E"/>
+<path class="alone-filo" d="M602.2,2079.6 Q517.0,2129.5 442.2,2193.9"/>
+<path class="filo" d="M602.2,2079.6 Q517.0,2129.5 442.2,2193.9" stroke="#E08A1E"/>
+<path class="alone-filo" d="M602.2,2079.6 Q480.7,2149.3 373.6,2239.6"/>
+<path class="filo" d="M602.2,2079.6 Q480.7,2149.3 373.6,2239.6" stroke="#E08A1E"/>
+<path class="alone-filo" d="M533.6,2079.6 Q467.1,2050.6 396.4,2033.9"/>
+<path class="filo" d="M533.6,2079.6 Q467.1,2050.6 396.4,2033.9" stroke="#7B4FB5"/>
+<path class="alone-filo" d="M305.0,2033.9 Q337.2,2059.8 373.6,2079.6"/>
+<path class="filo" d="M305.0,2033.9 Q337.2,2059.8 373.6,2079.6" stroke="#7B4FB5"/>
+<path class="alone-filo" d="M556.5,2079.6 C556.5,2077.5 586.9,2069.1 556.5,2067.0 C526.0,2064.9 404.1,2064.9 373.6,2067.0 C343.1,2069.1 373.6,2077.5 373.6,2079.6"/>
+<path class="filo" d="M556.5,2079.6 C556.5,2077.5 586.9,2069.1 556.5,2067.0 C526.0,2064.9 404.1,2064.9 373.6,2067.0 C343.1,2069.1 373.6,2077.5 373.6,2079.6" stroke="#7B4FB5"/>
+<path class="alone-filo" d="M556.5,2216.8 Q486.8,2222.0 419.3,2239.6"/>
+<path class="filo" d="M556.5,2216.8 Q486.8,2222.0 419.3,2239.6" stroke="#3E8C74"/>
+<path class="alone-filo" d="M533.6,2216.8 Q464.0,2222.0 396.4,2239.6"/>
+<path class="filo" d="M533.6,2216.8 Q464.0,2222.0 396.4,2239.6" stroke="#3E8C74"/>
+<path class="alone-filo" d="M579.3,2079.6 Q501.4,2049.5 419.3,2033.9"/>
+<path class="filo" d="M579.3,2079.6 Q501.4,2049.5 419.3,2033.9" stroke="#7B4FB5"/>
+<path class="alone-filo" d="M510.7,2033.9 Q545.0,2037.0 579.3,2033.9"/>
+<path class="filo" d="M510.7,2033.9 Q545.0,2037.0 579.3,2033.9" stroke="#7B4FB5"/>
+<path class="alone-filo" d="M625.0,2079.6 Q592.8,2053.7 556.5,2033.9"/>
+<path class="filo" d="M625.0,2079.6 Q592.8,2053.7 556.5,2033.9" stroke="#6E6C66"/>
+<path class="alone-filo" d="M625.0,2079.6 Q480.7,2147.3 350.7,2239.6"/>
+<path class="filo" d="M625.0,2079.6 Q480.7,2147.3 350.7,2239.6" stroke="#6E6C66"/>
+<path class="alone-filo" d="M465.0,2193.9 Q401.6,2130.6 327.8,2079.6"/>
+<path class="filo" d="M465.0,2193.9 Q401.6,2130.6 327.8,2079.6" stroke="#6E6C66"/>
+<path class="alone-filo" d="M465.0,2193.9 Q413.0,2131.6 350.7,2079.6"/>
+<path class="filo" d="M465.0,2193.9 Q413.0,2131.6 350.7,2079.6" stroke="#6E6C66"/>
+<path class="alone-filo-stella" d="M236.4,2216.8 Q219.7,2146.1 190.7,2079.6"/>
+<path class="filo-stella" d="M236.4,2216.8 Q219.7,2146.1 190.7,2079.6" stroke="#8A4F0E"/>
+<path class="alone-filo-stella" d="M236.4,2216.8 Q351.7,2215.6 465.0,2193.9"/>
+<path class="filo-stella" d="M236.4,2216.8 Q351.7,2215.6 465.0,2193.9" stroke="#8A4F0E"/>
+<path class="alone-filo-stella" d="M236.4,2216.8 Q436.9,2165.7 625.0,2079.6"/>
+<path class="filo-stella" d="M236.4,2216.8 Q436.9,2165.7 625.0,2079.6" stroke="#8A4F0E"/>
+<circle cx="647.9" cy="2079.6" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="647.9" y="2073.6" text-anchor="middle">5V</text>
+<circle cx="625.0" cy="2079.6" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="625.0" y="2073.6" text-anchor="middle">GND</text>
+<circle cx="602.2" cy="2079.6" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="602.2" y="2073.6" text-anchor="middle">3V3</text>
+<circle cx="579.3" cy="2079.6" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="579.3" y="2073.6" text-anchor="middle">D10</text>
+<circle cx="556.5" cy="2079.6" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="556.5" y="2073.6" text-anchor="middle">D9</text>
+<circle cx="533.6" cy="2079.6" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="533.6" y="2073.6" text-anchor="middle">D8</text>
+<circle cx="510.7" cy="2079.6" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="510.7" y="2073.6" text-anchor="middle">D7</text>
+<circle cx="647.9" cy="2216.8" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="647.9" y="2230.8" text-anchor="middle">D0</text>
+<circle cx="625.0" cy="2216.8" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="625.0" y="2230.8" text-anchor="middle">D1</text>
+<circle cx="602.2" cy="2216.8" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="602.2" y="2230.8" text-anchor="middle">D2</text>
+<circle cx="579.3" cy="2216.8" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="579.3" y="2230.8" text-anchor="middle">D3</text>
+<circle cx="556.5" cy="2216.8" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="556.5" y="2230.8" text-anchor="middle">D4</text>
+<circle cx="533.6" cy="2216.8" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="533.6" y="2230.8" text-anchor="middle">D5</text>
+<circle cx="510.7" cy="2216.8" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="510.7" y="2230.8" text-anchor="middle">D6</text>
+<circle cx="465.0" cy="2079.6" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="465.0" y="2073.6" text-anchor="middle">DIR</text>
+<circle cx="442.2" cy="2079.6" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="442.2" y="2073.6" text-anchor="middle">STEP</text>
+<circle cx="419.3" cy="2079.6" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="419.3" y="2073.6" text-anchor="middle">SLP</text>
+<circle cx="396.4" cy="2079.6" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="396.4" y="2073.6" text-anchor="middle">RST</text>
+<circle cx="373.6" cy="2079.6" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="373.6" y="2073.6" text-anchor="middle">UART</text>
+<circle cx="350.7" cy="2079.6" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="350.7" y="2073.6" text-anchor="middle">MS2</text>
+<circle cx="327.8" cy="2079.6" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="327.8" y="2073.6" text-anchor="middle">MS1</text>
+<circle cx="305.0" cy="2079.6" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="305.0" y="2073.6" text-anchor="middle">EN</text>
+<circle cx="465.0" cy="2193.9" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="465.0" y="2207.9" text-anchor="middle">GND</text>
+<circle cx="442.2" cy="2193.9" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="442.2" y="2207.9" text-anchor="middle">VDD</text>
+<circle cx="419.3" cy="2193.9" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="419.3" y="2207.9" text-anchor="middle">A2</text>
+<circle cx="396.4" cy="2193.9" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="396.4" y="2207.9" text-anchor="middle">A1</text>
+<circle cx="373.6" cy="2193.9" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="373.6" y="2207.9" text-anchor="middle">B1</text>
+<circle cx="350.7" cy="2193.9" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="350.7" y="2207.9" text-anchor="middle">B2</text>
+<circle cx="327.8" cy="2193.9" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="327.8" y="2207.9" text-anchor="middle">GND</text>
+<circle cx="305.0" cy="2193.9" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="305.0" y="2207.9" text-anchor="middle">VM</text>
+<circle cx="236.4" cy="2193.9" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="230.4" y="2196.9" text-anchor="end">C1 +</text>
+<circle cx="236.4" cy="2216.8" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="230.4" y="2219.8" text-anchor="end">C1 −</text>
+<circle cx="236.4" cy="2148.2" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="230.4" y="2151.2" text-anchor="end">C2 +</text>
+<circle cx="236.4" cy="2171.0" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="230.4" y="2174.0" text-anchor="end">C2 −</text>
+<circle cx="122.1" cy="2102.5" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="116.1" y="2105.5" text-anchor="end">A+</text>
+<circle cx="122.1" cy="2125.3" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="116.1" y="2128.3" text-anchor="end">A−</text>
+<circle cx="122.1" cy="2148.2" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="116.1" y="2151.2" text-anchor="end">B+</text>
+<circle cx="122.1" cy="2171.0" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="116.1" y="2174.0" text-anchor="end">B−</text>
+<circle cx="190.7" cy="2033.9" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="184.7" y="2036.9" text-anchor="end">12V +</text>
+<circle cx="190.7" cy="2079.6" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="184.7" y="2082.6" text-anchor="end">12V −</text>
+<circle cx="419.3" cy="2239.6" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="419.3" y="2253.6" text-anchor="middle">SDA</text>
+<rect x="413.3" y="2257.6" width="12" height="5" rx="1" fill="#2F5FB0" stroke="#8A887F" stroke-width="0.6"/>
+<circle cx="396.4" cy="2239.6" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="396.4" y="2253.6" text-anchor="middle">SCL</text>
+<rect x="390.4" y="2257.6" width="12" height="5" rx="1" fill="#3F8F3A" stroke="#8A887F" stroke-width="0.6"/>
+<circle cx="373.6" cy="2239.6" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="373.6" y="2253.6" text-anchor="middle">VCC</text>
+<rect x="367.6" y="2257.6" width="12" height="5" rx="1" fill="#7A4A24" stroke="#8A887F" stroke-width="0.6"/>
+<circle cx="350.7" cy="2239.6" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="350.7" y="2253.6" text-anchor="middle">GND</text>
+<rect x="344.7" y="2257.6" width="12" height="5" rx="1" fill="#FFFFFF" stroke="#8A887F" stroke-width="0.6"/>
+<rect x="344.7" y="2259.2" width="12" height="1.8" fill="#7A4A24"/>
+<circle cx="579.3" cy="2033.9" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="585.3" y="2036.9" text-anchor="start">LED +</text>
+<circle cx="556.5" cy="2033.9" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="550.5" y="2036.9" text-anchor="end">LED −</text>
+<circle cx="373.6" cy="2056.7" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="367.6" y="2059.7" text-anchor="end">R1</text>
+<circle cx="305.0" cy="2056.7" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="299.0" y="2059.7" text-anchor="end">R1</text>
+<circle cx="396.4" cy="2033.9" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="390.4" y="2036.9" text-anchor="end">R2</text>
+<circle cx="305.0" cy="2033.9" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="299.0" y="2036.9" text-anchor="end">R2</text>
+<circle cx="510.7" cy="2033.9" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="504.7" y="2036.9" text-anchor="end">R3</text>
+<circle cx="419.3" cy="2033.9" r="2.6" fill="#2A2A28"/>
+<text class="pin" x="413.3" y="2036.9" text-anchor="end">R3</text>
+<circle cx="236.4" cy="2216.8" r="7" fill="#8A4F0E"/>
+<circle class="segno" cx="256.4" cy="2234.8" r="9"/><text class="seg" x="256.4" y="2238.8" text-anchor="middle">A</text>
+<circle class="segno" cx="699.4" cy="2123.9" r="9"/><text class="seg" x="699.4" y="2127.9" text-anchor="middle">B</text>
+<circle class="segno" cx="680.2" cy="2243.4" r="9"/><text class="seg" x="680.2" y="2247.4" text-anchor="middle">C</text>
+<circle class="segno" cx="110.0" cy="2257.8" r="9"/><text class="seg" x="110.0" y="2261.8" text-anchor="middle">D</text>
+<circle class="segno" cx="641.4" cy="2285.1" r="9"/><text class="seg" x="641.4" y="2289.1" text-anchor="middle">E</text>
+<circle class="segno" cx="649.0" cy="2136.2" r="9"/><text class="seg" x="649.0" y="2140.2" text-anchor="middle">F</text>
+<text class="tn" x="40.0" y="2319.1" text-anchor="start">ATTENZIONE: l'orientamento dello XIAO (D0–D6 sulla riga R8) viene dalla piedinatura del costruttore ruotata con l'USB</text>
+<text class="tn" x="40.0" y="2335.1" text-anchor="start">a sinistra; la disposizione vecchia lo aveva al contrario. Va verificato sullo XIAO vero prima di saldare.</text>
+<text class="tn" x="40.0" y="2351.1" text-anchor="start">Posizioni e fili vengono da mechanics/wheelly-cad/src/electronics.py e wiring.py: spostare un componente là sposta</text>
+<text class="tn" x="40.0" y="2367.1" text-anchor="start">anche il controllo che non tocchi la scatola. I corpi di morsetti, header e resistenze sono STIME di catalogo.</text>
+<text class="tn" x="40.0" y="2383.1" text-anchor="start">I fili sono disegnati morbidi, con l'alone bianco negli incroci: si legge quale passa sopra. Dicono cosa va dove, non per dove passano davvero.</text>
+</svg>

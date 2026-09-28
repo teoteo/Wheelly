@@ -1,0 +1,768 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title data-t="ui.title">Wheelly — parameters</title>
+<style>
+:root{
+  --sfondo:#faf9f7; --pannello:#fff; --bordo:#e2ded7; --bordo-forte:#cdc7bd;
+  --testo:#1c1a17; --tenue:#6f6a62; --debole:#968f86;
+  --accento:#8a5a2b; --accento-tenue:#f3ece3;
+  --ok:#2f6f4e; --ko:#a33a2a; --avviso:#8a6d1f;
+  --ok-tenue:#e8f2ec; --ko-tenue:#fbecea; --avviso-tenue:#faf2dd;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace;
+  /* origine della quota: gli stessi colori con cui viene tracciata sul disegno */
+  --or-S:#d2601a; --or-M:#1f7a8c; --or-D:#7a6ea8; --or-R:#5f7a3f;
+  --or-S-t:#fbeee4; --or-M-t:#e4f0f3; --or-D-t:#eeecf5; --or-R-t:#eaf0e5;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --sfondo:#16150f; --pannello:#1e1d17; --bordo:#332f26; --bordo-forte:#464032;
+    --testo:#eae6dd; --tenue:#a8a196; --debole:#7a746a;
+    --accento:#d9a05b; --accento-tenue:#2b2318;
+    --ok:#7cc39a; --ko:#e58d7c; --avviso:#d7b45c;
+    --ok-tenue:#1a2820; --ko-tenue:#2c1c19; --avviso-tenue:#2a2416;
+    --or-S:#e8905a; --or-M:#63b6c6; --or-D:#a89ed6; --or-R:#94b877;
+    --or-S-t:#2b1d12; --or-M-t:#132428; --or-D-t:#211d2c; --or-R-t:#1b2415;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--sfondo);color:var(--testo);
+     font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+button{font:inherit;cursor:pointer;border-radius:6px;border:1px solid var(--bordo-forte);
+       background:var(--pannello);color:var(--testo);padding:5px 11px}
+button:hover{border-color:var(--accento)}
+button.primario{background:var(--accento);border-color:var(--accento);color:#fff}
+@media (prefers-color-scheme:dark){button.primario{color:#16150f}}
+
+/* ---------- intestazione ---------- */
+header{position:sticky;top:0;z-index:20;display:flex;gap:14px;align-items:center;
+       padding:10px 18px;background:var(--pannello);border-bottom:1px solid var(--bordo)}
+header h1{font-size:15px;margin:0;font-weight:600;letter-spacing:.01em}
+header h1 span{color:var(--tenue);font-weight:400}
+#esito{font-size:13px;padding:3px 10px;border-radius:20px;font-weight:500}
+#esito.buono{background:var(--ok-tenue);color:var(--ok)}
+#esito.cattivo{background:var(--ko-tenue);color:var(--ko)}
+#conta-mod{color:var(--tenue);font-size:13px}
+.spazio{flex:1}
+
+/* ---------- impianto ---------- */
+main{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+     gap:0;height:calc(100vh - 53px)}
+#colonna-sx{overflow-y:auto;border-right:1px solid var(--bordo);padding-bottom:40vh}
+#colonna-dx{overflow-y:auto;background:var(--pannello)}
+@media (max-width:900px){main{grid-template-columns:1fr;height:auto}
+  #colonna-sx{border-right:0;border-bottom:1px solid var(--bordo);padding-bottom:0}}
+
+/* ---------- ricerca ---------- */
+#barra{position:sticky;top:0;z-index:10;background:var(--sfondo);
+       padding:10px 14px;border-bottom:1px solid var(--bordo);display:flex;gap:8px}
+#cerca{flex:1;min-width:0;padding:6px 10px;border:1px solid var(--bordo-forte);
+       border-radius:6px;background:var(--pannello);color:var(--testo);font:inherit}
+#cerca:focus{outline:2px solid var(--accento);outline-offset:-1px;border-color:transparent}
+.filtro{padding:5px 9px;font-size:12px}
+.filtro[aria-pressed=true]{background:var(--accento-tenue);border-color:var(--accento);color:var(--accento)}
+
+/* ---------- parametri ---------- */
+h2.sezione{margin:0;padding:14px 14px 6px;font-size:11px;letter-spacing:.09em;
+           text-transform:uppercase;color:var(--debole);font-weight:600}
+.riga{display:grid;grid-template-columns:auto 1fr auto;gap:2px 9px;align-items:center;
+      padding:7px 14px 7px 11px;border-bottom:1px solid var(--bordo);cursor:pointer}
+.riga:hover{background:var(--accento-tenue)}
+.riga.scelta{background:var(--accento-tenue);box-shadow:inset 3px 0 0 var(--accento)}
+.riga.cambiata .nome::after{content:"•";color:var(--accento);margin-left:5px;font-weight:700}
+.nome{font-family:var(--mono);font-size:13px}
+.valore{font-family:var(--mono);font-size:13px;text-align:right;white-space:nowrap}
+.valore u{text-decoration:none;color:var(--debole);font-size:11px;margin-left:3px}
+.espr{grid-column:1/-1;display:flex;gap:8px;align-items:center}
+.espr input{flex:1;min-width:0;font-family:var(--mono);font-size:12px;padding:4px 8px;
+            border:1px solid var(--bordo);border-radius:5px;background:var(--sfondo);color:var(--tenue)}
+.espr input:focus{outline:2px solid var(--accento);outline-offset:-1px;color:var(--testo)}
+.espr input[readonly]{cursor:not-allowed;opacity:.7}
+.espr input.errore{border-color:var(--ko);background:var(--ko-tenue)}
+.origine{font-size:10px;font-weight:700;width:17px;height:17px;line-height:17px;
+         text-align:center;border-radius:4px;flex:0 0 auto;font-family:var(--mono)}
+.origine.S{background:var(--or-S-t);color:var(--or-S)}
+.origine.M{background:var(--or-M-t);color:var(--or-M)}
+.origine.D{background:var(--or-D-t);color:var(--or-D)}
+.origine.R{background:var(--or-R-t);color:var(--or-R)}
+.riga.derivata .nome{color:var(--tenue)}
+#legenda{display:flex;gap:12px;flex-wrap:wrap;padding:8px 14px 10px;font-size:11.5px;
+         color:var(--tenue);border-bottom:1px solid var(--bordo)}
+#legenda span{display:flex;gap:5px;align-items:center;white-space:nowrap}
+#legenda i{width:10px;height:10px;border-radius:3px;display:inline-block}
+.dettaglio{grid-column:1/-1;font-size:12.5px;color:var(--tenue);padding:2px 0 4px}
+.dettaglio b{color:var(--testo);font-weight:500}
+.catena{grid-column:1/-1;font-family:var(--mono);font-size:11.5px;color:var(--debole)}
+.catena a{color:var(--accento);text-decoration:none;cursor:pointer}
+.catena a:hover{text-decoration:underline}
+.msg-errore{grid-column:1/-1;font-size:12px;color:var(--ko)}
+
+/* ---------- disegno ---------- */
+#titoli{display:flex;gap:4px;flex-wrap:wrap;padding:10px 14px 0;align-items:center}
+#riscontri{margin-left:auto;font-size:12px;color:var(--tenue)}
+#riscontri b{font-weight:500;color:var(--testo)}
+.scheda{font-size:12px;padding:4px 9px}
+.scheda[aria-pressed=true]{background:var(--accento-tenue);border-color:var(--accento);color:var(--accento)}
+#figura{padding:8px 14px 14px;position:relative}
+#telaio{overflow:hidden;border-radius:8px;
+        background:var(--sfondo);touch-action:none;cursor:grab}
+#telaio.trascino{cursor:grabbing}
+#telaio svg{width:100%;height:auto;max-height:56vh;display:block}
+#zoom{position:absolute;right:22px;bottom:22px;display:flex;gap:4px;align-items:center}
+#zoom button{padding:2px 8px;font-size:12px;line-height:1.5;
+             background:var(--pannello);opacity:.92}
+#zoom span{font-family:var(--mono);font-size:11px;color:var(--tenue);
+           background:var(--pannello);padding:2px 6px;border-radius:5px;opacity:.92}
+@media (prefers-color-scheme:dark){
+  #telaio svg{filter:invert(1)}
+  #telaio svg .quota{filter:invert(1)}   /* doppia inversione: colore originale */
+}
+#nessuna-figura{color:var(--debole);font-size:13px;padding:18px 14px;font-style:italic}
+
+/* ---------- controlli ---------- */
+#controlli{border-top:1px solid var(--bordo);padding:12px 14px 30px}
+#controlli h3{font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+              color:var(--debole);margin:0 0 8px}
+.chk{display:grid;grid-template-columns:1fr auto;gap:1px 8px;padding:5px 8px;
+     border-radius:6px;margin-bottom:3px;font-size:12.5px}
+.chk.ko{background:var(--ko-tenue)}
+.chk.ko .n{color:var(--ko);font-weight:500}
+.chk .v{font-family:var(--mono);font-size:12px;white-space:nowrap;color:var(--tenue)}
+.chk.ko .v{color:var(--ko)}
+.chk .barra{grid-column:1/-1;height:3px;border-radius:2px;background:var(--bordo);overflow:hidden}
+.chk .barra i{display:block;height:100%;background:var(--ok)}
+.chk.ko .barra i{background:var(--ko)}
+.chk.peggiora .n::after{content:" ↓";color:var(--avviso)}
+.chk.migliora .n::after{content:" ↑";color:var(--ok)}
+
+dialog{border:1px solid var(--bordo-forte);border-radius:10px;background:var(--pannello);
+       color:var(--testo);max-width:min(860px,92vw);width:100%;padding:0}
+dialog::backdrop{background:rgba(0,0,0,.45)}
+dialog header{border-radius:10px 10px 0 0}
+#cad-corpo{padding:14px 18px;overflow:auto;max-height:64vh}
+#cad-durata{font-size:12.5px;color:var(--tenue);font-family:var(--mono)}
+.avviso{background:var(--avviso-tenue);color:var(--avviso);padding:8px 11px;
+        border-radius:7px;font-size:12.5px;margin-bottom:12px}
+.avviso b{font-family:var(--mono);font-weight:600}
+.passo{display:grid;grid-template-columns:16px 1fr auto;gap:2px 9px;
+       align-items:baseline;padding:5px 0;border-bottom:1px solid var(--bordo)}
+.passo .spia{font-size:11px;line-height:1.4}
+.passo .t{font-family:var(--mono);font-size:11.5px;color:var(--debole)}
+.passo .out{grid-column:2/-1;font-family:var(--mono);font-size:11.5px;
+            color:var(--tenue);white-space:pre-wrap;margin-top:2px}
+.passo.attesa{opacity:.45}
+.riassunto{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 8px}
+.pillola{font-size:12.5px;padding:4px 11px;border-radius:20px;
+         background:var(--ok-tenue);color:var(--ok)}
+.pillola.male{background:var(--ko-tenue);color:var(--ko)}
+.pillola.neutra{background:var(--bordo);color:var(--tenue)}
+.guasto{font-size:12.5px;color:var(--ko);padding:3px 0;font-family:var(--mono)}
+#cad-corpo .errore-grosso{font-family:var(--mono);font-size:12px;color:var(--ko);
+       background:var(--ko-tenue);padding:10px 12px;border-radius:7px;white-space:pre-wrap}
+dialog pre{margin:0;padding:14px 18px;overflow:auto;max-height:62vh;
+           font-family:var(--mono);font-size:12px;line-height:1.55}
+.agg{color:var(--ok)} .tolto{color:var(--ko)} .pos{color:var(--debole)}
+</style>
+</head>
+<body>
+<header>
+  <h1>Wheelly <span>— <span data-t="ui.h1">parameters</span></span></h1>
+  <div id="esito">…</div>
+  <div id="conta-mod"></div>
+  <div class="spazio"></div>
+  <button id="b-azzera" data-t="ui.reset">Reset</button>
+  <button id="b-diff" data-t="ui.changes">Changes</button>
+  <button id="b-cad" data-t="ui.make_step">Make the STEP files</button>
+  <button id="b-export" class="primario" data-t="ui.export">Export parameters_local.py</button>
+</header>
+
+<main>
+  <div id="colonna-sx">
+    <div id="barra">
+      <input id="cerca" type="search" data-t-ph="ui.search" placeholder="Search by name or description…" autocomplete="off">
+      <button class="filtro" id="f-mod" aria-pressed="false" data-t-tip="ui.f_mod_tip" data-t="ui.f_mod" title="Only the parameters you have changed">changed</button>
+      <button class="filtro" id="f-s" aria-pressed="false" data-t-tip="ui.f_s_tip" data-t="ui.f_s" title="Only the design choices, the ones free to change">S only</button>
+    </div>
+    <div id="legenda">
+      <span><i style="background:var(--or-M)"></i><span data-t="ui.leg_m">M measured on the part</span></span>
+      <span><i style="background:var(--or-S)"></i><span data-t="ui.leg_s">S design choice</span></span>
+      <span><i style="background:var(--or-D)"></i><span data-t="ui.leg_d">D derived</span></span>
+      <span><i style="background:var(--or-R)"></i><span data-t="ui.leg_r">R from the catalogue</span></span>
+    </div>
+    <div id="elenco"></div>
+  </div>
+
+  <div id="colonna-dx">
+    <div id="titoli"></div>
+    <div id="figura">
+    <div id="telaio"></div>
+    <div id="zoom" hidden>
+      <span id="fattore">100%</span>
+      <button id="z-meno" data-t-tip="ui.zoom_out" title="Zoom out">&minus;</button>
+      <button id="z-piu" data-t-tip="ui.zoom_in" title="Zoom in">+</button>
+      <button id="z-quota" data-t-tip="ui.to_dim_tip" data-t="ui.to_dim" title="Frame the selected dimension" hidden>dim</button>
+      <button id="z-adatta" data-t-tip="ui.fit_tip" data-t="ui.fit" title="Put the whole drawing back in the frame">fit</button>
+    </div>
+  </div>
+    <div id="controlli"><h3 data-t="ui.chains">Dimension chains</h3><div id="lista-chk"></div></div>
+  </div>
+</main>
+
+<dialog id="finestra-cad">
+  <header><h1 data-t="ui.cad_title">STEP solids and full check</h1><div class="spazio"></div>
+    <span id="cad-durata"></span>
+    <button id="b-rigenera" data-t="ui.regenerate">Regenerate</button>
+    <button id="b-pubblica" data-t="ui.publish" disabled>Move the files to out/</button>
+    <button id="b-chiudi-cad" data-t="ui.close">Close</button></header>
+  <div id="cad-corpo"></div>
+</dialog>
+
+<dialog id="finestra">
+  <header><h1 id="titolo-finestra"></h1><div class="spazio"></div>
+    <button id="b-copia" data-t="ui.copy">Copy</button><button id="b-chiudi" data-t="ui.close">Close</button></header>
+  <pre id="testo-finestra"></pre>
+</dialog>
+
+<script>
+const $ = s => document.querySelector(s);
+let STATO = null, SCELTO = null, DISEGNO = null, QUOTATO = null;
+const RIFERIMENTO = {};
+
+// The texts of the page are keys into the editor catalogues
+// (src/texts_editor_en.py / _it.py), served by /api/testi in the language the
+// server runs in (WHEELLY_LINGUA, English by default). What stands in the HTML
+// is the English text, so the page reads right even before they arrive.
+let TESTI = {};
+const T = (k, campi) => {
+  let t = TESTI[k];
+  if (t === undefined) { console.error("chiave mancante: " + k); return k; }
+  for (const [n, v] of Object.entries(campi || {})) t = t.split("{" + n + "}").join(v);
+  return t;
+};
+function traduciPagina() {
+  for (const e of document.querySelectorAll("[data-t]"))     e.textContent = T(e.dataset.t);
+  for (const e of document.querySelectorAll("[data-t-tip]")) e.title = T(e.dataset.tTip);
+  for (const e of document.querySelectorAll("[data-t-ph]"))  e.placeholder = T(e.dataset.tPh);
+  document.documentElement.lang = TESTI["ui.lang"] || "en";
+}
+const ORIGINE = new Proxy({}, {get: (_, k) => T("ui.origin_" + k)});
+
+// Un parametro derivato da una formula non si edita: il suo valore e' un
+// risultato. Uno derivato "a parole" (espressione senza riferimenti) invece si.
+const modificabile = p => !(p.origine === "D" && !p.letterale);
+
+async function chiedi(rotta, dati) {
+  const r = await fetch(rotta, dati
+    ? {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(dati)}
+    : undefined);
+  return r.json();
+}
+
+function applica(stato) {
+  STATO = stato;
+  if (!Object.keys(RIFERIMENTO).length && stato.riferimento)
+    Object.assign(RIFERIMENTO, stato.riferimento);
+  disegnaElenco();
+  disegnaControlli();
+  disegnaTitoli();
+  const n = stato.modificati.length;
+  $("#conta-mod").textContent = n ? (n > 1 ? T("ui.n_changed", {n}) : T("ui.n_changed_1")) : "";
+  const falliti = (stato.esito.falliti || []).length;
+  const e = $("#esito");
+  if (!stato.esito.ok) { e.className="cattivo"; e.textContent=T("ui.gen_failed"); }
+  else if (falliti)    { e.className="cattivo"; e.textContent=falliti > 1 ? T("ui.n_fail", {n: falliti}) : T("ui.n_fail_1"); }
+  else                 { e.className="buono";   e.textContent=T("ui.all_pass"); }
+}
+
+function visibili() {
+  const q = $("#cerca").value.trim().toLowerCase();
+  const soloMod = $("#f-mod").getAttribute("aria-pressed") === "true";
+  const soloS   = $("#f-s").getAttribute("aria-pressed") === "true";
+  return STATO.parametri.filter(p =>
+    (!q || p.nome.toLowerCase().includes(q) || p.descrizione.toLowerCase().includes(q)) &&
+    (!soloMod || p.modificato) && (!soloS || p.origine === "S"));
+}
+
+function disegnaElenco() {
+  const cont = $("#elenco"); cont.innerHTML = "";
+  let sezione = null;
+  for (const p of visibili()) {
+    if (p.sezione !== sezione) {
+      sezione = p.sezione;
+      const h = document.createElement("h2");
+      h.className = "sezione"; h.textContent = sezione;
+      cont.appendChild(h);
+    }
+    cont.appendChild(riga(p));
+  }
+  if (!cont.children.length)
+    cont.innerHTML = '<p id="nessuna-figura">' + T("ui.no_match") + '</p>';
+}
+
+function riga(p) {
+  const d = document.createElement("div");
+  d.className = "riga" + (p.nome === SCELTO ? " scelta" : "")
+              + (p.modificato ? " cambiata" : "")
+              + (modificabile(p) ? "" : " derivata");
+  d.dataset.nome = p.nome;
+
+  const val = p.unita === "deg" ? `${p.valore.toFixed(2)}<u>°</u>`
+            : p.unita === "mm"  ? `${p.valore.toFixed(2)}<u>mm</u>`
+            : p.valore.toFixed(2);
+  d.innerHTML = `<span class="origine ${p.origine}" title="${ORIGINE[p.origine]}">${p.origine}</span>` +
+                `<div class="nome">${p.nome}</div><div class="valore">${val}</div>`;
+
+  if (p.nome === SCELTO) {
+    const espr = document.createElement("div");
+    espr.className = "espr";
+    const puoi = modificabile(p);
+    const inp = document.createElement("input");
+    inp.value = p.espressione; inp.spellcheck = false;
+    if (!puoi) { inp.readOnly = true; inp.title = ORIGINE.D; }
+    inp.addEventListener("click", e => e.stopPropagation());
+    inp.addEventListener("keydown", e => {
+      if (e.key === "Enter") { e.preventDefault(); inp.blur(); }
+      if (e.key === "Escape") { inp.value = p.espressione; inp.blur(); }
+    });
+    inp.addEventListener("blur", () => manda(p, inp));
+    espr.appendChild(inp);
+    d.appendChild(espr);
+
+    const det = document.createElement("div");
+    det.className = "dettaglio";
+    det.innerHTML = `<b>${ORIGINE[p.origine]}.</b> ${p.descrizione}`;
+    d.appendChild(det);
+
+    if (p.deps.length || p.usato_da.length) {
+      const c = document.createElement("div");
+      c.className = "catena";
+      const link = n => `<a data-va="${n}">${n}</a>`;
+      const pezzi = [];
+      if (p.deps.length)     pezzi.push("← " + p.deps.map(link).join(", "));
+      if (p.usato_da.length) pezzi.push("→ " + p.usato_da.map(link).join(", "));
+      c.innerHTML = pezzi.join(" &nbsp;&nbsp; ");
+      d.appendChild(c);
+    }
+    if (p.disallineato) {
+      const w = document.createElement("div");
+      w.className = "msg-errore";
+      w.textContent = T("ui.expr_mismatch", {calc: p.calcolato.toFixed(2), file: p.valore.toFixed(2)});
+      d.appendChild(w);
+    }
+  }
+
+  d.addEventListener("click", ev => {
+    const va = ev.target.dataset && ev.target.dataset.va;
+    scegli(va || p.nome);
+  });
+  return d;
+}
+
+async function manda(p, inp) {
+  const nuova = inp.value.trim();
+  if (nuova === p.espressione) return;
+  const r = await chiedi("/api/modifica", {nome: p.nome, espressione: nuova});
+  if (!r.ok) {
+    inp.classList.add("errore");
+    let m = inp.parentElement.parentElement.querySelector(".msg-errore");
+    if (!m) { m = document.createElement("div"); m.className = "msg-errore";
+              inp.parentElement.parentElement.appendChild(m); }
+    m.textContent = r.errore;
+    return;
+  }
+  applica(r);
+  mostraDisegno(DISEGNO, true);
+}
+
+function scegli(nome, senzaScroll) {
+  if (SCELTO === nome) return;
+  SCELTO = nome;
+  const p = STATO.parametri.find(x => x.nome === nome);
+  disegnaElenco();
+  const el = document.querySelector(`.riga[data-nome="${nome}"]`);
+  if (el && !senzaScroll) el.scrollIntoView({block:"nearest"});
+  disegnaTitoli();
+  if (p) apriDisegnoGiusto(p);
+}
+
+const INSIEME = ["assembly_plan", "assembly_section", "assembly_details"];
+const NOME_DISEGNO = new Proxy({}, {get: (_, n) => TESTI["tab." + n]});
+
+// Fra i disegni collegati si apre quello in cui la quota si ritrova davvero:
+// aprirne uno dove non c'e' nulla da vedere sarebbe una scelta peggiore della
+// casualita'.
+async function apriDisegnoGiusto(p) {
+  const scelto = p.nome;
+  let dove = [];
+  try { dove = (await chiedi("/api/dove?q=" + encodeURIComponent(p.nome))).disegni; }
+  catch (e) { dove = []; }
+  if (SCELTO !== scelto) return;                 // nel frattempo hai cambiato riga
+  // I candidati arrivano gia' in ordine: prima quelli in cui la quota si
+  // RICONOSCE - porta la firma del parametro - poi quelli in cui la si
+  // indovina, e a parita' quelli con meno riscontri.
+  //
+  // Restare sul disegno che si sta guardando e' comodo, ma solo se quel
+  // disegno sa rispondere quanto il migliore: con Q_fresata_albero i candidati
+  // sono la sezione della frizione, dove la quota e' firmata e unica, e la
+  // pianta d'insieme, dove due cerchi valgono 2,00 per caso. Restando sulla
+  // pianta si vedeva il caso: e' il difetto emerso provando proprio quella
+  // quota.
+  const candidati = dove.map(d => d.disegno);
+  const qui = dove.find(d => d.disegno === DISEGNO);
+  const meglio = dove[0];
+  const restare = qui && meglio &&
+        (qui.firmato > 0 || !meglio.firmato) && qui.riscontri <= meglio.riscontri;
+  const preferito = restare ? DISEGNO
+                  : ((meglio && meglio.disegno) || (p.disegni_collegati.includes(DISEGNO)
+                     ? DISEGNO : p.disegni_collegati[0]) || INSIEME[0]);
+  disegnaTitoli();
+  mostraDisegno(preferito, true);
+}
+
+function disegnaTitoli() {
+  const p = STATO.parametri.find(x => x.nome === SCELTO);
+  const proprie = p ? p.disegni_collegati : (STATO.esito.disegni || []);
+  // le viste d'insieme non appartengono a un pezzo: restano sempre a portata
+  const dis = proprie.concat(INSIEME.filter(n => !proprie.includes(n)));
+  const t = $("#titoli"); t.innerHTML = "";
+  if (!proprie.length && !dis.length) {
+    $("#telaio").innerHTML =
+      '<p id="nessuna-figura">' + T("ui.not_drawn", {where: p ? p.disegni : "—"}) + '</p>';
+    $("#zoom").hidden = true;
+    DISEGNO = null;
+    return;
+  }
+  for (const n of dis) {
+    const b = document.createElement("button");
+    b.className = "scheda"; b.textContent = NOME_DISEGNO[n] || n.replace(/_/g, " ");
+    b.setAttribute("aria-pressed", n === DISEGNO);
+    b.onclick = () => mostraDisegno(n);
+    t.appendChild(b);
+  }
+  const nota = document.createElement("div");
+  nota.id = "riscontri"; t.appendChild(nota);
+  if (!dis.includes(DISEGNO)) mostraDisegno(dis[0]);
+}
+
+async function mostraDisegno(nome, forza) {
+  if (!nome) return;
+  const cambia = nome !== DISEGNO || SCELTO !== QUOTATO;
+  DISEGNO = nome;
+  if (!cambia && !forza) return;
+  QUOTATO = SCELTO;
+  for (const b of $("#titoli").children)
+    if (b.tagName === "BUTTON")
+      b.setAttribute("aria-pressed",
+                     b.textContent === (NOME_DISEGNO[nome] || nome.replace(/_/g, " ")));
+  // il parametro in modifica viaggia con la richiesta: la sua quota viene
+  // tracciata sul disegno lato server, nelle coordinate del DXF
+  const r = await fetch("/api/svg?n=" + encodeURIComponent(nome) +
+                        (SCELTO ? "&q=" + encodeURIComponent(SCELTO) : ""));
+  $("#telaio").innerHTML = r.ok ? await r.text()
+    : '<p id="nessuna-figura">' + T("ui.no_drawing") + '</p>';
+  preparaZoom(!!SCELTO);
+}
+
+// ---- zoom e trascinamento --------------------------------------------------
+// Si agisce sul viewBox dell'SVG: il disegno resta vettoriale a ogni
+// ingrandimento, e le quote si leggono. L'inquadratura di ciascun disegno
+// viene ricordata, cosi' cambiare parametro non la fa saltare.
+const INQUADRATURE = {};
+let BASE = null;
+
+const NOME_TIPO = new Proxy({}, {get: (_, k) => TESTI["ui.kind_" + k]});
+
+function preparaZoom(inquadraQuota) {
+  const svg = $("#telaio").querySelector("svg");
+  const g = svg && svg.querySelector(".quota[data-riquadro]");
+  $("#zoom").hidden = !svg;
+  $("#z-quota").hidden = !g;
+  mostraRiscontri(g);
+  if (!svg) return;
+  BASE = svg.getAttribute("viewBox").split(/[\s,]+/).map(Number);
+  const salvata = INQUADRATURE[DISEGNO];
+  applicaInquadratura(salvata && salvata.length === 4 ? salvata : BASE.slice());
+  // cambiando parametro la vista va sulla sua quota: e' il motivo per cui la
+  // si e' selezionata, e a figura intera non si leggerebbe
+  if (inquadraQuota) vaiAllaQuota();
+}
+
+// Il numero di riscontri e' un dato, non un dettaglio: una quota che torna in
+// quattro punti sono i quattro fori, una che non torna da nessuna parte va
+// cercata in un altro disegno.
+function mostraRiscontri(g) {
+  const e = $("#riscontri");
+  const p = SCELTO && STATO.parametri.find(x => x.nome === SCELTO);
+  if (!p || !DISEGNO) { e.textContent = ""; return; }
+  if (!g) { e.innerHTML = T("ui.not_traceable", {name: p.nome}); return; }
+  const n = Number(g.getAttribute("data-riscontri")) || 1;
+  const firmati = Number(g.getAttribute("data-firmati")) || 0;
+  const tipo = NOME_TIPO[g.getAttribute("data-tipo")] || T("ui.kind_other");
+  // Dire "diametro in 3 punti" non basta: chi guarda legge l'etichetta come LA
+  // quota. Se nessun riscontro porta la firma del parametro, quei punti valgono
+  // solo lo stesso numero, e l'editor non sa quale sia il suo: lo deve dire,
+  // perche' questa pagina si usa col calibro in mano.
+  let coda = "";
+  if (firmati > 0) coda = n > 1 ? T("ui.from_drawing_n", {n: firmati})
+                                : T("ui.from_drawing");
+  // Il caso peggiore e' UN riscontro solo, non firmato: si vedeva identico a
+  // uno confermato dal disegno, e chi guarda va a misurare col calibro un
+  // punto scelto per il solo fatto che vale quel numero. Ora lo dice, e sul
+  // disegno l'evidenziazione e' tratteggiata con un punto interrogativo.
+  else if (n === 1) coda = T("ui.unverified_1");
+  else if (g.getAttribute("data-troppi"))
+    // niente tratteggio sul disegno: indicarne quattro fra duecento sarebbe
+    // indicare il caso, e chi guarda andrebbe a misurare col calibro un punto
+    // scelto a sorte
+    coda = T("ui.too_many", {n});
+  else if (n > 1) coda = T("ui.ambiguous", {n});
+  e.innerHTML = "<b>" + p.nome + "</b> &middot; " + tipo + coda;
+}
+
+function vaiAllaQuota() {
+  const g = $("#telaio").querySelector(".quota[data-riquadro]");
+  if (!g || !BASE) return;
+  const r = g.getAttribute("data-riquadro").split(" ").map(Number);
+  // un margine attorno, e mai piu' stretto di un dodicesimo del disegno
+  const larg = Math.max(r[2] * 1.7, r[3] * 1.7 * BASE[2] / BASE[3], BASE[2] / 12);
+  const alt = larg * BASE[3] / BASE[2];
+  applicaInquadratura([r[0] + r[2] / 2 - larg / 2, r[1] + r[3] / 2 - alt / 2, larg, alt]);
+}
+
+function applicaInquadratura(vb) {
+  const svg = $("#telaio").querySelector("svg");
+  if (!svg || !BASE) return;
+  // non si esce dal disegno, e non si stringe oltre il ragionevole
+  const minLarg = BASE[2] / 40, maxLarg = BASE[2];
+  vb[2] = Math.min(Math.max(vb[2], minLarg), maxLarg);
+  vb[3] = vb[2] * BASE[3] / BASE[2];
+  vb[0] = Math.min(Math.max(vb[0], BASE[0] - vb[2] / 2), BASE[0] + BASE[2] - vb[2] / 2);
+  vb[1] = Math.min(Math.max(vb[1], BASE[1] - vb[3] / 2), BASE[1] + BASE[3] - vb[3] / 2);
+  svg.setAttribute("viewBox", vb.join(" "));
+  INQUADRATURE[DISEGNO] = vb;
+  $("#fattore").textContent = Math.round(BASE[2] / vb[2] * 100) + "%";
+}
+
+function inquadratura() {
+  const vb = INQUADRATURE[DISEGNO];
+  return vb ? vb.slice() : (BASE ? BASE.slice() : null);
+}
+
+function ingrandisci(fattore, cx, cy) {
+  const vb = inquadratura();
+  if (!vb) return;
+  // il punto sotto il cursore resta fermo
+  const nx = vb[0] + (cx - vb[0]) * (1 - 1 / fattore);
+  const ny = vb[1] + (cy - vb[1]) * (1 - 1 / fattore);
+  applicaInquadratura([nx, ny, vb[2] / fattore, vb[3] / fattore]);
+}
+
+function puntoSvg(ev) {
+  const svg = $("#telaio").querySelector("svg");
+  const vb = inquadratura();
+  const r = svg.getBoundingClientRect();
+  return [vb[0] + (ev.clientX - r.left) / r.width * vb[2],
+          vb[1] + (ev.clientY - r.top) / r.height * vb[3]];
+}
+
+$("#telaio").addEventListener("wheel", ev => {
+  if (!$("#telaio").querySelector("svg")) return;
+  ev.preventDefault();
+  const [cx, cy] = puntoSvg(ev);
+  ingrandisci(Math.exp(-ev.deltaY * 0.0016), cx, cy);
+}, {passive: false});
+
+let trascino = null;
+$("#telaio").addEventListener("pointerdown", ev => {
+  if (!$("#telaio").querySelector("svg")) return;
+  trascino = {x: ev.clientX, y: ev.clientY, vb: inquadratura()};
+  $("#telaio").classList.add("trascino");
+  $("#telaio").setPointerCapture(ev.pointerId);
+});
+$("#telaio").addEventListener("pointermove", ev => {
+  if (!trascino) return;
+  const svg = $("#telaio").querySelector("svg");
+  const r = svg.getBoundingClientRect();
+  applicaInquadratura([trascino.vb[0] - (ev.clientX - trascino.x) / r.width * trascino.vb[2],
+                       trascino.vb[1] - (ev.clientY - trascino.y) / r.height * trascino.vb[3],
+                       trascino.vb[2], trascino.vb[3]]);
+});
+for (const e of ["pointerup", "pointercancel"])
+  $("#telaio").addEventListener(e, () => {
+    trascino = null; $("#telaio").classList.remove("trascino");
+  });
+$("#telaio").addEventListener("dblclick", ev => {
+  const [cx, cy] = puntoSvg(ev);
+  ingrandisci(1.8, cx, cy);
+});
+
+$("#z-piu").onclick = () => { const v = inquadratura();
+  if (v) ingrandisci(1.4, v[0] + v[2] / 2, v[1] + v[3] / 2); };
+$("#z-meno").onclick = () => { const v = inquadratura();
+  if (v) ingrandisci(1 / 1.4, v[0] + v[2] / 2, v[1] + v[3] / 2); };
+$("#z-adatta").onclick = () => { if (BASE) applicaInquadratura(BASE.slice()); };
+$("#z-quota").onclick = vaiAllaQuota;
+
+function disegnaControlli() {
+  const c = $("#lista-chk"); c.innerHTML = "";
+  const tutti = (STATO.esito.controlli || []).slice()
+    .sort((a, b) => (a.passa - b.passa) || (a.margine - b.margine));
+  if (!tutti.length) {
+    c.innerHTML = `<p id="nessuna-figura">${STATO.esito.errore || T("ui.no_checks")}</p>`;
+    return;
+  }
+  for (const k of tutti) {
+    const prima = RIFERIMENTO[k.nome];
+    const verso = prima === undefined ? ""
+      : k.margine < prima - 0.005 ? " peggiora" : k.margine > prima + 0.005 ? " migliora" : "";
+    const d = document.createElement("div");
+    d.className = "chk" + (k.passa ? "" : " ko") + verso;
+    // La barra e' il margine residuo rapportato al limite: vuota significa
+    // "appena in tolleranza", piena "abbondante". Non e' il valore assoluto.
+    const scala = Math.max(Math.abs(k.limite), 0.01);
+    const pieno = Math.max(0, Math.min(1, k.margine / scala));
+    d.innerHTML = `<div class="n">${k.nome}</div>
+      <div class="v">${k.valore.toFixed(2)} ${k.verso} ${k.limite.toFixed(2)} ${k.unita}</div>
+      <div class="barra"><i style="width:${(pieno*100).toFixed(0)}%"></i></div>`;
+    c.appendChild(d);
+  }
+}
+
+async function finestra(titolo, rotta) {
+  const r = await fetch(rotta);
+  const testo = await r.text();
+  $("#titolo-finestra").textContent = titolo;
+  const pre = $("#testo-finestra");
+  if (rotta === "/api/diff") {
+    pre.innerHTML = testo.split("\n").map(l => {
+      const cl = l.startsWith("+++") || l.startsWith("---") ? "pos"
+               : l.startsWith("+") ? "agg" : l.startsWith("-") ? "tolto"
+               : l.startsWith("@@") ? "pos" : "";
+      const t = l.replace(/[&<>]/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[ch]));
+      return cl ? `<span class="${cl}">${t}</span>` : t;
+    }).join("\n");
+  } else pre.textContent = testo;
+  pre.dataset.grezzo = testo;
+  $("#finestra").showModal();
+}
+
+// ---- rigenerazione completa dei CAD ----
+// I solidi passano dal kernel OCCT: un paio di minuti, quindi il server la
+// fa in un thread e qui ci limitiamo a chiedere come va.
+const PASSI_ATTESI = ["disegni 2D e CSV parametri", "sezione quotata del corpo",
+  "corpo di riferimento, disco, collare", "frizione: mozzo ASA e anello TPU",
+  "braccio portamotore", "scatola a due vani e staffa moduli",
+  "catene dimensionali", "audit incrociato e compenetrazioni"];
+let sondaCad = null;
+
+function disegnaCad(d) {
+  const c = $("#cad-corpo");
+  const pezzi = [];
+
+  if (d.parametri && d.parametri.length)
+    pezzi.push(`<div class="avviso">${T("ui.unsaved", {n: d.parametri.length})}` +
+      d.parametri.map(n => `<b>${n}</b>`).join(", ") + T("ui.unsaved_tail") + `</div>`);
+
+  for (const nome of PASSI_ATTESI) {
+    const fatto = (d.passi || []).find(p => p.nome === nome);
+    pezzi.push(`<div class="passo${fatto ? "" : " attesa"}">
+        <div class="spia">${fatto ? "●" : "○"}</div>
+        <div>${nome}</div>
+        <div class="t">${fatto ? fatto.secondi.toFixed(1) + " s" : (d.stato === "in corso" ? "…" : "")}</div>
+        ${fatto && fatto.righe.length ? `<div class="out">${fatto.righe.join("\n")
+            .replace(/[&<>]/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[ch]))}</div>` : ""}
+      </div>`);
+  }
+
+  if (d.stato === "errore")
+    pezzi.push(`<div class="riassunto"></div><div class="errore-grosso">${
+      (d.errore||"").replace(/[&<>]/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[ch]))}</div>`);
+
+  if (d.stato === "finito") {
+    const kd = d.controlli.filter(x => !x.passa).length;
+    const ka = d.audit.filter(x => !x.passa).length;
+    const salv = d.salvati && d.salvati.file
+      ? `<span class="pillola">${T("ui.saved", {n: d.salvati.file.length})}${
+          d.salvati.rimossi.length ? T("ui.old_removed", {n: d.salvati.rimossi.length}) : ""}</span>`
+      : `<span class="pillola neutra">${T("ui.generated", {n: d.file.length})}</span>`;
+    pezzi.push(`<div class="riassunto">
+      <span class="pillola${kd?" male":""}">${T("ui.pill_chains", {n: d.controlli.length})}${kd ? T("ui.pill_fail", {n: kd}) : T("ui.pill_all_pass")}</span>
+      <span class="pillola${ka?" male":""}">${T("ui.pill_audit", {n: d.audit.length})}${ka ? T("ui.pill_fail", {n: ka}) : T("ui.pill_all_pass")}</span>
+      ${salv}</div>`);
+    for (const k of d.controlli.concat(d.audit).filter(x => !x.passa))
+      pezzi.push(`<div class="guasto">! ${k.nome} ${k.dettaglio || `${k.valore} ${k.verso} ${k.limite} ${k.unita}`}</div>`);
+  }
+
+  c.innerHTML = pezzi.join("");
+  $("#cad-durata").textContent = d.durata ? d.durata.toFixed(1) + " s" : "";
+  // il pulsante resta solo quando il salvataggio non e' avvenuto da solo
+  $("#b-pubblica").hidden = !!(d.salvati && d.salvati.file);
+  $("#b-pubblica").disabled = d.stato !== "finito";
+  $("#b-cad").textContent = d.stato === "in corso" ? T("ui.generating") : T("ui.make_step");
+}
+
+async function sondaggio() {
+  const d = await chiedi("/api/cad");
+  disegnaCad(d);
+  if (d.stato === "in corso") sondaCad = setTimeout(sondaggio, 700);
+  else sondaCad = null;
+}
+
+async function lanciaCad() {
+  const d = await chiedi("/api/cad", {});
+  disegnaCad(d);
+  if (sondaCad) clearTimeout(sondaCad);
+  if (d.stato === "in corso") sondaCad = setTimeout(sondaggio, 700);
+}
+
+// Aprire la finestra mostra l'ultimo esito; si rigenera solo chiedendolo, o
+// se non e' mai stato fatto nulla.
+$("#b-cad").onclick = async () => {
+  if (!$("#finestra-cad").open) $("#finestra-cad").showModal();
+  const d = await chiedi("/api/cad");
+  if (d.stato === "mai") return lanciaCad();
+  disegnaCad(d);
+  if (d.stato === "in corso" && !sondaCad) sondaCad = setTimeout(sondaggio, 700);
+};
+$("#b-rigenera").onclick = lanciaCad;
+$("#b-chiudi-cad").onclick = () => $("#finestra-cad").close();
+$("#b-pubblica").onclick = async () => {
+  const r = await chiedi("/api/pubblica", {});
+  $("#b-pubblica").textContent = r.ok
+    ? T("ui.published", {n: r.file.length}) + (r.rimossi.length ? T("ui.published_removed", {n: r.rimossi.length}) : "")
+    : r.errore;
+  setTimeout(() => $("#b-pubblica").textContent = T("ui.publish"), 2500);
+};
+
+$("#b-diff").onclick   = () => finestra(T("ui.diff_title"), "/api/diff");
+$("#b-export").onclick = () => finestra(T("ui.export_title"), "/api/export");
+$("#b-chiudi").onclick = () => $("#finestra").close();
+$("#b-copia").onclick  = async () => {
+  await navigator.clipboard.writeText($("#testo-finestra").dataset.grezzo);
+  $("#b-copia").textContent = T("ui.copied");
+  setTimeout(() => $("#b-copia").textContent = T("ui.copy"), 1400);
+};
+$("#b-azzera").onclick = async () => {
+  applica(await chiedi("/api/azzera", {}));
+  mostraDisegno(DISEGNO, true);
+};
+$("#cerca").addEventListener("input", disegnaElenco);
+for (const id of ["#f-mod", "#f-s"])
+  $(id).onclick = () => {
+    $(id).setAttribute("aria-pressed", $(id).getAttribute("aria-pressed") !== "true");
+    disegnaElenco();
+  };
+
+chiedi("/api/testi").then(t => { TESTI = t; traduciPagina(); return chiedi("/api/stato"); }).then(s => {
+  applica(s);
+  scegli("D_Frizione", true);
+  // #modifiche e #export aprono direttamente la finestra corrispondente
+  if (location.hash === "#modifiche") $("#b-diff").onclick();
+  if (location.hash === "#export")    $("#b-export").onclick();
+  if (location.hash === "#cad")       $("#b-cad").onclick();
+});
+</script>
+</body>
+</html>

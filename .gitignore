@@ -1,0 +1,15 @@
+.DS_Store
+.venv/
+__pycache__/
+*.pyc
+out/
+.claude/
+
+# I file di lock di Affinity: li crea aprendo un documento e li toglie
+# chiudendolo. Versionati, sporcavano ogni git status con un binario da 115
+# byte che non dice niente a nessuno.
+*.af~lock~
+mechanics/wheelly-cad/out/unchanged.json
+
+# promotional material (screenshots, pictures): kept locally, never published with the project
+/promo/

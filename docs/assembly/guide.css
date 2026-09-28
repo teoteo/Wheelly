@@ -1,0 +1,278 @@
+/* SPDX-FileCopyrightText: 2026 Matteo Beretta
+   SPDX-License-Identifier: CC-BY-4.0
+   Generato da src/guide/site.py: non si modifica a mano. */
+
+/* I colori sono quelli del marchio: Ink #16191D, Amber #EFA00B, Paper #F7F6F3.
+   L'ambra pero' NON si usa per il testo: su fondo chiaro fa 2,1:1 di contrasto
+   e non si legge. Vale la regola della guida del brand - "the eye, accents
+   only" - quindi ambra sui segni piccoli (i punti elenco, la barra del passo
+   che si sta leggendo) e una sua versione scura dove serve leggere parole. */
+:root {
+  --fondo: #f7f6f3; --fondo2: #efece5; --carta: #ffffff;
+  --testo: #16191d; --muto: #6a6f76; --filo: #e2ded5;
+  --accento: #efa00b; --accento-testo: #8a5a06;
+  --attenzione: #8a5a06; --attenzione-fondo: #fbf2e2;
+  /* the language pill: its own tokens, because --carta is the white behind
+     the pictures and stays white in the dark theme too - the active button
+     on it would be light text on white. The idle text is darker than --muto:
+     on the pill's ground --muto makes 4.3:1, under the 4.5 small text wants */
+  --pillola: #efece5; --pillola-attiva: #ffffff; --pillola-testo: #50555c;
+  --indice: 286px;
+  --titoli: "Fredoka", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+            Helvetica, Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fondo: #14171a; --fondo2: #1a1e22; --carta: #f7f6f3;
+    --testo: #e9ebed; --muto: #98a1aa; --filo: #272c31;
+    --accento: #efa00b; --accento-testo: #efa00b;
+    --attenzione: #efa00b; --attenzione-fondo: #241d12;
+    --pillola: #1f2428; --pillola-attiva: #343a40; --pillola-testo: #aab2ba;
+  }
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 1.5rem; }
+body {
+  margin: 0; background: var(--fondo); color: var(--testo);
+  font: 17px/1.62 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--accento-testo); }
+/* Fredoka e' il carattere del marchio, e sta sui titoli: nel corpo del testo
+   resta il carattere di sistema, che a misure piccole e con le mani sporche si
+   legge meglio. Se il carattere non arriva - officina senza rete - la pagina
+   ricade sulla pila di sistema e non cambia nient'altro. */
+h1, h2, h3 { font-family: var(--titoli); line-height: 1.2; letter-spacing: -0.01em; }
+
+.salta { position: absolute; left: -999px; }
+.salta:focus { left: 1rem; top: 1rem; background: var(--fondo); padding: .5rem 1rem; }
+
+.pagina { display: flex; align-items: flex-start; }
+
+/* ---------------------------------------------------------- l'indice fisso */
+.indice {
+  width: var(--indice); flex: 0 0 var(--indice);
+  position: sticky; top: 0; height: 100vh; overflow-y: auto;
+  border-right: 1px solid var(--filo); background: var(--fondo2);
+  padding: 1.6rem 1.1rem 3rem;
+}
+.indice summary { display: none; }
+/* Lo spazio attorno al logo e' il diametro dell'occhio, come chiede la guida
+   del marchio; a 190 px di larghezza sono circa 16 px. La misura minima del
+   lockup orizzontale e' 120 px e qui ne abbiamo 190. */
+.marchio { display: block; text-decoration: none; color: inherit; margin: .2rem .4rem 1.6rem; }
+/* <picture> e' un elemento inline che avvolge l'immagine: senza questa riga il
+   sottotitolo gli si affianca invece di stargli sotto. */
+.marchio picture, .insegna picture { display: block; }
+.marchio img { display: block; width: 190px; max-width: 100%; height: auto; }
+.marchio span { display: block; margin-top: .55rem; font-size: .78rem; color: var(--muto);
+                letter-spacing: .09em; text-transform: uppercase; }
+.indice ol { list-style: none; margin: 0; padding: 0; }
+/* `.indice nav a` e non `.indice a`: il logo e' anche lui un link dentro
+   all'indice, e con la regola larga diventava una riga di sommario - flex, e
+   quindi stretto a 129 px invece dei 190 dichiarati, col sottotitolo di fianco
+   invece che sotto. Misurato nel browser, non dedotto. */
+.indice nav a { display: flex; gap: .6rem; text-decoration: none; color: var(--testo);
+                padding: .34rem .5rem; border-radius: 7px; font-size: .93rem; }
+.indice nav a:hover { background: rgba(127, 140, 155, .14); }
+.indice .num { color: var(--muto); font-variant-numeric: tabular-nums; min-width: 1.1rem; }
+.indice .manca > a { color: var(--muto); cursor: default; }
+.indice .manca > a:hover { background: none; }
+.indice .attuale > a { font-weight: 640; }
+.indice .passi { margin: .15rem 0 .8rem 1.75rem; border-left: 1px solid var(--filo); }
+.indice .passi a { font-size: .875rem; color: var(--muto); padding: .22rem .55rem; border-radius: 0 7px 7px 0; }
+.indice .passi a.qui { color: var(--testo); background: rgba(127, 140, 155, .16);
+                       box-shadow: inset 2px 0 0 var(--accento); }
+/* THE FILTER at the top of the contents, the same in both
+   guides. The steps of the chapters not being read are in the page but folded
+   away (.altrove), and open only while filtering: so a word found in chapter
+   11 shows the step it is in, and the link goes straight there. */
+/* a drawing inside a point of a step (the magnet's magnetisation): white
+   ground in both themes, as the renders have */
+.punti figure.illustrazione { margin: .7rem 0 .2rem; }
+.punti figure.illustrazione img { display: block; width: 320px; max-width: 100%; height: auto;
+                                  background: #fff; border-radius: 8px; padding: .3rem; }
+.punti figure.illustrazione figcaption { font-size: .85rem; color: var(--muto); margin-top: .4rem; }
+.filtro { margin: 0 0 1rem; }
+.filtro input { width: 100%; box-sizing: border-box; font: inherit; font-size: .9rem;
+                padding: .45rem .7rem; border-radius: 8px; border: 1px solid var(--filo);
+                background: var(--carta); color: var(--testo); }
+.filtro input:focus { outline: 2px solid var(--accento); outline-offset: 1px; }
+.filtro-vuoto { font-size: .875rem; color: var(--muto); margin: 0 .5rem 1rem; }
+.indice .passi.altrove { display: none; }
+.indice.filtrando .passi.altrove { display: block; }
+
+/* --------------------------------------------------------------- il testo */
+main { flex: 1 1 auto; min-width: 0; max-width: 1060px; margin: 0 auto;
+       padding: 3.2rem 3.4rem 5rem; }
+.briciole { margin: 0 0 .5rem; color: var(--muto); font-size: .82rem;
+            letter-spacing: .09em; text-transform: uppercase; }
+.insegna { display: block; width: 260px; max-width: 70%; height: auto; margin: 0 0 1.6rem; }
+h1 { margin: 0 0 1rem; font-size: 2.3rem; }
+.occhiello { font-size: 1.12rem; color: var(--muto); margin: 0 0 2.6rem; max-width: 62ch; }
+
+.serve { border: 1px solid var(--filo); border-radius: 12px; padding: 1.4rem 1.6rem;
+         margin-bottom: 3.2rem; background: var(--fondo2); }
+.serve h2 { margin: 0 0 1.1rem; font-size: .84rem; letter-spacing: .1em;
+            text-transform: uppercase; color: var(--muto); }
+.due { display: grid; grid-template-columns: 1.35fr 1fr; gap: 1.6rem; }
+.due h3 { margin: 0 0 .5rem; font-size: .95rem; }
+.due ul { list-style: none; margin: 0; padding: 0; }
+.due li { padding: .3rem 0; border-top: 1px solid var(--filo); font-size: .95rem; }
+.due li:first-of-type { border-top: 0; }
+.serve li.sezione { font-weight: 600; margin-top: 1rem; list-style: none; }
+.serve li.sezione:first-child { margin-top: 0; }
+.q { display: inline-block; min-width: 2.1rem; color: var(--muto);
+     font-variant-numeric: tabular-nums; }
+.due em { display: block; margin-left: 2.1rem; color: var(--muto);
+          font-style: normal; font-size: .86rem; }
+.attrezzi li::before { content: "·"; color: var(--accento-testo); margin-right: .5rem; font-weight: 700; }
+
+.passo { padding-top: 2.2rem; border-top: 1px solid var(--filo); margin-bottom: 3rem; }
+.passo h2 { display: flex; gap: .85rem; align-items: baseline; margin: 0 0 1.4rem; font-size: 1.42rem; }
+.passo .numero { color: var(--accento-testo); font-size: .95rem; font-weight: 700;
+                 letter-spacing: .08em; text-transform: uppercase; white-space: nowrap;
+                 padding-top: .25rem; }
+.corpo { display: grid; grid-template-columns: minmax(0, 1.32fr) minmax(0, 1fr);
+         gap: 2.2rem; align-items: start; }
+/* Un passo senza immagine prende tutta la colonna invece di lasciare a destra
+   un riquadro vuoto, che si legge come un'immagine che non ha caricato. */
+.corpo.solo-testo { grid-template-columns: minmax(0, 1fr); }
+/* Il riquadro "questo capitolo forse non ti serve", in testa alla pagina. Sta
+   PRIMA di "What you need" apposta: chi puo' saltare il capitolo non deve
+   prima leggersi l'elenco di quello che gli servirebbe.
+
+   Si chiama salta-capitolo e NON salta, che era il nome ovvio: `.salta` e'
+   gia' il link di salto dell'accessibilita', quello in cima al body che sta
+   fuori schermo finche' non prende il fuoco. Chiamandolo cosi' il riquadro
+   nuovo lo rendeva visibile, e gli finiva addosso all'indice. */
+.salta-capitolo { background: var(--attenzione-fondo);
+         border: 1px solid var(--accento);
+         border-radius: 12px; padding: 1rem 1.2rem; margin: 0 0 1.8rem;
+         display: flex; gap: .9rem; align-items: flex-start; }
+/* La freccia si scrive COL CARATTERE e non con l'escape CSS: questo foglio
+   di stile vive dentro una stringa Python, e un escape che comincia con la
+   barra rovescia lo mangia Python come OTTALE prima che il CSS lo veda -
+   diventa un carattere di controllo e lascia le cifre restanti come testo.
+   Nel riquadro si leggeva un carattere illeggibile seguito da B7. */
+.salta-capitolo::before { content: "↷"; color: var(--attenzione);
+                 font-size: 1.5rem; line-height: 1; flex: none; }
+.salta-capitolo p { margin: 0; }
+.salta-capitolo strong { color: var(--attenzione); }
+figure { margin: 0; }
+figure a { display: block; background: var(--carta); border: 1px solid var(--filo);
+           border-radius: 12px; padding: .9rem; }
+/* L'immagine non riempie per forza la colonna: un esploso verticale alto
+   quanto lo schermo caccia fuori dal campo il testo che lo spiega, ed e'
+   proprio il testo che dice cosa si sta guardando. */
+figure img { display: block; margin: 0 auto; width: auto; height: auto;
+             max-width: 100%; max-height: 470px; }
+figcaption { margin-top: .5rem; font-size: .8rem; color: var(--muto); }
+.punti { list-style: none; margin: 0; padding: 0; }
+.punti li { position: relative; padding: 0 0 .85rem 1.25rem; }
+.punti li::before { content: ""; position: absolute; left: 0; top: .62em;
+                    width: 6px; height: 6px; border-radius: 2px; background: var(--accento); }
+.punti .attenzione { background: var(--attenzione-fondo); border-radius: 8px;
+                     padding: .6rem .8rem .6rem 1.9rem; margin-bottom: .85rem; }
+.punti .attenzione::before { content: "!"; background: none; color: var(--attenzione);
+                             font-weight: 800; width: auto; height: auto;
+                             left: .8rem; top: .62rem; }
+
+.avanti { display: flex; justify-content: space-between; gap: 1rem;
+          border-top: 1px solid var(--filo); padding-top: 1.6rem; }
+.avanti a { text-decoration: none; font-weight: 600; }
+.avanti span { display: block; font-size: .78rem; color: var(--muto);
+               font-weight: 400; letter-spacing: .08em; text-transform: uppercase; }
+
+/* ------------------------------------------------ the language switch
+   Modelled on trendupgraphic.com (tug.css, .lang-switch): a pill with two
+   real links, EN and IT, each to THE SAME PAGE in the other language. Real
+   links and not a button that swaps texts: each language is a page of its
+   own, that a search engine can index and a reader can bookmark. 2.75rem =
+   44 px targets, the size a finger needs - and the guide is read with dirty
+   hands, next to the bench. */
+.testata { display: flex; justify-content: flex-end; margin: -1.6rem 0 1.2rem; }
+.lang-switch { display: inline-flex; align-items: center; gap: 4px; padding: 4px;
+               border-radius: 999px; background: var(--pillola);
+               border: 1px solid var(--filo); }
+.lang-btn { display: inline-flex; align-items: center; justify-content: center;
+            min-width: 2.75rem; min-height: 2.75rem; padding: 0 .75rem;
+            border-radius: 999px; color: var(--pillola-testo); font-size: .9rem;
+            font-weight: 600; text-decoration: none;
+            transition: background-color 180ms ease, color 180ms ease; }
+.lang-btn:hover { color: var(--testo); }
+.lang-btn.is-active { background: var(--pillola-attiva); color: var(--testo); }
+.lang-btn:focus-visible { outline: 2px solid var(--accento); outline-offset: 2px; }
+
+/* The fade between the two languages (Chrome, Edge, Safari; elsewhere an
+   ordinary page change), as on trendupgraphic.com. The two pages have the
+   same layout, so only the words seem to change. */
+@view-transition { navigation: auto; }
+@media (prefers-reduced-motion: reduce) {
+  @view-transition { navigation: none; }
+  html { scroll-behavior: auto; }
+  .lang-btn { transition: none; }
+}
+
+/* ------------------------------------------------------------- l'ingresso */
+.capitoli { list-style: none; margin: 0; padding: 0; }
+.capitoli li { border-top: 1px solid var(--filo); }
+.capitoli a, .capitoli .vuoto { display: flex; gap: 1.1rem; align-items: baseline;
+                                padding: .95rem .3rem; text-decoration: none; color: var(--testo); }
+.capitoli .vuoto { color: var(--muto); }
+.capitoli .num { color: var(--muto); font-variant-numeric: tabular-nums; min-width: 1.6rem; }
+.capitoli b { font-weight: 600; }
+.capitoli em { font-style: normal; color: var(--muto); font-size: .9rem; }
+.capitoli .vuoto b { color: var(--muto); font-weight: 500; }
+.nota { color: var(--muto); font-size: .92rem; border-top: 1px solid var(--filo);
+        margin-top: 3rem; padding-top: 1.2rem; max-width: 62ch; }
+.sostegno { margin-top: 2.4rem; padding: 1.3rem 1.6rem; border-radius: 12px;
+            background: var(--fondo2); border: 1px solid var(--filo); max-width: 62ch; }
+.sostegno h2 { margin: 0 0 .6rem; font-size: 1.05rem; }
+.sostegno p { margin: 0 0 .6rem; font-size: .95rem; }
+.sostegno .minuto { margin: 0; font-size: .86rem; color: var(--muto); }
+/* The sponsor button: amber ground, ink text - 9.6:1, the brand's accent used
+   as a surface and not as text, which the brand guide allows ("the eye"). */
+.sponsor { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem .9rem;
+           margin: .9rem 0 1rem; }
+.sponsor-btn { display: inline-flex; align-items: center; gap: .45rem;
+               padding: .6rem 1.15rem; border-radius: 999px; background: #efa00b;
+               color: #16191d; font-family: var(--titoli); font-weight: 600;
+               font-size: 1.02rem; text-decoration: none;
+               box-shadow: 0 1px 0 rgba(0,0,0,.12); }
+.sponsor-btn:hover { background: #f6b53a; }
+.sponsor-btn:focus-visible { outline: 2px solid var(--testo); outline-offset: 2px; }
+.sponsor-dove { color: var(--muto); font-size: .88rem; }
+
+/* The landing page, docs/index.html: no side contents, the three guides. */
+.casa { max-width: 980px; margin: 0 auto; padding: 1.2rem 16px 3rem; }
+.guide { list-style: none; padding: 0; margin: 1.8rem 0 0; display: grid; gap: 1rem;
+         grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.guide li { background: var(--fondo2); border: 1px solid var(--filo); border-radius: 12px;
+            padding: 1.1rem 1.3rem 1.2rem; display: flex; flex-direction: column; }
+.guide h2 { font-family: var(--titoli); font-size: 1.2rem; margin: 0 0 .5rem; }
+.guide h2 a { color: var(--testo); text-decoration: none; }
+.guide h2 a:hover { color: var(--accento-testo); }
+.guide p { margin: 0 0 .9rem; font-size: .95rem; flex: 1; }
+.guide .apri { display: block; font-weight: 600; margin-top: .25rem; }
+
+@media (max-width: 1040px) {
+  .pagina { display: block; }
+  .indice { position: static; width: auto; height: auto; padding: 1rem 1.2rem;
+            border-right: 0; border-bottom: 1px solid var(--filo); }
+  .indice summary { display: block; cursor: pointer; font-weight: 600; padding: .3rem 0; }
+  .indice[open] summary { margin-bottom: .6rem; }
+  .marchio { margin: .2rem .2rem 1rem; }
+  main { padding: 2rem 1.2rem 4rem; }
+  .testata { margin: -.8rem 0 1rem; }
+  h1 { font-size: 1.85rem; }
+  /* minmax(0, 1fr) e non 1fr, per cautela: `1fr` vale `minmax(auto, 1fr)` e
+     il minimo automatico di un'immagine con un tetto d'altezza si calcola sul
+     rapporto d'aspetto, non sulla larghezza disponibile. Sul telefono non e'
+     stato visto succedere - la pagina a 500 px sta dentro - ma il caso e'
+     quello in cui succederebbe. */
+  .corpo, .due { grid-template-columns: minmax(0, 1fr); gap: 1.2rem; }
+  figure a { padding: .6rem; }
+}

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wheelly — the guides</title>
+<meta name="description" content="A motorised filter wheel made out of a manual one: how to build it, how to wire its board, how to drive it from Ekos.">
+<link rel="canonical" href="index.html">
+<link rel="alternate" hreflang="en" href="index.html">
+<link rel="alternate" hreflang="it" href="it/index.html">
+<link rel="alternate" hreflang="x-default" href="index.html">
+<script>
+(function () {
+  var params = new URLSearchParams(window.location.search);
+  var scelta = params.get('lang');
+  var daQui = false;
+  try {
+    daQui = document.referrer !== '' &&
+            new URL(document.referrer).origin === window.location.origin;
+  } catch (e) { daQui = false; }
+  var lingue = navigator.languages && navigator.languages.length ?
+               navigator.languages[0] : (navigator.language || '');
+  var italiano = lingue.toLowerCase().indexOf('it') === 0;
+  var suDisco = window.location.protocol === 'file:';
+  if (scelta === 'it' || (scelta === null && !daQui && !suDisco && italiano)) {
+    window.location.replace('it/index.html' + window.location.hash);
+  }
+})();
+</script>
+<link rel="icon" type="image/svg+xml" href="assembly/brand/wheelly-mark.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&display=swap">
+<link rel="stylesheet" href="assembly/guide.css">
+</head>
+<body>
+<div class="casa">
+<main id="contenuto">
+<div class="testata"><nav class="lang-switch" aria-label="Language"><a class="lang-btn is-active" aria-current="page" href="index.html" hreflang="en" lang="en" aria-label="English">EN</a><a class="lang-btn" href="it/index.html" hreflang="it" lang="it" aria-label="Italiano">IT</a></nav></div>
+<div class="insegna"><picture><source media="(prefers-color-scheme: dark)" srcset="assembly/brand/wheelly-logo-horizontal-reversed.svg"><img src="assembly/brand/wheelly-logo-horizontal.svg" width="260" alt="Wheelly"></picture></div>
+<p class="occhiello">A motorised filter wheel, made out of a manual one. Three guides take you from the printer to the first filter change in Ekos.</p>
+<ul class="guide">
+<li><h2><a href="assembly/index.html">Hardware assembly guide</a></h2><p>Printing, heat-set inserts, clutch, motor, sensor: chapter by chapter, with pictures rendered from the CAD model.</p><div><a class="apri" href="assembly/index.html">Open the guide &rarr;</a></div></li>
+<li><h2><a href="pcb/en_wheelly-wiring-diagrams.pdf">Board assembly guide</a></h2><p>The perfboard hole by hole, as you hold it: where every part sits and every wire runs, printed at 1:1.</p><div><a class="apri" href="pcb/en_wheelly-wiring-diagrams.pdf">Wiring diagrams (PDF) &rarr;</a><a class="apri" href="pcb/en_board-layout.svg">Board layout (SVG) &rarr;</a></div></li>
+<li><h2><a href="driver/index.html">INDI driver guide</a></h2><p>Every command and option of the control panel in Ekos, with the part of the panel it talks about: calibration, tolerances, motor.</p><div><a class="apri" href="driver/index.html">Open the guide &rarr;</a></div></li>
+</ul>
+<section class="sostegno"><h2>Support the project</h2><p>Wheelly is free, and it stays free. If this guide saved you an evening, sponsoring it pays for Claude tokens, for filament, and for the parts that get printed three times before they fit.</p><p class="sponsor"><a class="sponsor-btn" href="https://github.com/sponsors/teoteo"><span aria-hidden="true">♥</span> Sponsor the repository</a><span class="sponsor-dove">on GitHub Sponsors, monthly or once</span></p><p class="minuto">Nothing is held back for sponsors: no paid version, no private repository, no chapter behind a paywall.</p></section>
+</main></div>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="536" viewBox="0 0 760 536" role="img">
+<title>Connections XIAO · AS5600 and LED</title><desc>The connections between the XIAO, the sensor module and the status LED. Holes on the grid printed on the board.</desc>
+<style>
+text{font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;fill:#2A2A28}
+.th{font-size:14px;font-weight:600}
+.ts{font-size:11.5px;fill:#55534E}
+.tn{font-size:10px;fill:#7A786F}
+.box{fill:#F6F5F1;stroke:#B0AEA6;stroke-width:1}
+.res{fill:#E4F1EB;stroke:#3E8C74;stroke-width:1}
+.filo{stroke-width:2.2;fill:none;stroke-linecap:round}
+.alone{stroke-width:5.4;fill:none;stroke:#FFFFFF;stroke-linecap:round}
+</style>
+<rect width="760" height="536" fill="#FFFFFF"/>
+<rect class="box" x="60.0" y="74.0" width="200.0" height="292.0" rx="8"/>
+<text class="th" x="160.0" y="62.0" text-anchor="middle">XIAO ESP32-S3</text>
+<rect class="box" x="500.0" y="74.0" width="200.0" height="292.0" rx="8"/>
+<text class="th" x="600.0" y="62.0" text-anchor="middle">AS5600 (J4) and LED (J5)</text>
+<path class="alone" d="M260.0,100.0 Q380.0,113.2 500.0,100.0"/>
+<path class="filo" d="M260.0,100.0 Q380.0,113.2 500.0,100.0" stroke="#E08A1E"/>
+<text class="ts" x="250.0" y="104.0" text-anchor="end">3V3 · C08</text>
+<text class="ts" x="510.0" y="104.0">VCC · M01</text>
+<rect x="666.0" y="95.0" width="24" height="10" rx="2" fill="#7A4A24" stroke="#8A887F" stroke-width="0.8"/>
+<text class="tn" x="690.0" y="118.0" text-anchor="end">cable: brown</text>
+<text class="tn" x="380.0" y="120.0" text-anchor="middle">module supply, 3.3 V</text>
+<path class="alone" d="M260.0,146.0 Q380.0,159.2 500.0,146.0"/>
+<path class="filo" d="M260.0,146.0 Q380.0,159.2 500.0,146.0" stroke="#6E6C66"/>
+<text class="ts" x="250.0" y="150.0" text-anchor="end">GND · B08</text>
+<text class="ts" x="510.0" y="150.0">GND · N01</text>
+<rect x="666.0" y="141.0" width="24" height="10" rx="2" fill="#FFFFFF" stroke="#8A887F" stroke-width="0.8"/>
+<rect x="666.0" y="144.3" width="24" height="3.4" fill="#7A4A24"/>
+<text class="tn" x="690.0" y="164.0" text-anchor="end">cable: white-brown</text>
+<text class="tn" x="380.0" y="166.0" text-anchor="middle">sensor ground: logic bus branch</text>
+<path class="alone" d="M260.0,192.0 Q380.0,205.2 500.0,192.0"/>
+<path class="filo" d="M260.0,192.0 Q380.0,205.2 500.0,192.0" stroke="#3E8C74"/>
+<text class="ts" x="250.0" y="196.0" text-anchor="end">D4 · E02</text>
+<text class="ts" x="510.0" y="196.0">SDA · K01</text>
+<rect x="666.0" y="187.0" width="24" height="10" rx="2" fill="#2F5FB0" stroke="#8A887F" stroke-width="0.8"/>
+<text class="tn" x="690.0" y="210.0" text-anchor="end">cable: blue</text>
+<text class="tn" x="380.0" y="212.0" text-anchor="middle">I²C data</text>
+<path class="alone" d="M260.0,238.0 Q380.0,251.2 500.0,238.0"/>
+<path class="filo" d="M260.0,238.0 Q380.0,251.2 500.0,238.0" stroke="#3E8C74"/>
+<text class="ts" x="250.0" y="242.0" text-anchor="end">D5 · F02</text>
+<text class="ts" x="510.0" y="242.0">SCL · L01</text>
+<rect x="666.0" y="233.0" width="24" height="10" rx="2" fill="#3F8F3A" stroke="#8A887F" stroke-width="0.8"/>
+<text class="tn" x="690.0" y="256.0" text-anchor="end">cable: green</text>
+<text class="tn" x="380.0" y="258.0" text-anchor="middle">I²C clock</text>
+<path class="alone" d="M260.0,284.0 Q309.0,293.8 358.0,284.0"/>
+<path class="filo" d="M260.0,284.0 Q309.0,293.8 358.0,284.0" stroke="#7B4FB5"/>
+<path class="alone" d="M402.0,284.0 Q451.0,274.2 500.0,284.0"/>
+<path class="filo" d="M402.0,284.0 Q451.0,274.2 500.0,284.0" stroke="#7B4FB5"/>
+<rect class="res" x="358.0" y="274.0" width="44" height="20" rx="5"/>
+<text class="ts" x="380.0" y="288.0" text-anchor="middle">R3</text>
+<text class="ts" x="250.0" y="288.0" text-anchor="end">D10 · D08</text>
+<text class="ts" x="510.0" y="288.0">LED + · D10</text>
+<text class="tn" x="380.0" y="310.0" text-anchor="middle">LED drive, in series with leads in G10 and K10</text>
+<path class="alone" d="M260.0,330.0 Q380.0,343.2 500.0,330.0"/>
+<path class="filo" d="M260.0,330.0 Q380.0,343.2 500.0,330.0" stroke="#6E6C66"/>
+<text class="ts" x="250.0" y="334.0" text-anchor="end">GND · B08</text>
+<text class="ts" x="510.0" y="334.0">LED − · E10</text>
+<text class="tn" x="380.0" y="350.0" text-anchor="middle">LED return: same logic branch</text>
+<text class="tn" x="60.0" y="400.0">These two grounds leave the XIAO GND and not the node: they are its branch</text>
+<text class="tn" x="60.0" y="418.0">of the logic bus, and inside a branch the grounds may touch.</text>
+<text class="tn" x="60.0" y="436.0">The module's 104 capacitor sits under its own board, not here.</text>
+<text class="tn" x="60.0" y="454.0">SENSOR CABLE (CAT5), four wires, colours as soldered on the module: brown 3V3,</text>
+<text class="tn" x="60.0" y="472.0">white-brown GND, blue SDA, green SCL. DIR is tied to GND on the module (jumper pad 2 - pad 1),</text>
+<text class="tn" x="60.0" y="490.0">not through the cable. Cut back and insulated at this end: white-green, white-blue, orange, white-orange.</text>
+</svg>

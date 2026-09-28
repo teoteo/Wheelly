@@ -1,0 +1,38 @@
+WHEELLY - LOGO PACKAGE
+======================
+
+svg/  Vector master files. All type is converted to outlines - no font needed.
+png/  Raster versions, 3x, transparent background.
+Wheelly-Brand-Guide.html  Offline copy of the 4-page guide. Open it and print
+                          to PDF for a paper copy.
+
+  wheelly-logo-horizontal            Symbol + wordmark, side by side. Primary.
+  wheelly-logo-horizontal-reversed   Same, for dark backgrounds.
+  wheelly-logo-vertical              Symbol above wordmark.
+  wheelly-logo-vertical-reversed     Same, for dark backgrounds.
+  wheelly-mark                       Symbol only. Avatar, favicon, app icon.
+  wheelly-mark-reversed              Symbol only, for dark backgrounds.
+  wheelly-mark-mono-ink              Symbol, one colour, no amber eye.
+  wheelly-mark-mono-paper            Symbol, one colour light, no amber eye.
+
+The wordmark is never used on its own: always pair it with the symbol.
+
+Colours
+-------
+Ink     #16191D   RGB 22 25 29     Linework and type
+Amber   #EFA00B   RGB 239 160 11   The eye, accents only
+Paper   #F7F6F3   RGB 247 246 243  Light background
+
+Typeface
+--------
+Fredoka SemiBold 600, tracking -1px at 88px.
+The logo files are outlined; use the live font for headings and body copy.
+fonts.google.com/specimen/Fredoka
+
+Minimum size
+------------
+Horizontal lockup  30 mm / 120 px wide
+Vertical lockup    22 mm / 90 px wide
+Symbol only        16 mm / 64 px
+
+Clear space around the logo equals the diameter of the eye.

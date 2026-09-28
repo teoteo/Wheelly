@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 150" width="320" height="150" role="img" font-family="system-ui,sans-serif">
+<rect x="50" y="14" width="220" height="30" rx="4" fill="#f4f1e8" stroke="#6b7178" stroke-width="1.5"/>
+<text x="42" y="34" font-size="13" font-weight="700" fill="#333" text-anchor="end">J1</text>
+<rect x="67" y="20" width="18" height="18" rx="2" fill="#d9d4c7"/>
+<path d="M76,38 C76,70 76,70 76,96" stroke="#1E1E1C" stroke-width="7" fill="none" stroke-linecap="round"/>
+<text x="76" y="116" font-size="14" font-weight="700" fill="#222" text-anchor="middle">A+</text>
+<text x="76" y="136" font-size="12" fill="#6b7178" text-anchor="middle">X07</text>
+<rect x="123" y="20" width="18" height="18" rx="2" fill="#d9d4c7"/>
+<path d="M132,38 C132,70 132,70 132,96" stroke="#5E9022" stroke-width="7" fill="none" stroke-linecap="round"/>
+<text x="132" y="116" font-size="14" font-weight="700" fill="#222" text-anchor="middle">A−</text>
+<text x="132" y="136" font-size="12" fill="#6b7178" text-anchor="middle">X06</text>
+<rect x="179" y="20" width="18" height="18" rx="2" fill="#d9d4c7"/>
+<path d="M188,38 C188,70 188,70 188,96" stroke="#C0392B" stroke-width="7" fill="none" stroke-linecap="round"/>
+<text x="188" y="116" font-size="14" font-weight="700" fill="#222" text-anchor="middle">B+</text>
+<text x="188" y="136" font-size="12" fill="#6b7178" text-anchor="middle">X05</text>
+<rect x="235" y="20" width="18" height="18" rx="2" fill="#d9d4c7"/>
+<path d="M244,38 C244,70 244,70 244,96" stroke="#2F6FC4" stroke-width="7" fill="none" stroke-linecap="round"/>
+<text x="244" y="116" font-size="14" font-weight="700" fill="#222" text-anchor="middle">B−</text>
+<text x="244" y="136" font-size="12" fill="#6b7178" text-anchor="middle">X04</text>
+<path d="M76,8 L76,4 L132,4 L132,8" stroke="#6b7178" fill="none"/>
+<path d="M188,8 L188,4 L244,4 L244,8" stroke="#6b7178" fill="none"/>
+</svg>

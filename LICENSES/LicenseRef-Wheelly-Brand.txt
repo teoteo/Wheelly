@@ -1,0 +1,26 @@
+Wheelly brand assets — all rights reserved
+
+The files that carry the identifier LicenseRef-Wheelly-Brand are the brand
+assets of the Wheelly project: the logo, its variants and the source files they
+are drawn from. Copyright 2026 Matteo Beretta.
+
+They are NOT covered by the open licences that apply to the rest of this
+repository (MIT, CERN-OHL-P-2.0, CC-BY-4.0). They are published here so that
+the project can use them and so that anyone writing about the project can see
+what the mark looks like — not so that they can be reused.
+
+You may:
+
+  - reproduce the logo, unmodified, to refer to this project: in an article, a
+    review, a talk, a link, a list of tools you use;
+  - keep it in an unmodified copy of this repository.
+
+You may not, without written permission:
+
+  - use the logo, or anything confusingly similar to it, as the mark of your own
+    project, product, service or company;
+  - use it on a modified version of this project, or on anything you sell;
+  - use it in a way that suggests this project endorses you.
+
+The rules about the NAME "Wheelly", which is a separate matter from the
+copyright in these files, are in TRADEMARK.md at the root of the repository.
