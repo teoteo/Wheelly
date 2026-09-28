@@ -77,6 +77,12 @@ echo "### the AS5600 field flags reach status and diag as the chip reports them"
 /tmp/wheelly_test_field
 
 echo
+echo "### the motor driver still holds its setup: each witness of a reset alone"
+"$CXX" -std=c++11 -Wall -Wextra -Werror -O1 -o /tmp/wheelly_test_driver_check \
+       test_driver_check.cpp
+/tmp/wheelly_test_driver_check
+
+echo
 echo "### the driver's sweep plot: same-angle samples merged, a minimum window"
 "$CXX" -std=c++11 -Wall -Wextra -Werror -O1 -o /tmp/wheelly_test_plot \
        test_plot.cpp ../../driver/indi-wheelly/plot.cpp

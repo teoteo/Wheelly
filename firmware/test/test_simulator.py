@@ -1541,6 +1541,95 @@ def test_silent_sensor():
     r.close()
 
 
+def first_leg(r):
+    """The `! leg` event of the first leg among the events collected."""
+    for e in r.events:
+        if e.split()[1] == P.EV_LEG and r.fields(e).get(P.F_N) == "1":
+            return r.fields(e)
+    return None
+
+
+def test_motor_supply():
+    print("fault: the motor's 12 V after the USB, or dropping and coming back")
+    # THE ASSEMBLY GUIDE'S OWN ORDER: USB first, then 12 V. The driver's
+    # registers live on the 12 V, so the setup the firmware writes at boot
+    # goes nowhere, and the chip wakes at its reset values. On the reference
+    # wheel a +10 degree jog then moved +2.28, and only `diag` mended it.
+    r = Wheel("--vm-off-for", "1500")
+    line = r.ask(P.CMD_GO + " 3")
+    ok(line is not None and line.startswith(f"{P.PREFIX_ERROR} {P.ERR_DRIVER_SILENT} "),
+       "no 12 V yet: go refused, driver silent - not sent blind", line)
+    line = r.ask(f"{P.CMD_JOG} 10")
+    ok(line is not None and line.startswith(f"{P.PREFIX_ERROR} {P.ERR_DRIVER_SILENT} "),
+       "no 12 V yet: jog refused too", line)
+    r.ask(P.CMD_DIAG)
+    ok(any("TMC2208 over UART: SILENT" in x for x in r.comments),
+       "and diag says the driver is silent", str(r.comments))
+    time.sleep(1.7)                                   # the 12 V arrive
+    r.events.clear()
+    r.ask(f"{P.CMD_LEGS} {P.ARG_ON}")
+    before = float(r.fields(r.ask(P.CMD_STATUS))[P.F_ANGLE])
+    line = r.ask(f"{P.CMD_JOG} 10")
+    ok(line is not None and line.startswith(P.PREFIX_OK), "12 V on: the jog is accepted", line)
+    e = r.wait_outcome(15.0)
+    s = r.fields(r.ask(P.CMD_STATUS))
+    moved = (float(s.get(P.F_ANGLE, before)) - before + 180.0) % 360.0 - 180.0
+    ok(e is not None and e.split()[1] == P.EV_ARRIVED and abs(moved - 10.0) <= P.FACTORY_GOOD_DEG,
+       "and the jog of 10 degrees moves 10 degrees", f"moved {moved:.2f}, {e}")
+    leg = first_leg(r)
+    ok(leg is not None and float(leg[P.F_MOVED]) >= 0.6 * float(leg[P.F_AIM]),
+       "already its FIRST leg covers its aim: the driver was set up before it, "
+       "not at its reset values", str(leg))
+    setups = [x for x in r.events if x.split()[1] == P.EV_DRIVER]
+    ok(len(setups) == 1 and r.fields(setups[0]).get(P.F_REASON) == P.V_POWER,
+       "and the setup is said once, reason=power", str(setups))
+    r.events.clear()
+    r.ask(f"{P.CMD_JOG} -10")
+    r.wait_outcome(15.0)
+    ok(not any(x.split()[1] == P.EV_DRIVER for x in r.events),
+       "a driver already set up is not set up (nor reported) again", str(r.events))
+    r.close()
+
+    # `diag` goes through the same check: it sets up and reports the same way
+    r = Wheel("--vm-off-for", "500")
+    time.sleep(0.7)
+    r.ask(P.CMD_DIAG)
+    e = r.wait_event(P.EV_DRIVER, 2.0)
+    ok(e is not None and r.fields(e).get(P.F_REASON) == P.V_POWER
+       and any("TMC2208 over UART: responding" in x for x in r.comments),
+       "diag after the 12 V: responding, set up, reported reason=power", f"{e} {r.comments}")
+    r.close()
+
+    # THE SECOND USE: the 12 V drop and come back with the wheel running,
+    # between two legs. The driver answers - with its setup gone. `diag`
+    # would not even have noticed: it redid only a driver seen silent.
+    r = Wheel("--vm-drop-after-moves", "1")
+    r.ask(f"{P.CMD_LEGS} {P.ARG_ON}")
+    r.ask(P.CMD_GO + " 3")
+    e = r.wait_outcome(20.0)
+    setups = [x for x in r.events if x.split()[1] == P.EV_DRIVER]
+    ok(len(setups) == 1 and r.fields(setups[0]).get(P.F_REASON) == P.V_RESET,
+       "a reset between two legs: set up again before the next, reason=reset", str(setups))
+    ok(e is not None and e.split()[1] == P.EV_ARRIVED, "and the positioning arrives", str(e))
+    legs = [r.fields(x) for x in r.events if x.split()[1] == P.EV_LEG]
+    ok(len(legs) >= 2 and all(float(x[P.F_MOVED]) >= 0.6 * float(x[P.F_AIM])
+                              for x in legs if float(x[P.F_AIM]) >= 1.0),
+       "every leg after the reset covers its aim", str(legs))
+    r.close()
+
+    # The 12 V gone for good between two legs: the positioning ends there,
+    # failed, instead of sending legs into nothing until the retries run out.
+    r = Wheel("--vm-lost-after-moves", "1")
+    r.ask(P.CMD_GO + " 3")
+    e = r.wait_outcome(20.0)
+    ok(e is not None and e.split()[1] == P.EV_FAILED and r.fields(e).get(P.F_RETRIES) == "0",
+       "driver silent between two legs: failed at once, no retries into nothing", str(e))
+    line = r.ask(P.CMD_GO + " 2")
+    ok(line is not None and line.startswith(f"{P.PREFIX_ERROR} {P.ERR_DRIVER_SILENT} "),
+       "and the next go is refused", line)
+    r.close()
+
+
 def test_nvs_broken():
     print("fault: the NVS cannot be written")
     r = Wheel("--nvs-broken")
@@ -1698,6 +1787,7 @@ def main():
     test_slip()
     test_stuck()
     test_silent_sensor()
+    test_motor_supply()
     test_nvs_broken()
     test_other_wheel()
     test_determinism()

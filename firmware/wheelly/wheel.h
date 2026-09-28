@@ -135,6 +135,14 @@ class Wheel
         // Lost, and not yet seen again without a break for MAGNET_REARM_MS.
         bool magnet_lost() const { return m_magnet_lost; }
 
+        // The motor driver, asked before every leg and by `diag`
+        // (mechanics.h, "is the driver still ours"): set up again when it was
+        // reset or has just been powered. A setup is reported once, by
+        // driver_to_report() (the `! driver` event); SILENT makes go() and
+        // jog() refuse, and ends a positioning between two legs.
+        DriverCheck check_driver();
+        bool driver_to_report(DriverCheck &what);
+
         // How many slots THIS wheel has. It lives in its storage, not in the
         // code: a single firmware serves different wheels, and the driver asks
         // for it instead of taking it for granted.
@@ -326,6 +334,10 @@ class Wheel
         bool  m_magnet_run {false};       // seen at every read since...
         uint32_t m_magnet_since {0};      // ...this moment
         void  watch_drift();
+
+        // a setup of the driver waiting to be reported: POWERED or RESET
+        DriverCheck m_driver_report {DriverCheck::READY};
+        bool  m_driver_to_report {false};
 
         bool  m_drift_out {false};        // is already out of tolerance now
         bool  m_drift_to_report {false};

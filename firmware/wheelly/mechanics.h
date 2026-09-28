@@ -34,6 +34,93 @@ namespace wheelly {
 // the same constant). See test_units.py.
 const uint16_t MICROSTEPS = 16;
 
+// ---------------------------------------------------- is the driver still ours
+//
+// THE MOTOR DRIVER FORGETS ITS CONFIGURATION WHEN ITS MOTOR SUPPLY GOES. The
+// TMC2208's registers live on VM, the 12 V, not on the XIAO's 3.3 V: with VM
+// off the chip does not answer on the UART at all, and when VM comes back it
+// starts from its reset values - current from the VREF trimmer
+// (i_scale_analog = 1), microsteps from the MS1/MS2 pins, the power-down pin
+// as PDN and not as UART. The assembly guide itself says USB first and 12 V
+// second, so at every normal power-up the configuration the firmware writes at
+// boot goes nowhere; and a 12 V plug that drops and comes back wipes it again
+// with the XIAO still running. On the reference wheel a jog of +10 degrees
+// moved +2.28 with the driver at its reset values, and +9.76 and +9.84 after
+// `diag` - which fixed it only because it happened to redo the setup of a
+// driver it had seen silent at boot. A driver reset while it was ALREADY
+// configured would not have been fixed even by `diag`.
+//
+// So before every leg of motor, and in `diag`, the driver is ASKED whether it
+// is still the one that was configured, and set up again if not. What is
+// asked is three registers that can be read back (TMC2208 datasheet, register
+// map; the same addresses on a TMC2209):
+//   - IOIN (0x06, R): its version field says a TMC2208 or TMC2209 answered
+//     with a good CRC - nothing else counts as an answer;
+//   - GSTAT (0x01, R+WC): bit 0, `reset`, is set by the chip after every
+//     reset and stays set until written back to 1; the setup clears it, so
+//     finding it set again means a reset since;
+//   - GCONF (0x00, RW): the bits the setup writes read back as written.
+//     A second witness, in case GSTAT was cleared by someone else, and the
+//     one that sees a setup that never took.
+// Not IFCNT (0x02), the counter of good writes: it would say a reset only by
+// comparison with a count kept here, it wraps at 256, and every write the
+// library makes moves it. Not IHOLD_IRUN or TPWMTHRS: they are write-only.
+//
+// The verdict is a pure function of what was read, here and not in
+// mechanics_esp32.cpp, so that the Mac bench runs the very same rule against
+// a fake register file (test/firmware_bench.cpp, test/test_driver_check.cpp).
+namespace tmc {
+const uint8_t REG_GCONF = 0x00;
+const uint8_t REG_GSTAT = 0x01;
+const uint8_t REG_IOIN = 0x06;
+const uint8_t GSTAT_RESET = 1u << 0;
+// GCONF bits written by the setup (datasheet, GCONF): i_scale_analog (0)
+// off, en_spreadcycle (2) off, pdn_disable (6) and mstep_reg_select (7) on.
+const uint32_t GCONF_I_SCALE_ANALOG = 1u << 0;
+const uint32_t GCONF_EN_SPREADCYCLE = 1u << 2;
+const uint32_t GCONF_PDN_DISABLE = 1u << 6;
+const uint32_t GCONF_MSTEP_REG_SELECT = 1u << 7;
+const uint32_t GCONF_WATCHED = GCONF_I_SCALE_ANALOG | GCONF_EN_SPREADCYCLE
+                               | GCONF_PDN_DISABLE | GCONF_MSTEP_REG_SELECT;
+const uint32_t GCONF_CONFIGURED = GCONF_PDN_DISABLE | GCONF_MSTEP_REG_SELECT;
+// After a reset: i_scale_analog = 1, pdn_disable = 0, mstep_reg_select = 0.
+const uint32_t GCONF_RESET = GCONF_I_SCALE_ANALOG;
+// IOIN's version field (bits 31..24): who answered.
+const uint8_t VERSION_2208 = 0x20;
+const uint8_t VERSION_2209 = 0x21;
+}  // namespace tmc
+
+// What was read back from the driver.
+struct DriverReadback {
+    uint8_t version;    // IOIN's version field; 0 when nothing came back
+    uint8_t gstat;
+    uint32_t gconf;
+};
+
+enum class DriverState {
+    READY,      // answers, and still holds our setup
+    UNSET,      // answers, but was reset (or never set up): set it up
+    SILENT      // does not answer: no VM, or the single wire is broken
+};
+
+inline DriverState judge_driver(const DriverReadback &r)
+{
+    if (r.version != tmc::VERSION_2208 && r.version != tmc::VERSION_2209)
+        return DriverState::SILENT;
+    if (r.gstat & tmc::GSTAT_RESET) return DriverState::UNSET;
+    if ((r.gconf & tmc::GCONF_WATCHED) != tmc::GCONF_CONFIGURED) return DriverState::UNSET;
+    return DriverState::READY;
+}
+
+// What driver_check() found, and did: the wheel reports the two middle cases
+// with the `! driver` event (wheelly_protocol.h, EV_DRIVER).
+enum class DriverCheck {
+    READY,
+    POWERED,    // it was silent and now answers: the 12 V arrived; set up
+    RESET,      // it answered with its setup gone: set up again
+    SILENT
+};
+
 // Everything the wheel can do at the level of the iron.
 class Mechanics
 {
@@ -71,6 +158,14 @@ class Mechanics
         // motor turn per second. The implementation multiplies by MICROSTEPS.
         virtual void speed(uint32_t steps_per_second, uint32_t acceleration) = 0;
         virtual bool driver_responds() = 0;
+        // Before a leg of motor, and in `diag`: reads the driver back
+        // (judge_driver above), sets it up again if it was reset or has just
+        // been powered, and says which. The body is for fakes with no chip
+        // behind them; the XIAO and the Mac bench override it.
+        virtual DriverCheck driver_check()
+        {
+            return driver_responds() ? DriverCheck::READY : DriverCheck::SILENT;
+        }
         // Which silicon answered on the UART. It has a body and is not pure on
         // purpose: the fake mechanics of the bench and the simulator have no
         // chip to ask, and making them answer a question they cannot answer

@@ -112,22 +112,29 @@ CATALOGUE = {
         "l'ultimo devono essere una lettera o una cifra. I nomi di dispositivo di Windows (CON, "
         "PRN, AUX, NUL, COM1-COM9, LPT1-LPT9, anche con un'estensione) vengono rifiutati. Due "
         "posizioni non possono avere lo stesso nome, senza distinguere maiuscole e minuscole."),
-    'FILTER_NAME/notes/2': ('d37f273b',
+    'FILTER_NAME/notes/2': ('7c95acdd',
+        "Una posizione senza filtro: lascia vuoto il suo campo. Il driver le dà il nome Empty_ "
+        "seguito dal numero della posizione (Empty_5), che è unico e valido, così più posizioni "
+        "possono essere vuote insieme; il nome è lo stesso in ogni lingua, perché è conservato "
+        "nella ruota e scritto nell'intestazione FITS. Il campo e l'elenco dei filtri di Ekos "
+        "mostrano poi quel nome, e il log lo dice."),
+    'FILTER_NAME/notes/3': ('cb180e29',
         "Un nome rifiutato non viene corretto di nascosto: la proprietà diventa rossa (Alert), il "
         "campo torna al nome di prima, e il log dice quale posizione, quale nome, cosa non va e, "
-        "quando può, un nome che sarebbe accettato; una seconda riga del log elenca sempre i "
-        "caratteri ammessi. FILTER_SLOT non viene toccata, così un errore di battitura non ferma "
-        "mai una sequenza."),
-    'FILTER_NAME/notes/3': ('9af4898c',
+        "quando può, un nome che sarebbe accettato, seguiti dai caratteri ammessi. Quella riga è "
+        "sempre la più recente del log, quella in cima in KStars; quando è troppo lunga per un "
+        "solo messaggio INDI, i caratteri ammessi vanno nella riga subito prima. FILTER_SLOT non "
+        "viene toccata, così un errore di battitura non ferma mai una sequenza."),
+    'FILTER_NAME/notes/4': ('9af4898c',
         "Il numero dei campi segue il numero di posizioni che la ruota dichiara; la cattura del "
         "pannello mostra i cinque di una ruota di fabbrica."),
-    'FILTER_NAME/notes/4': ('f8039908',
+    'FILTER_NAME/notes/5': ('f8039908',
         "Nomi di fabbrica: Lum, Red, Green, Blue, Ha (Filter1, Filter2 ... su una ruota con un "
         "numero diverso di posizioni)."),
-    'FILTER_NAME/notes/5': ('b6040427',
+    'FILTER_NAME/notes/6': ('b6040427',
         "Un nome nuovo resta nella ruota solo fino allo spegnimento, a meno che tu non prema "
         "«Salva nella ruota» (WHEELLY_SAVE)."),
-    'FILTER_NAME/notes/6': ('64a82554',
+    'FILTER_NAME/notes/7': ('64a82554',
         "I nomi vengono sempre dalla ruota, a ogni collegamento - anche quando la configurazione "
         "INDI del computer ha dei nomi salvati da una sessione precedente: una ruota rinominata "
         "su un altro computer mostra i suoi."),

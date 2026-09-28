@@ -453,6 +453,17 @@ const char EV_DRIFT[] = "drift";         // it moved by itself, at rest
 // tools, not for the driver, and it is opt-in so that a driver that does not
 // know it never sees it; one that did would only log it at debug level.
 const char EV_LEG[] = "leg";
+// The motor driver had to be set up again before a leg or in `diag`
+// (mechanics.h, "is the driver still ours"): reason=power when it had been
+// silent and now answers - the 12 V arrived after the XIAO had started, which
+// is the order the assembly guide gives - and reason=reset when it answered
+// with its setup gone - the 12 V dropped and came back. Said once per
+// setup, not per check. With the driver silent a move is refused with
+// ERR_DRIVER_SILENT instead: a leg sent to an unpowered or reset driver
+// moved the disc a fraction of the way, or not at all.
+const char EV_DRIVER[] = "driver";
+const char V_POWER[] = "power";
+const char V_RESET[] = "reset";
 
 // ------------------------------------------------------------------ errors
 
@@ -475,7 +486,7 @@ enum Error
     ERR_BAD_FILTER_NAME = 9      // with reason= among the NameCheck values
 };
 
-const char F_REASON[] = "reason";        // comes with ERR_BAD_FILTER_NAME
+const char F_REASON[] = "reason";        // with ERR_BAD_FILTER_NAME, and with EV_DRIVER
 
 // ------------------------------------------------- validation of filter names
 //

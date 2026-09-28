@@ -251,6 +251,14 @@ class Wheel:
         self.events = []                  # unsolicited lines to send
         self._lock = threading.Lock()
 
+        # The motor driver and its 12 V (--vm-*): the firmware bench's model
+        # (FakeMechanics::supply), read by the firmware's rule. Powered from
+        # the start, it is found set up, as MechanicsEsp32::begin() leaves it.
+        self._vm = self.o.vm_off_for <= 0
+        self._driver_seen = self._vm
+        self._driver_set_up = True
+        self._vm_dropped = False
+
     def spread_evenly(self):
         """Angles split into equal parts and generic names: it is not the real
         calibration, but a sensible starting point, usable at once."""
@@ -281,6 +289,40 @@ class Wheel:
         return self.o.sensor_silent or (
             0 <= self.o.sensor_silent_after <= self.moves_done
         )
+
+    # -- motor driver -----------------------------------------------------
+
+    def _supply(self):
+        """The 12 V now, from --vm-*: their arrival, and every drop and
+        return, put the driver at its reset values (mechanics.h)."""
+        vm = (time.monotonic() - self._born) * 1000.0 >= self.o.vm_off_for
+        if 0 <= self.o.vm_lost_after_moves <= self.moves_done:
+            vm = False
+        if vm and not self._vm:
+            self._driver_set_up = False
+        if vm and not self._vm_dropped and 0 <= self.o.vm_drop_after_moves <= self.moves_done:
+            self._vm_dropped = True
+            self._driver_set_up = False
+        self._vm = vm
+
+    @property
+    def driver_responds(self):
+        self._supply()
+        return self._vm
+
+    def check_driver(self):
+        """Wheel::check_driver(): False if the driver is silent; set up
+        again, with the `! driver` event, if it answers without its setup."""
+        self._supply()
+        if not self._vm:
+            self._driver_seen = False
+            return False
+        if not self._driver_set_up:
+            reason = P.V_RESET if self._driver_seen else P.V_POWER
+            self._driver_set_up = True
+            self.events.append(f"{P.PREFIX_EVENT} {P.EV_DRIVER} {P.F_REASON}={reason}")
+        self._driver_seen = True
+        return True
 
     @property
     def magnet_seen(self):
@@ -655,7 +697,10 @@ class Wheel:
             # an approach leg: free, it does not use up a retry
             self._approach_legs += 1
             self._leg_kind = P.KIND_APPROACH
-            self._start_leg(now)
+            if self.check_driver():
+                self._start_leg(now)
+            else:
+                self._driver_gone(now, pos, error)
         elif error <= self.tolerance_warn and jog_went:
             self.motion = P.MOTION_IDLE
             self.outcome = P.EV_WARNING
@@ -665,12 +710,23 @@ class Wheel:
             # a retry: after a leg that stalled or went past the target
             self.retries += 1
             self._leg_kind = P.KIND_RETRY
-            self._start_leg(now)
+            if self.check_driver():
+                self._start_leg(now)
+            else:
+                self._driver_gone(now, pos, error)
         else:
             self.motion = P.MOTION_FAILED
             self.outcome = P.EV_FAILED
             self._release(now)
             self._event(P.EV_FAILED, pos, error)
+
+    def _driver_gone(self, now, pos, error):
+        """The driver went silent between two legs: as Wheel::judge(), the
+        positioning ends there, failed."""
+        self.motion = P.MOTION_FAILED
+        self.outcome = P.EV_FAILED
+        self._release(now)
+        self._event(P.EV_FAILED, pos, error)
 
     def _watch_drift(self):
         """Same criterion as wheel.cpp, watch_drift().
@@ -744,6 +800,13 @@ class Dialogue:
         if not self.r.magnet_seen:
             raise ProtocolError(P.ERR_NO_MAGNET, "magnet not detected")
 
+    def _check_driver(self):
+        # after the sensor, as Wheel::go() and Wheel::jog()
+        with self.r._lock:
+            if not self.r.check_driver():
+                raise ProtocolError(P.ERR_DRIVER_SILENT,
+                                    "motor driver not responding - is the 12 V on?")
+
     # -- input ------------------------------------------------------------
 
     def line(self, text, now):
@@ -798,6 +861,7 @@ class Dialogue:
             # sensor - so "go 9" on a silent sensor is out of range, as there
             n = self._slot(args[0])
             self._check_sensor()
+            self._check_driver()
             target, start, direction = r.go(n, now)
             return [self._ok(f"{P.F_TARGET}={target:.2f}",
                              f"{P.F_FROM}={start:.2f}",
@@ -818,6 +882,7 @@ class Dialogue:
             if r.motion in (P.MOTION_MOVING, P.MOTION_SETTLING):
                 raise ProtocolError(P.ERR_NOT_NOW, "wheel is moving")
             self._check_sensor()
+            self._check_driver()
             start = r.angle
             target, _, direction = r.jog(v, now)
             return [self._ok(f"{P.F_TARGET}={target:.2f}",
@@ -1089,9 +1154,16 @@ class Dialogue:
             # "current": the two halves are compared against each other, and a
             # line that differs only in wording is a difference nobody notices
             # until it hides a real one. The simulated wheel has a TMC2208, like the real one.
-            lines.append(f"{P.PREFIX_COMMENT} TMC2208 over UART: responding,"
-                         f" run {r.run_current} mA,"
-                         f" hold {r.hold_current} mA")
+            # through the check every leg makes, as the firmware's diag
+            with r._lock:
+                answers = r.check_driver()
+            if answers:
+                lines.append(f"{P.PREFIX_COMMENT} TMC2208 over UART: responding,"
+                             f" run {r.run_current} mA,"
+                             f" hold {r.hold_current} mA")
+            else:
+                lines.append(f"{P.PREFIX_COMMENT} TMC2208 over UART: SILENT - check VM"
+                             f" at the driver, then the 1k on the single wire")
             lines.append(self._ok())
             return lines
 
@@ -1341,6 +1413,18 @@ def parse_options(argv=None):
                    help="the wheel moves by itself when at rest, this many degrees "
                         "per second: the case in which holding current at rest is "
                         "really needed")
+    g.add_argument("--vm-off-for", dest="vm_off_for", type=float, default=0.0,
+                   metavar="MS",
+                   help="the motor's 12 V arrive MS ms after the start (USB first, "
+                        "as the assembly guide says): the driver is silent until "
+                        "then, and at its reset values after")
+    g.add_argument("--vm-drop-after-moves", dest="vm_drop_after_moves", type=int,
+                   default=-1, metavar="N",
+                   help="after N legs the 12 V drop and come back: the driver "
+                        "answers, reset")
+    g.add_argument("--vm-lost-after-moves", dest="vm_lost_after_moves", type=int,
+                   default=-1, metavar="N",
+                   help="after N legs the 12 V go for good: the driver is silent")
     g.add_argument("--nvs-broken", dest="nvs_broken", action="store_true",
                    help="saving always fails")
     g.add_argument("--nvs", dest="nvs", default="", metavar="KEY=VALUE,...",

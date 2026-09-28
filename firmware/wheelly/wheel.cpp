@@ -395,6 +395,8 @@ bool Wheel::go(int slot, Error &error)
     if (slot < 1 || slot > m_slots) { error = ERR_OUT_OF_RANGE; return false; }
     if (!m_mechanics.sensor_responds())    { error = ERR_SENSOR_SILENT; return false; }
     if (!m_mechanics.magnet_seen())       { error = ERR_NO_MAGNET;     return false; }
+    // the driver last: a wrong slot or a blind sensor are said as such first
+    if (check_driver() == DriverCheck::SILENT) { error = ERR_DRIVER_SILENT; return false; }
 
     m_wanted_slot = slot;
     m_jogging = false;
@@ -412,6 +414,7 @@ bool Wheel::jog(float degrees, Error &error)
     if (m_motion == Motion::MOVING || m_motion == Motion::SETTLING) { error = ERR_NOT_NOW; return false; }
     if (!m_mechanics.sensor_responds()) { error = ERR_SENSOR_SILENT; return false; }
     if (!m_mechanics.magnet_seen())    { error = ERR_NO_MAGNET;     return false; }
+    if (check_driver() == DriverCheck::SILENT) { error = ERR_DRIVER_SILENT; return false; }
 
     // A TARGET, not a number of steps: the angle read
     // now plus the jog, reached by the same legs as `go`. Raw steps would not
@@ -738,8 +741,11 @@ void Wheel::judge()
         // exposure sees.
         m_approach_legs++;
         m_leg_kind = LegKind::APPROACH;
-        start_leg();
-        return;
+        if (check_driver() != DriverCheck::SILENT) { start_leg(); return; }
+        // the driver went silent between two legs (the 12 V pulled): steps
+        // sent now would go nowhere, so the positioning ends here, failed
+        m_motion = Motion::FAILED;
+        m_outcome = Outcome::FAILED;
     } else if (deviation <= m_warn_tolerance && jog_went) {
         // Outside the good tolerance but inside the alarm one: it is reported
         // and we go on. Never a failure here: a recoverable warning that
@@ -752,8 +758,9 @@ void Wheel::judge()
         // went past the target - one way, the next leg goes round the turn.
         m_retries++;
         m_leg_kind = LegKind::RETRY;
-        start_leg();
-        return;
+        if (check_driver() != DriverCheck::SILENT) { start_leg(); return; }
+        m_motion = Motion::FAILED;       // as for the approach leg above
+        m_outcome = Outcome::FAILED;
     } else {
         m_motion = Motion::FAILED;
         m_outcome = Outcome::FAILED;
@@ -765,6 +772,32 @@ void Wheel::judge()
     m_event_slot = m_wanted_slot;
     m_event_deviation = deviation;
     m_event_attempts = m_retries;
+}
+
+DriverCheck Wheel::check_driver()
+{
+    // THE SAME PATH FOR `diag` AND FOR EVERY LEG. It used to be two: `diag`
+    // set up again a driver it found silent, and the legs asked nothing. So
+    // after a power-up in the guide's order - USB, then 12 V - the wheel
+    // moved on a driver at its reset values until someone typed `diag`, and
+    // `diag` looked like the cure. See mechanics.h, "is the driver still ours".
+    const DriverCheck found = m_mechanics.driver_check();
+    if (found == DriverCheck::POWERED || found == DriverCheck::RESET) {
+        // The setup redid the chip, not the wheel's own numbers: the run
+        // current during a positioning, the hold at rest.
+        apply_currents();
+        m_driver_report = found;
+        m_driver_to_report = true;
+    }
+    return found;
+}
+
+bool Wheel::driver_to_report(DriverCheck &what)
+{
+    if (!m_driver_to_report) return false;
+    m_driver_to_report = false;
+    what = m_driver_report;
+    return true;
 }
 
 void Wheel::watch_drift()

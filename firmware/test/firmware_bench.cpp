@@ -92,6 +92,17 @@ struct Options {
     // motor has braked it through the tyre, and it stays. 0 = no coasting.
     double coast {0.0};
     double coast_ms {200.0};
+    // THE MOTOR SUPPLY (mechanics.h, "is the driver still ours"). The
+    // driver's registers live on the 12 V: without it the chip does not
+    // answer, and when it comes back it is at its reset values.
+    //   vm_off_for: the 12 V arrive this many ms after the start, which is
+    //     the assembly guide's order (USB first); 0 = there from the start;
+    //   vm_drop_after_moves: after that many legs the 12 V drop and come
+    //     back, between two legs: the driver answers, reset;
+    //   vm_lost_after_moves: after that many legs the 12 V go for good.
+    double vm_off_for {0.0};
+    int    vm_drop_after_moves {-1};
+    int    vm_lost_after_moves {-1};
     bool   nvs_broken {false};
     // What the NVS holds before the first start, "key=value,key=value"
     // (numbers only): a wheel saved by an older firmware (the
@@ -179,6 +190,7 @@ class FakeMechanics : public Mechanics
 
         void move(long microsteps) override
         {
+            supply();
             // The disc degrees come from the bench's OWN physics, not from
             // wheel.h's STEPS_PER_DEGREE. Dividing by the same
             // constant the firmware multiplies by made any error in it - a
@@ -197,9 +209,14 @@ class FakeMechanics : public Mechanics
                 const double to_notch = norm(sign * (m_o.notch_at - m_angle));
                 if (to_notch < reach) reach = std::fmax(0.0, to_notch - 0.5);
             }
+            // A driver at its reset values drives the disc a fraction of the
+            // way; an unpowered one does not drive it at all.
+            if (m_vm && (m_gconf & tmc::GCONF_WATCHED) != tmc::GCONF_CONFIGURED)
+                reach *= UNSET_SHARE;
             const double degrees = sign * reach;
             m_from = m_angle;
-            const bool stalled = (m_o.stall > 0 && nominal > 0) || (m_o.stall < 0 && nominal < 0);
+            const bool stalled = !m_vm ||
+                                 (m_o.stall > 0 && nominal > 0) || (m_o.stall < 0 && nominal < 0);
             m_to = stalled ? m_angle : m_angle + degrees + aim_error(degrees);
             m_start = now_ms();
             m_duration = (uint32_t)(std::fabs(degrees) * m_o.ms_per_deg);
@@ -248,11 +265,65 @@ class FakeMechanics : public Mechanics
         {
             m_speed_now = steps_per_second;
         }
-        bool driver_responds() override { return true; }
+
+        // The driver as a register file, read back through the firmware's
+        // own rule (judge_driver in mechanics.h) - the same rule the XIAO
+        // applies to the real chip - and set up the way configure_driver()
+        // does: our GCONF bits, GSTAT.reset cleared.
+        bool driver_responds() override
+        {
+            supply();
+            return m_vm;
+        }
+        DriverCheck driver_check() override
+        {
+            supply();
+            DriverReadback r;
+            r.version = m_vm ? tmc::VERSION_2208 : 0;
+            r.gstat = m_vm ? m_gstat : 0;
+            r.gconf = m_vm ? m_gconf : 0;
+            const DriverState state = judge_driver(r);
+            if (state == DriverState::SILENT) { m_driver_seen = false; return DriverCheck::SILENT; }
+            if (state == DriverState::READY) { m_driver_seen = true; return DriverCheck::READY; }
+            m_gconf = tmc::GCONF_CONFIGURED;
+            m_gstat = 0;
+            const bool seen = m_driver_seen;
+            m_driver_seen = true;
+            return seen ? DriverCheck::RESET : DriverCheck::POWERED;
+        }
         void led(bool on) override { m_led = on; }
         uint32_t milliseconds() override { return now_ms(); }
 
     private:
+        // How far a leg sent to a driver at its reset values takes the disc,
+        // as a share of what it should: MEASURED once on the reference wheel,
+        // a jog of +10 degrees that moved +2.28 with the 12 V plugged in
+        // after the XIAO had started. Not a law of the chip - the reset
+        // microstepping comes from the MS pins and the current from VREF -
+        // only the size of the harm, so that a bench without the fix fails
+        // the way the wheel did.
+        static constexpr double UNSET_SHARE = 0.228;
+
+        // The motor supply at this moment, from the options. Its arrival and
+        // every drop-and-return put the registers at their reset values.
+        void supply()
+        {
+            bool vm = (double)(now_ms() - m_born) >= m_o.vm_off_for;
+            if (m_o.vm_lost_after_moves >= 0 && m_moves >= m_o.vm_lost_after_moves) vm = false;
+            if (vm && !m_vm) reset_registers();
+            if (vm && m_o.vm_drop_after_moves >= 0 && !m_dropped
+                && m_moves >= m_o.vm_drop_after_moves) {
+                m_dropped = true;
+                reset_registers();
+            }
+            m_vm = vm;
+        }
+        void reset_registers()
+        {
+            m_gstat = tmc::GSTAT_RESET;
+            m_gconf = tmc::GCONF_RESET;
+        }
+
         // The TMC2208's own drop from the run to the hold current, TPOWERDOWN
         // = 20 (its default, which the firmware leaves) x 2^18 clocks at
         // 12 MHz: 0.44 s after the last step. Modelled because the firmware
@@ -333,6 +404,14 @@ class FakeMechanics : public Mechanics
         int m_moves {0};
         double m_speed_now {0.0};
         uint32_t m_born;
+        // The driver. Powered from the start, it is found set up: that is
+        // what MechanicsEsp32::begin() leaves behind when the 12 V are
+        // already there.
+        bool m_vm {m_o.vm_off_for <= 0.0};
+        bool m_driver_seen {m_vm};
+        bool m_dropped {false};
+        uint8_t m_gstat {0};
+        uint32_t m_gconf {tmc::GCONF_CONFIGURED};
 };
 
 // ------------------------------------------------------------- fake memory
@@ -457,6 +536,9 @@ int main(int argc, char **argv)
         else if (option_arg(argc, argv, i, "--coast", v))     o.coast = std::atof(v.c_str());
         else if (option_arg(argc, argv, i, "--coast-ms", v))  o.coast_ms = std::atof(v.c_str());
         else if (option_arg(argc, argv, i, "--boots", v))     o.boots = std::atoi(v.c_str());
+        else if (option_arg(argc, argv, i, "--vm-off-for", v)) o.vm_off_for = std::atof(v.c_str());
+        else if (option_arg(argc, argv, i, "--vm-drop-after-moves", v)) o.vm_drop_after_moves = std::atoi(v.c_str());
+        else if (option_arg(argc, argv, i, "--vm-lost-after-moves", v)) o.vm_lost_after_moves = std::atoi(v.c_str());
         else if (option_arg(argc, argv, i, "--stall", v))     o.stall = v == "up" ? 1 : v == "down" ? -1 : 0;
         else if (std::strcmp(argv[i], "--stuck") == 0)      o.jammed = true;
         else if (std::strcmp(argv[i], "--sensor-silent") == 0)  o.sensor_silent = true;

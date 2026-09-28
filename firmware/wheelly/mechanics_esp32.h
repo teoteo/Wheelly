@@ -94,6 +94,7 @@ class MechanicsEsp32 : public Mechanics
         void currents(uint16_t run_ma, uint16_t hold_ma) override;
         void speed(uint32_t steps_per_second, uint32_t acceleration) override;
         bool driver_responds() override;
+        DriverCheck driver_check() override;
 
         const char *driver_name() override;
 
@@ -104,11 +105,12 @@ class MechanicsEsp32 : public Mechanics
 
     private:
         // Sets the driver up from scratch and reads back which silicon it is.
-        // Called by begin() and again by driver_responds() while the driver is
-        // dead, because pcb/README.md prescribes USB first and 12 V second: at
-        // boot the driver is normally unpowered, and a setup done then can only
-        // be redone, never merely re-checked.
+        // Called by begin() and again by driver_check() whenever the driver
+        // answers without our setup: pcb/README.md prescribes USB first and
+        // 12 V second, so at boot the driver is normally unpowered, and a 12 V
+        // that drops and comes back resets it (mechanics.h).
         bool configure_driver();
+        DriverReadback read_driver();
         void apply_currents();
 
         Pins m_p;
@@ -127,7 +129,6 @@ class MechanicsEsp32 : public Mechanics
         uint16_t m_run_ma {(uint16_t)FACTORY_RUN_MA};
         uint16_t m_hold_ma {0};
         uint32_t m_last_check {0};
-        uint32_t m_last_driver {0};
 };
 
 }  // namespace wheelly

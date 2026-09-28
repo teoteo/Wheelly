@@ -963,7 +963,12 @@ The motor driver's line carries **the name the chip reports**: the `version` fie
 register is `0x20` on a TMC2208 and `0x21` on a TMC2209, and the firmware accepts both
 (section 9). The module in Wheelly is a **TMC2208**. When nothing answers, the line reads
 `TMC2208/2209 over UART: SILENT - check VM at the driver, then the 1k on the single wire`,
-because which chip is silent cannot be known. When the sensor is silent the answer says so and
+because which chip is silent cannot be known. The driver line goes through **the same check every
+leg of motor makes** (section 9, trap 3): a driver found reset or newly powered is set up again
+here too, and reported with the `! driver` event. It used to be the only place that set the
+driver up after boot, so after a power-up in the guide's order - USB, then 12 V - the wheel moved
+on a driver at its reset values (a +10° jog moved +2.28° on the reference wheel) until someone
+typed `diag`, and `diag` looked like the cure. When the sensor is silent the answer says so and
 points at the wiring and the VDD5V–VDD3V3 jumper; when the magnitude is below 350 it adds that
 the magnet is too far or off centre.
 
@@ -977,6 +982,7 @@ Lines that arrive **without anyone asking for them**, recognisable by the `!`.
 ! failed pos=3 err=1.87 retries=3
 ! drift pos=0 err=0.62
 ! sensor md=0
+! driver reason=power
 ! leg n=1 kind=first jog=no steps=4125 motor=464.062 ratio=3.2230 aim=144.000 from=0.000 to=143.518 moved=143.518 long=yes learn=no
 ```
 
@@ -1000,6 +1006,13 @@ Lines that arrive **without anyone asking for them**, recognisable by the `!`.
   around the AS5600's detection threshold (314 on the reference wheel, measured) made the MD bit
   flicker and sent `! sensor md=0` tens of times a second. The fakes of both halves reproduce it
   with `--magnet-flicker MS`, and the tests want one event per episode.
+- `driver` — the motor driver had to be **set up again** before a leg or in `diag`.
+  `reason=power`: it had been silent and now answers - the 12 V arrived after the XIAO had
+  started, which is the order the assembly guide gives, so at a normal power-up it comes once,
+  before the first move; the INDI driver logs it as information. `reason=reset`: it answered
+  with its setup gone - the 12 V dropped and came back with the wheel running; logged as a
+  warning. Once per setup, never per check. The reasons, and how a reset is recognised, are in
+  section 9, trap 3.
 - `leg` — **only after `legs on`**: the end of one leg, sent before the verdict's event when it
   was the last. `n` its number in the positioning, `kind` `first`, `approach` or `retry`, `jog`
   whether the positioning is a jog, `steps` the microsteps sent (signed) and `motor` the same in
@@ -1034,7 +1047,7 @@ developer, not the sentence the user sees.
 | 3 | value out of range, with `expected=` and `got=` |
 | 4 | the sensor does not answer |
 | 5 | magnet not detected |
-| 6 | the motor driver does not answer — **defined but not sent**: a silent driver is reported by `diag` as a `#` line |
+| 6 | the motor driver does not answer: `go` and `jog` refuse to start (after the slot's range and the sensor), because steps sent to a driver without its 12 V go nowhere; the host's sentence asks whether the 12 V are on. A driver that goes silent **between two legs** ends the positioning `failed` at once, with no retries into nothing |
 | 7 | not allowed now (for example `teach` or `slots` while the wheel is moving) |
 | 8 | writing to NVS failed |
 | 9 | invalid filter name, with `reason=` (see section 6) |
@@ -1430,6 +1443,28 @@ than the problem it reports.
   the driver saves in the profile. `Connect()` makes two passes: only the wheel of this profile
   first, so that with two wheels each profile finds its own; then, if that wheel is on no port,
   any Wheelly, saying so in the log and adopting the new serial.
+- **A wheel unplugged is found again by itself.** Unplugged and plugged back, the wheel used to
+  leave the driver "Connected" on a descriptor that could only fail: `Write Error: Input/output
+  error` at every poll (25 lines in a few seconds), the last angle frozen in the panel, commands
+  lost, until Disconnect/Connect by hand. Now an I/O error that means the port is gone - `EIO`,
+  `ENXIO`, `ENODEV`, `EBADF`, `EPIPE`, or end of file on a read; not a timeout, which a busy wheel
+  also gives - closes the descriptor **at once** (kept open, it also keeps the device node busy,
+  and the kernel gives the returning wheel another `ttyACMn`), writes **one** line in the log, puts
+  the position and the sensor in Alert, and ends as failed whatever was under way (a filter
+  change, a jog, a sweep), so Ekos stops a sequence instead of waiting. `TimerHit` then stops
+  polling and tries to open the wheel again, after 1 s and then with a pause that doubles up to
+  10 s, never giving up: the port the user chose first, then the `/dev/serial/by-id/` link that
+  led to it at connection - that link carries the USB serial number, so it follows the wheel onto
+  any `ttyACMn`. No other port is opened (that is Auto Search's business), and the wheel must
+  answer with this profile's serial number: a reconnection never adopts another wheel. Found
+  again, **one** more line, and the panel is read again from the wheel, which restarted with the
+  USB. `CONNECTION` stays On and Ok throughout: libindi's `isConnected()` is true only for On
+  **and** Ok, so putting it in Alert made the driver itself stop its timer and look for nothing,
+  and for Ekos the device simply stays. A user command while the link is down gets one line
+  saying so; a Disconnect by hand stops the search and closes the descriptor the reconnection
+  opened. The bench unplugs a fake wheel twice (`test_usb_unplugged`): once coming back on a new
+  pty found through a by-id link in the bench's own folder (`WHEELLY_SERIAL_BY_ID`, so no test
+  looks at the machine's real devices), once on the port the user chose.
 - **The driver never blocks.** INDI is single-threaded: a long wait freezes the driver and every
   client. So a filter change fires the command and returns, and the periodic poll checks the
   state until it is over. The repository has counter-examples — a wheel driver spinning in a wait
@@ -1743,11 +1778,29 @@ The first is still open in the libraries' trackers; the other three were paid fo
    `version` field of IOIN is `0x20` on a TMC2208 and `0x21` on a TMC2209: both are accepted and
    anything else is discarded, instead of trusting a single constant. It lives in
    `configure_driver()`.
-3. **Redo the configuration, do not re-check it.** `pcb/README.md` prescribes USB first and 12 V
-   second, so **at boot the driver normally has no VM**: the configuration written then reaches
-   nobody. Asking the chip whether it is configured would answer no forever; while the driver is
-   silent, `driver_responds()` redoes the whole setup, at most once a second, because a round of
-   UART costs time that belongs to the pulses.
+3. **Ask the driver before every leg, and set it up again when it has forgotten.** The TMC2208's
+   registers live on VM, the 12 V, not on the XIAO's 3.3 V. `pcb/README.md` and the assembly
+   guide prescribe USB first and 12 V second, so **at boot the driver normally has no VM**: the
+   setup written then reaches nobody, and when the 12 V arrive the chip starts from its reset
+   values - current from the VREF trimmer, microsteps from the MS1/MS2 pins. A 12 V plug that
+   drops and comes back does the same with the XIAO running. On the reference wheel a +10° jog
+   moved **+2.28°** that way, and +9.76° and +9.84° after `diag` - which mended it only because it
+   happened to redo the setup of a driver it had seen silent at boot; the moves asked nothing.
+   Now `Wheel::check_driver()` runs before `go`, before `jog`, before every approach leg and
+   retry, and in `diag`, one path for all. It reads three registers back (`mechanics.h`,
+   `judge_driver`): **IOIN**'s version, to know a TMC2208 or 2209 answered with a good CRC;
+   **GSTAT.reset**, which the chip sets at every reset and the setup clears at its end, so finding
+   it set again means a reset since; **GCONF**, whose bits the setup writes (`pdn_disable`,
+   `mstep_reg_select` on, `i_scale_analog`, `en_spreadcycle` off) and which must read back as
+   written - a second witness, should GSTAT have been cleared by someone else. Not **IFCNT**, the
+   counter of good writes: it tells a reset only against a count kept on the XIAO, it wraps at 256,
+   and every write of the library moves it. Not IHOLD_IRUN or TPWMTHRS: write-only. Silent means
+   the move is refused (error 6); reset or newly powered means the same `configure_driver()` as at
+   boot, the wheel's currents applied again, and the `! driver` event. The reading costs three
+   rounds of UART before a leg, never during one. The rule is a pure function so the Mac bench runs
+   it against a fake register file that loses its setup with the 12 V (`--vm-off-for`,
+   `--vm-drop-after-moves`, `--vm-lost-after-moves`); `test_driver_check.cpp` tries each witness
+   alone.
 4. **Do not trust a `0` read from a driver register.** If a read times out the library returns 0,
    which for many registers is a legitimate value: false but plausible data. It must be
    cross-checked with the AS5600, which is the reference of truth anyway.

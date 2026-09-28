@@ -210,6 +210,40 @@ const CatalogueEntry CATALOGUE[] =
         "msg.timeout",
         "The wheel did not finish within %1$s seconds. Imaging is stopped."
     },
+    // THE USB LINK. Said once when it goes and once when it comes back:
+    // before, a wheel unplugged left the driver writing to a dead port and
+    // logging the failure at every poll, 25 times in a few seconds.
+    // %1$s is the system's reason, e.g. "Input/output error".
+    {
+        "msg.link.lost",
+        "The USB link to the wheel was lost (%1$s). The driver stays connected and "
+        "reconnects by itself as soon as the wheel is back; until then commands "
+        "cannot reach it."
+    },
+    {
+        "msg.link.hangup",
+        "the port was closed"
+    },
+    {
+        "msg.link.back",
+        "The wheel is back on %1$s: reconnected."
+    },
+    {
+        "msg.link.down",
+        "The wheel is not reachable right now: waiting for its USB link to come back."
+    },
+    // THE MOTOR DRIVER SET UP AGAIN by the firmware (the `! driver` event):
+    // its settings live on the 12 V, not on the USB.
+    {
+        "msg.driver.power",
+        "The motor driver got its 12 V after the wheel had started, and has been "
+        "set up now."
+    },
+    {
+        "msg.driver.reset",
+        "The motor driver had lost its settings - the 12 V dropped and came back - "
+        "and has been set up again before moving."
+    },
     {
         "msg.magnet.lost",
         "The sensor no longer detects the magnet. This is serious: check the "
@@ -397,7 +431,9 @@ const CatalogueEntry CATALOGUE[] =
         "the VDD5V-VDD3V3 jumper on the module."
     },
     {"err.5", "The sensor works but does not see the magnet."},
-    {"err.6", "The motor driver is not answering on its serial line."},
+    // Nearly always the 12 V: the driver's logic lives on the motor supply,
+    // and a wheel powered from the USB alone has a driver that says nothing.
+    {"err.6", "The motor driver is not answering: is the 12 V supply connected? The wheel does not move without it."},
     {"err.7", "Not allowed right now: the wheel is busy."},
     {"err.8", "The wheel could not save to its memory."},
     {"err.9", "Invalid filter name (%1$s)."},
@@ -444,12 +480,12 @@ const CatalogueEntry CATALOGUE[] =
     },
     {"nome.rifiutato", "Filter name refused: %1$s"},
     // The refusal ends up in the log, and that is the only place where the
-    // explanation fits: so it says everything. But in TWO lines, and it is not
-    // a matter of style: an INDI message is a char[MAXINDIMESSAGE] with
-    // MAXINDIMESSAGE = 255 (indiapi.h), and whatever is left over is cut
-    // SILENTLY. With the rule appended at the end, the refusal of "-Lum-"
-    // reached Ekos truncated at "...una cif". In two lines it always fits, even
-    // with a 32-character name and a proposed one just as long.
+    // explanation fits: so it says everything. The rule ("nome.ammessi") is
+    // joined to it only when the two fit together: an INDI message is a
+    // char[MAXINDIMESSAGE] with MAXINDIMESSAGE = 255 (indiapi.h), and whatever
+    // is left over is cut SILENTLY - with the rule always appended, the refusal
+    // of "-Lum-" reached Ekos truncated at "...una cif". When they do not fit
+    // they go on two lines, the refusal LAST (see refuse() in wheelly.cpp).
     {
         "nome.rifiutato.slot",
         "Slot %1$s: \"%2$s\" refused - %3$s."
@@ -459,7 +495,13 @@ const CatalogueEntry CATALOGUE[] =
         "Slot %1$s: \"%2$s\" refused - %3$s. A name that would be accepted here: "
         "\"%4$s\"."
     },
-    // The second line, which ALWAYS goes with the refusal - even when the
+    // A slot left without a name is a slot without a filter: the driver names
+    // it and says so, so that the name appearing in the field is not a mystery.
+    {
+        "nome.vuoto.dato",
+        "Slot %1$s left empty, so it has no filter: it is now called \"%2$s\"."
+    },
+    // The rule, which ALWAYS goes with the refusal - even when the
     // reason has nothing to do with the characters: whoever reads the refusal
     // is the person who at that moment wants to know what they can write.
     {

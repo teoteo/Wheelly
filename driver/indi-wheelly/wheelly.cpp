@@ -17,6 +17,9 @@
 #include <cstring>
 #include <ctime>
 #include <memory>
+#include <climits>
+#include <cstdlib>
+#include <dirent.h>
 #include <sys/select.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -27,6 +30,9 @@ using namespace wheelly;
 // INDI creates by itself - Connection, Options - which we cannot translate.
 // Everything inside them is translated. See translations.h.
 static const char *TAB_MAIN = "Main Control";
+// The name an empty filter-name field becomes, followed by "_<slot>": the
+// reasons are where it is used, in ISNewText.
+static const char *EMPTY_SLOT_NAME = "Empty";
 // "Calibration and Diagnostics" and not "Calibration":
 // the tab holds the teaching and the checks - angles, jogs, tolerances,
 // hardware check, magnet sweep, movement log. The settings of the machine -
@@ -50,6 +56,11 @@ static const char *JOG_LABELS[] = {"prop.jog.mpitch", "prop.jog.m10", "prop.jog.
 static const char *TAB_OPTIONS     = "Options";
 
 static const int ANSWER_WAIT_MS = 3000;
+// The pause between two attempts to find a lost wheel again: from the first,
+// doubling up to the last. A second is about the time a XIAO takes to boot
+// and enumerate; ten keeps a wheel left unplugged from costing anything.
+static const double RETRY_FIRST_S = 1.0;
+static const double RETRY_MAX_S = 10.0;
 
 // The driver's ceiling on a move. Better that we say it, with a message that
 // explains: if Ekos says it, all that is left in the log is "timeout". It
@@ -78,6 +89,7 @@ void LineReader::attach(int descriptor)
     m_fd = descriptor;
     m_rest.clear();
     m_down = false;
+    m_errno = 0;
 }
 
 void LineReader::flush()
@@ -122,6 +134,7 @@ bool LineReader::line(std::string &out, int wait_ms)
         {
             if (errno == EINTR) continue;
             m_down = true;
+            m_errno = errno;
             return false;
         }
         if (ready == 0) return false;
@@ -132,6 +145,7 @@ bool LineReader::line(std::string &out, int wait_ms)
         {
             if (got < 0 && (errno == EAGAIN || errno == EINTR)) continue;
             m_down = true;
+            m_errno = got < 0 ? errno : 0;
             return false;
         }
         m_rest.append(chunk, (size_t)got);
@@ -558,6 +572,18 @@ void Wheelly::handle_unsolicited_line(const std::string &line)
     const size_t end = line.find(' ', i);
     const std::string name = line.substr(i, end == std::string::npos ? std::string::npos : end - i);
 
+    // The motor driver had to be set up again (EV_DRIVER in the protocol):
+    // after a power-up in the guide's order - USB, then 12 V - it is the
+    // normal case and only information; a reset with the wheel running means
+    // the 12 V dropped, and is a warning.
+    if (name == EV_DRIVER)
+    {
+        const Fields c = split_fields(line);
+        const auto reason = c.find(F_REASON);
+        if (reason != c.end() && reason->second == V_RESET) LOG_WARN(tr("msg.driver.reset"));
+        else LOG_INFO(tr("msg.driver.power"));
+    }
+
     if (name == EV_SENSOR && !m_magnet_lost)
     {
         m_magnet_lost = true;
@@ -604,6 +630,13 @@ void Wheelly::collect_unsolicited()
 bool Wheelly::command(const std::string &text, Fields *fields,
                       std::string *error_for_user)
 {
+    // The link is down and TimerHit is looking for the wheel: said once per
+    // command the user gives, never per poll (TimerHit does not poll then).
+    if (m_link_lost && !m_reconnecting)
+    {
+        LOG_WARN(tr("msg.link.down"));
+        return false;
+    }
     if (PortFD < 0) return false;
 
     LOGF_DEBUG("-> %s", text.c_str());
@@ -613,9 +646,16 @@ bool Wheelly::command(const std::string &text, Fields *fields,
     const int result = tty_write_string(PortFD, to_send.c_str(), &written);
     if (result != TTY_OK)
     {
+        // errno first: anything called after the failed write may change it
+        const int error_number = errno;
+        if (!m_reconnecting && link_is_gone(error_number))
+        {
+            link_lost(strerror(error_number));
+            return false;
+        }
         char explanation[MAXRBUF];
         tty_error_msg(result, explanation, MAXRBUF);
-        LOGF_ERROR("%s (%s)", tr("msg.no.answer"), explanation);
+        if (!m_reconnecting) LOGF_ERROR("%s (%s)", tr("msg.no.answer"), explanation);
         return false;
     }
 
@@ -658,6 +698,13 @@ bool Wheelly::command(const std::string &text, Fields *fields,
         LOGF_DEBUG("Unexpected line from the wheel: %s", line.c_str());
     }
 
+    if (m_reconnecting) return false;       // try_reconnect() says what counts
+    if (m_reader.channel_down() && link_is_gone(m_reader.down_errno()))
+    {
+        link_lost(m_reader.down_errno() ? strerror(m_reader.down_errno())
+                                        : tr("msg.link.hangup"));
+        return false;
+    }
     LOG_ERROR(tr("msg.no.answer"));
     return false;
 }
@@ -685,6 +732,8 @@ bool Wheelly::Connect()
     //      replaced - it is tried again accepting any Wheelly, saying so in
     //      the log. Without this pass, changing the XIAO would mean a driver
     //      that no longer connects and no explanation of why.
+    // a Connect by hand takes over from the automatic search
+    m_link_lost = false;
     m_only_mine = !m_expected_serial.empty();
     if (INDI::FilterWheel::Connect()) return true;
     if (!m_only_mine) return false;
@@ -700,21 +749,25 @@ bool Wheelly::Handshake()
     m_reader.flush();
     m_magnet_lost = false;
 
+    // On a reconnection (try_reconnect) the refusals are not said: the
+    // attempt is repeated every few seconds while the wheel boots, and the
+    // loss has already been said once.
     Fields c;
     if (!command(CMD_VERSION, &c))
     {
-        LOG_ERROR(tr("msg.wrong.device"));
+        if (!m_reconnecting) LOG_ERROR(tr("msg.wrong.device"));
         return false;
     }
     if (c[F_NAME] != "wheelly")
     {
-        LOG_ERROR(tr("msg.wrong.device"));
+        if (!m_reconnecting) LOG_ERROR(tr("msg.wrong.device"));
         return false;
     }
     if (c[F_PROTO] != std::to_string(PROTOCOL_VERSION))
     {
-        LOGF_ERROR("%s", trf("msg.wrong.protocol",
-        {c[F_PROTO], std::to_string(PROTOCOL_VERSION)}).c_str());
+        if (!m_reconnecting)
+            LOGF_ERROR("%s", trf("msg.wrong.protocol",
+            {c[F_PROTO], std::to_string(PROTOCOL_VERSION)}).c_str());
         return false;
     }
 
@@ -724,7 +777,8 @@ bool Wheelly::Handshake()
     const std::string serial = c.count(F_SERIAL) ? c[F_SERIAL] : std::string();
     if (m_only_mine && serial != m_expected_serial)
     {
-        LOGF_INFO("%s", trf("msg.serial.other", {serial, m_expected_serial}).c_str());
+        if (!m_reconnecting)
+            LOGF_INFO("%s", trf("msg.serial.other", {serial, m_expected_serial}).c_str());
         return false;
     }
     // The very first connection, or a board replaced and found again in the
@@ -764,8 +818,199 @@ bool Wheelly::Handshake()
     FirmwareTP[1].setText(c[F_PROTO].c_str());
     FirmwareTP[2].setText(c[F_SERIAL].c_str());
 
-    LOGF_INFO("%s", trf("msg.connected", {c[F_FW], c[F_PROTO]}).c_str());
+    if (!m_reconnecting)
+    {
+        LOGF_INFO("%s", trf("msg.connected", {c[F_FW], c[F_PROTO]}).c_str());
+        m_port_in_use = serialConnection != nullptr ? serialConnection->port() : "";
+        remember_alias();
+    }
     return true;
+}
+
+// ------------------------------------------------- the USB link, lost and found
+
+bool Wheelly::link_is_gone(int error_number)
+{
+    // The errors of a port that is no longer there: EIO is what a USB CDC
+    // port unplugged under an open descriptor gives on Linux (seen on the
+    // reference wheel: "Write Error: Input/output error"), ENXIO and ENODEV
+    // a device node without its device, EBADF a descriptor closed, EPIPE
+    // and 0 - end of file on a read - the other end hung up. A timeout is
+    // not among them: a busy or rebooting wheel is still there.
+    switch (error_number)
+    {
+        case 0:
+        case EIO:
+        case ENXIO:
+        case ENODEV:
+        case EBADF:
+        case EPIPE:
+            return true;
+        default:
+            return false;
+    }
+}
+
+void Wheelly::link_lost(const std::string &why)
+{
+    if (m_link_lost) return;
+    m_link_lost = true;
+    LOGF_ERROR("%s", trf("msg.link.lost", {why}).c_str());
+
+    // The dead descriptor is closed AT ONCE. Kept open, it also keeps the
+    // device node busy, and the kernel gives the wheel coming back another
+    // name (ttyACM1 became ttyACM2).
+    if (m_own_fd >= 0)
+    {
+        tty_disconnect(m_own_fd);
+        m_own_fd = -1;
+    }
+    else if (serialConnection != nullptr)
+    {
+        serialConnection->Disconnect();
+    }
+    PortFD = -1;
+    m_reader.attach(-1);
+
+    // What was under way cannot finish: said as failed, so that Ekos stops a
+    // sequence instead of waiting for a filter that is not coming.
+    if (m_moving)
+    {
+        m_moving = false;
+        FilterSlotNP.setState(IPS_ALERT);
+        FilterSlotNP.apply();
+    }
+    if (m_jogging)
+    {
+        m_jogging = false;
+        if (m_jog_row != nullptr)
+        {
+            m_jog_row->setState(IPS_ALERT);
+            m_jog_row->apply();
+        }
+    }
+    if (m_sweeping) finish_sweep(false);
+    // The angle shown is the last one read, no longer a live one: Alert
+    // until the first status after the return.
+    //
+    // CONNECTION IS LEFT AS IT IS, On and Ok. Tried first: Alert on it, to
+    // show the link down. libindi's isConnected() is true only for On AND
+    // Ok, so with Alert the driver itself took the device for disconnected -
+    // TimerHit stopped, and nothing looked for the wheel any more. For Ekos
+    // the device simply stays: its filter manager is not torn down and built
+    // again for a plug that comes back in two seconds.
+    PositionNP.setState(IPS_ALERT);
+    PositionNP.apply();
+    SensorNP.setState(IPS_ALERT);
+    SensorNP.apply();
+
+    m_retry_pause_s = RETRY_FIRST_S;
+    m_next_attempt = now_s() + m_retry_pause_s;
+}
+
+void Wheelly::remember_alias()
+{
+    // The /dev/serial/by-id/ link that leads to the port in use, if there is
+    // one (Linux; on macOS the cu.usbmodem name already comes back the same).
+    // Only links are read here - no port is opened - so it looks at nothing
+    // but the one device the driver is already talking to.
+    m_alias.clear();
+    if (m_port_in_use.empty()) return;
+    char resolved[PATH_MAX];
+    if (realpath(m_port_in_use.c_str(), resolved) == nullptr) return;
+    const char *folder = getenv("WHEELLY_SERIAL_BY_ID");   // the bench's own
+    const std::string by_id = folder != nullptr ? folder : "/dev/serial/by-id";
+    DIR *d = opendir(by_id.c_str());
+    if (d == nullptr) return;
+    while (struct dirent *e = readdir(d))
+    {
+        if (e->d_name[0] == '.') continue;
+        const std::string link = by_id + "/" + e->d_name;
+        char target[PATH_MAX];
+        if (realpath(link.c_str(), target) != nullptr && strcmp(target, resolved) == 0)
+        {
+            m_alias = link;
+            break;
+        }
+    }
+    closedir(d);
+    if (!m_alias.empty()) LOGF_DEBUG("Port %s is also %s", m_port_in_use.c_str(), m_alias.c_str());
+}
+
+bool Wheelly::try_reconnect()
+{
+    // The port the user chose, then its by-id link: the wheel coming back
+    // under another ttyACMn is found by the link, which follows the USB
+    // serial number. No other port is opened - that is Auto Search's
+    // business, and the user's choice - and the wheel must answer with this
+    // profile's serial number (m_only_mine): a reconnection never adopts a
+    // different wheel.
+    std::vector<std::string> paths;
+    if (serialConnection != nullptr && serialConnection->port() != nullptr)
+        paths.push_back(serialConnection->port());
+    if (!m_alias.empty() && std::find(paths.begin(), paths.end(), m_alias) == paths.end())
+        paths.push_back(m_alias);
+
+    const int slots_before = m_slots;
+    for (const std::string &path : paths)
+    {
+        struct stat st;
+        if (stat(path.c_str(), &st) != 0) continue;       // not back yet
+        int fd = -1;
+        if (tty_connect(path.c_str(), 115200, 8, 0, 1, &fd) != TTY_OK) continue;
+        PortFD = fd;
+        m_reconnecting = true;
+        m_only_mine = !m_expected_serial.empty();
+        const bool good = Handshake();
+        m_reconnecting = false;
+        if (good)
+        {
+            m_own_fd = fd;
+            m_link_lost = false;
+            m_port_in_use = path;
+            remember_alias();
+            link_found(path);
+            if (m_slots != slots_before)
+            {
+                // A wheel restarted with another slot count (one changed and
+                // never saved): the panel is rebuilt as at a connection.
+                setConnected(false, IPS_IDLE);
+                updateProperties();
+                setConnected(true, IPS_OK);
+                updateProperties();
+            }
+            return true;
+        }
+        tty_disconnect(fd);
+        PortFD = -1;
+        m_reader.attach(-1);
+    }
+    return false;
+}
+
+void Wheelly::link_found(const std::string &path)
+{
+    LOGF_INFO("%s", trf("msg.link.back", {path}).c_str());
+    // The XIAO restarted with the USB: what it held only in working memory
+    // is gone, so the panel is read again from the wheel.
+    forget_unsaved();
+    read_calibration();
+    if (GetFilterNames()) FilterNameTP.apply();
+}
+
+bool Wheelly::Disconnect()
+{
+    // A descriptor opened by the reconnection is ours to close: libindi's
+    // serial plugin does not know it.
+    if (m_own_fd >= 0)
+    {
+        tty_disconnect(m_own_fd);
+        m_own_fd = -1;
+        PortFD = -1;
+    }
+    m_link_lost = false;
+    m_reader.attach(-1);
+    return INDI::FilterWheel::Disconnect();
 }
 
 // The rows of the angles follow m_slots: all MAX_SLOTS exist, the first
@@ -1133,18 +1378,32 @@ void Wheelly::TimerHit()
 {
     if (!isConnected()) return;
 
+    // The link is down: no status polls - each would only fail - but an
+    // attempt to find the wheel again, with a pause that doubles up to
+    // RETRY_MAX_S. It does not give up: a wheel plugged back after an hour
+    // is found after an hour.
+    if (m_link_lost)
+    {
+        if (now_s() >= m_next_attempt)
+        {
+            if (try_reconnect())
+            {
+                SetTimer(getCurrentPollingPeriod());
+                return;
+            }
+            m_retry_pause_s = std::min(2.0 * m_retry_pause_s, RETRY_MAX_S);
+            m_next_attempt = now_s() + m_retry_pause_s;
+        }
+        SetTimer(getCurrentPollingPeriod());
+        return;
+    }
+
     collect_unsolicited();
 
     Fields status;
     if (!read_status(status))
     {
-        if (m_reader.channel_down())
-        {
-            LOG_ERROR(tr("msg.no.answer"));
-            setConnected(false, IPS_ALERT);
-            updateProperties();
-            return;
-        }
+        // command() has already turned a port that is gone into link_lost()
         SetTimer(getCurrentPollingPeriod());
         return;
     }
@@ -1324,6 +1583,11 @@ bool Wheelly::ISNewText(const char *dev, const char *name, char *texts[],
         return true;
     }
 
+    // The names as they will be applied - an empty field replaced, see below.
+    // Out here and not in the block that fills them: the base class reads
+    // them after that block has closed.
+    std::vector<std::string> own;
+    std::vector<char *> fixed;
     if (dev != nullptr && strcmp(dev, getDeviceName()) == 0 &&
             FilterNameTP.isNameMatch(name))
     {
@@ -1364,11 +1628,66 @@ bool Wheelly::ISNewText(const char *dev, const char *name, char *texts[],
             // capture sequence. A badly written name is a mistake of whoever
             // writes it, not of the wheel, and must not throw away a night.
             FilterNameTP.setState(IPS_ALERT);
+
+            // The allowed characters go with every refusal, and the refusal
+            // itself must be the LAST thing said. KStars' device log puts the
+            // newest line on top (and its status bar shows only the newest):
+            // with the rule sent after the refusal, the line on top was the
+            // generic rule and the one saying which slot and why sat under
+            // it, unseen - a user left a slot empty, read only "Allowed: ...",
+            // and could not tell what was wrong. So: one line when the two fit
+            // together, and when they do not (MAXINDIMESSAGE = 255 bytes, the
+            // cut is silent - a long name, a long reason and a long suggestion
+            // do not fit), the rule first and the refusal after it.
+            const std::string rule = tr("nome.ammessi");
+            const std::string both = sentence + " " + rule;
+            if (both.size() < MAXINDIMESSAGE)
+            {
+                FilterNameTP.apply("%s", both.c_str());
+                return;
+            }
+            LOGF_INFO("%s", rule.c_str());
             FilterNameTP.apply("%s", sentence.c_str());
-            // The allowed characters, always, on a separate line: they would
-            // not fit on the same one (MAXINDIMESSAGE = 255 and the cut is silent).
-            LOGF_INFO("%s", tr("nome.ammessi"));
         };
+
+        // AN EMPTY FIELD IS A SLOT WITHOUT A FILTER, and that is normal: a
+        // five-slot wheel with four filters. Refusing it refused the whole set,
+        // and the firmware cannot store an empty name (check_filter_name says
+        // NAME_EMPTY, the same rule on both sides), so the driver gives the
+        // slot a name: "Empty_<slot>". Why this form:
+        //  - the slot number makes it unique by construction, so several empty
+        //    slots never clash with each other under the duplicate rule, and no
+        //    exemption from that rule is needed - an exemption would let two
+        //    slots share a name in the FITS header and in the folder names,
+        //    which is exactly what the rule exists to prevent;
+        //  - it passes the name rule as it is, so the firmware (protocol 2,
+        //    unchanged) stores it like any other name;
+        //  - it is NOT translated: it is stored in the wheel and written in
+        //    the FITS FILTER keyword, and a wheel moved to a computer in
+        //    another language must keep the same names - like the factory
+        //    ones, Lum, Red, ...
+        // The field then shows the name given, so what Ekos lists is what the
+        // wheel holds, and one log line says it was done - once the whole set
+        // is accepted, not before a refusal that would undo it.
+        // A field of blanks only counts as empty: it is what is left after
+        // clearing a field by typing spaces over it.
+        own.assign(texts, texts + n);
+        fixed.resize(n);
+        std::vector<int> given;
+        for (int i = 0; i < n; i++)
+        {
+            if (own[i].find_first_not_of(" \t") == std::string::npos)
+            {
+                const int slot = which_slot(names[i]);
+                if (slot > 0)
+                {
+                    own[i] = std::string(EMPTY_SLOT_NAME) + "_" + std::to_string(slot);
+                    given.push_back(i);
+                }
+            }
+            fixed[i] = &own[i][0];
+        }
+        texts = fixed.data();
 
         for (int i = 0; i < n; i++)
         {
@@ -1401,6 +1720,10 @@ bool Wheelly::ISNewText(const char *dev, const char *name, char *texts[],
                 return true;
             }
         }
+
+        for (int i : given)
+            LOGF_INFO("%s", trf("nome.vuoto.dato",
+        {std::to_string(which_slot(names[i])), own[i]}).c_str());
     }
     return INDI::FilterWheel::ISNewText(dev, name, texts, names, n);
 }

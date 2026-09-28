@@ -24,9 +24,10 @@ namespace {
 // well wired, and reported as silent.
 const long BAUD_DRIVER = 115200;
 
-// How often to re-check that sensor and driver still answer. Not at every
-// reading: querying the driver costs a round of UART, and doing it in the middle
-// of a move would steal time from the pulses.
+// How often to re-check that the sensor still answers: not at every reading,
+// it is asked at every pass of the loop. The motor driver is not on this
+// clock: it is asked before every leg (driver_check()), never during one,
+// where a round of UART would steal time from the pulses.
 const uint32_t CHECK_PERIOD_MS = 1000;
 
 // The sense resistors of the module, READ ON THE PART: both are marked R110,
@@ -169,7 +170,42 @@ bool MechanicsEsp32::configure_driver()
     m_driver.microsteps(MICROSTEPS);
     m_driver.toff(5);                   // chopper off-time: without it the motor is silent
     apply_currents();
+    // GSTAT.reset is set by every reset of the chip and stays set until it
+    // is written back: cleared HERE, at the end of the setup, so that finding
+    // it set again before a leg means a reset since (driver_check()). Without
+    // this the first check after a power-up with the 12 V already on would
+    // report a reset that the setup had already mended.
+    m_driver.GSTAT(tmc::GSTAT_RESET);
     return true;
+}
+
+DriverReadback MechanicsEsp32::read_driver()
+{
+    // Three rounds of UART, before a leg and never during one. A read that
+    // fails its CRC comes back 0 from the library: version 0 is silence, and
+    // a GCONF of 0 is a setup gone - both the safe side.
+    DriverReadback r;
+    r.version = m_driver.version();
+    r.gstat = m_driver.GSTAT();
+    r.gconf = m_driver.GCONF();
+    return r;
+}
+
+DriverCheck MechanicsEsp32::driver_check()
+{
+    const DriverState state = judge_driver(read_driver());
+    if (state == DriverState::READY) { m_driver_alive = true; return DriverCheck::READY; }
+    if (state == DriverState::SILENT) {
+        m_driver_alive = false;
+        m_silicon = 0;
+        return DriverCheck::SILENT;
+    }
+    // It answers without our setup: powered since it was last seen silent,
+    // or reset under our feet. The same routine as at boot.
+    const bool was_alive = m_driver_alive;
+    m_driver_alive = configure_driver();
+    if (!m_driver_alive) return DriverCheck::SILENT;
+    return was_alive ? DriverCheck::RESET : DriverCheck::POWERED;
 }
 
 void MechanicsEsp32::apply_currents()
@@ -293,19 +329,11 @@ void MechanicsEsp32::speed(uint32_t steps_per_second, uint32_t acceleration)
 
 bool MechanicsEsp32::driver_responds()
 {
-    // Not a re-check but a redo. pcb/README.md prescribes USB first and 12 V
-    // second, so at boot the driver is normally unpowered: the configuration
-    // written then went nowhere, and asking the chip whether it is configured
-    // would answer no forever. Rate limited, because a round of UART costs time
-    // that belongs to the pulses.
-    if (!m_driver_alive) {
-        const uint32_t now = millis();
-        if ((uint32_t)(now - m_last_driver) > CHECK_PERIOD_MS) {
-            m_last_driver = now;
-            m_driver_alive = configure_driver();
-        }
-    }
-    return m_driver_alive;
+    // Only whether the chip answers: setting it up again is driver_check()'s
+    // job, which the wheel calls before every leg and in `diag`. This
+    // function used to redo the setup while the driver was dead, rate
+    // limited, and only `diag` called it: the moves never did.
+    return judge_driver(read_driver()) != DriverState::SILENT;
 }
 
 void MechanicsEsp32::led(bool on)

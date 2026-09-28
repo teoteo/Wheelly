@@ -168,6 +168,35 @@ const CatalogueEntry ITALIAN_CATALOGUE[] =
         "La ruota non ha finito entro %1$s secondi. La ripresa viene fermata."
     },
     {
+        "msg.link.lost",
+        "Il collegamento USB con la ruota si è interrotto (%1$s). Il driver resta "
+        "collegato e si ricollega da solo appena la ruota torna; fino ad allora i "
+        "comandi non le arrivano."
+    },
+    {
+        "msg.link.hangup",
+        "la porta è stata chiusa"
+    },
+    {
+        "msg.link.back",
+        "La ruota è tornata su %1$s: ricollegata."
+    },
+    {
+        "msg.link.down",
+        "In questo momento la ruota non è raggiungibile: aspetto che torni il "
+        "collegamento USB."
+    },
+    {
+        "msg.driver.power",
+        "Il driver del motore ha ricevuto i 12 V dopo l'avvio della ruota, ed è "
+        "stato configurato adesso."
+    },
+    {
+        "msg.driver.reset",
+        "Il driver del motore aveva perso le impostazioni - i 12 V sono mancati e "
+        "tornati - ed è stato configurato di nuovo prima di muovere."
+    },
+    {
         "msg.magnet.lost",
         "Il sensore non rileva più il magnete. È un guaio serio: controlla il "
         "cablaggio del sensore prima di continuare a riprendere."
@@ -355,7 +384,8 @@ const CatalogueEntry ITALIAN_CATALOGUE[] =
     },
     {
         "err.6",
-        "Il driver del motore non risponde sulla sua linea seriale."
+        "Il driver del motore non risponde: l'alimentazione a 12 V è collegata? "
+        "Senza, la ruota non si muove."
     },
     {
         "err.7",
@@ -427,6 +457,10 @@ const CatalogueEntry ITALIAN_CATALOGUE[] =
         "nome.rifiutato.slot.prova",
         "Posizione %1$s: \"%2$s\" rifiutato - %3$s. Un nome che qui sarebbe "
         "accettato: \"%4$s\"."
+    },
+    {
+        "nome.vuoto.dato",
+        "Posizione %1$s lasciata vuota, quindi senza filtro: ora si chiama \"%2$s\"."
     },
     {
         "nome.ammessi",

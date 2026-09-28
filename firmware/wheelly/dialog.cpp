@@ -37,6 +37,17 @@ const char *outcome_name(Outcome e)
     }
 }
 
+// Why go or jog refused to start. Only for whoever reads the raw serial: the
+// driver says it in the user's language from the code.
+const char *refusal_text(Error code)
+{
+    switch (code) {
+        case ERR_SENSOR_SILENT: return "AS5600 not responding";
+        case ERR_DRIVER_SILENT: return "motor driver not responding - is the 12 V on?";
+        default:                return "magnet not detected";
+    }
+}
+
 const char *name_reason(NameCheck m)
 {
     switch (m) {
@@ -250,7 +261,10 @@ void Dialog::send_diag()
     // (0x20) from a TMC2209 (0x21), and printing it here is not a nicety. A
     // driver that answers perfectly while the firmware expects the other silicon
     // reads as silence, and is hard to tell from a wiring fault.
-    if (m.driver_responds()) {
+    // Through the wheel's check, the one every leg makes: a driver found
+    // reset or newly powered is set up again here too, and reported with the
+    // `! driver` event - `diag` no longer cures what the moves leave broken.
+    if (m_wheel.check_driver() != DriverCheck::SILENT) {
         snprintf(line, sizeof(line), "%s over UART: responding, run %d mA, hold %d mA",
                  m.driver_name(),
                  (int)m_wheel.run_current(), (int)m_wheel.hold_current());
@@ -319,8 +333,7 @@ void Dialog::execute(char *line)
         // read BEFORE go(): once the wheel moves it is between slots (0)
         const int slot_before = m_wheel.current_slot();
         if (!m_wheel.go(n, code)) {
-            error(code, code == ERR_SENSOR_SILENT ? "AS5600 not responding"
-                                                       : "magnet not detected");
+            error(code, refusal_text(code));
             return;
         }
         snprintf(fields, sizeof(fields), "%s=%.2f %s=%.2f %s=%c",
@@ -353,8 +366,7 @@ void Dialog::execute(char *line)
             } else if (code == ERR_NOT_NOW) {
                 error(code, "wheel is moving");
             } else {
-                error(code, code == ERR_SENSOR_SILENT ? "AS5600 not responding"
-                                                      : "magnet not detected");
+                error(code, refusal_text(code));
             }
             return;
         }
@@ -812,6 +824,13 @@ void Dialog::step()
                  F_ERR, (double)drift);
         m_output.line(m_output_buf);
         raise_alarm(Alarm::DRIFT);
+    }
+    DriverCheck setup;
+    if (m_wheel.driver_to_report(setup)) {
+        snprintf(m_output_buf, sizeof(m_output_buf), "%c %s %s=%s",
+                 PREFIX_EVENT, EV_DRIVER, F_REASON,
+                 setup == DriverCheck::POWERED ? V_POWER : V_RESET);
+        m_output.line(m_output_buf);
     }
     if (m_wheel.sensor_to_report()) {
         snprintf(m_output_buf, sizeof(m_output_buf), "%c %s %s=0",

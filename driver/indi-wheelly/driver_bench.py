@@ -18,7 +18,8 @@ It checks, in order:
     looking at the XML: indi_getprop does not show the groups;
   - that the labels are translated, and change when the language changes;
   - that a filter change succeeds and FILTER_SLOT comes back Ok;
-  - that an invalid filter name is REFUSED, with an explanation;
+  - that an invalid filter name is REFUSED, with an explanation as the newest
+    log line, and that an empty name field (a slot without a filter) is not;
   - that a wheel that never arrives puts FILTER_SLOT in Alert, which is what
     stops the capture sequence in Ekos.
 
@@ -286,6 +287,12 @@ class Bench:
 
         env = dict(os.environ)
         env["HOME"] = self.home
+        # The folder the driver reads the /dev/serial/by-id/ links from, to
+        # find a wheel that comes back under another ttyACMn: the bench's own,
+        # so that no test ever looks at the machine's real devices.
+        self.by_id = os.path.join(self.home, "by-id")
+        os.makedirs(self.by_id)
+        env["WHEELLY_SERIAL_BY_ID"] = self.by_id
         if language:
             env["LANG"] = language
             env["LC_ALL"] = language
@@ -536,12 +543,26 @@ def test_name_refused():
            "and proposes a good name derived from the one written", log[-250:])
         ok("Ammessi" in log and "cifre" in log and "32" in log,
            "and ALWAYS lists the characters that can be used", log[-250:])
+        # The refusal must be the NEWEST line: KStars' log puts the newest on
+        # top and its status bar shows only that one. With the rule sent after
+        # the refusal, the line in sight was the generic rule, and which slot
+        # and why stayed hidden under it.
+        ok("Posizione 1" in c.messages[-1] and "spazio" in c.messages[-1],
+           "the refusal itself is the newest line, the one in sight",
+           c.messages[-1])
 
         # the worst case for length: a long name, a long reason, and an equally
         # long proposed name
         long_name = "-" + "Lum_stretto_31mm_Baader_CMOS" + "-"
+        c.set_text("FILTER_NAME", "FILTER_SLOT_NAME_1", "Lum_ok")
+        c.wait_state("FILTER_NAME", ("Ok",), 5)
         c.set_text("FILTER_NAME", "FILTER_SLOT_NAME_1", long_name)
         c.wait_state("FILTER_NAME", ("Alert",), 5)
+        # too long for one line: the rule and the refusal go on two, and the
+        # refusal is still the newest
+        ok("Posizione 1" in c.messages[-1] and "Ammessi" in c.messages[-2],
+           "on two lines the rule comes first and the refusal last",
+           str(c.messages[-2:]))
 
         # an accented letter cannot even be printed: in UTF-8 it is two bytes,
         # and sending back only one is not valid XML - the client would die on
@@ -582,12 +603,94 @@ def test_name_refused():
         # truncated to "...una cif". The limit lets 254 bytes through, so
         # measuring is not enough: a whole sentence ends with a full stop.
         ours = [m for m in c.messages if "rifiutato" in m or "Ammessi" in m]
-        ok(len(ours) >= 6, "and all the refusal messages have arrived",
-           str(len(ours)))
+        # four refusals, each with its rule - on one line or on two
+        ok(sum("rifiutato" in m for m in ours) >= 4
+           and sum("Ammessi" in m for m in ours) >= 4,
+           "and all the refusal messages have arrived", str(len(ours)))
         truncated = [m for m in ours
                      if len(m.encode("utf-8")) > 254 or not m.endswith(".")]
         ok(not truncated, "and none arrives truncated by the INDI limit",
            str(truncated)[-300:])
+    finally:
+        c.close()
+        bench.close()
+
+
+def set_names(c, values):
+    """All the names in one go, as Ekos and KStars' panel send them."""
+    pieces = "".join(f"<oneText name='FILTER_SLOT_NAME_{i + 1}'>{v}</oneText>"
+                     for i, v in enumerate(values))
+    c.send(f"<newTextVector device='{DEVICE}' name='FILTER_NAME'>{pieces}"
+           "</newTextVector>")
+    c.pump(1.5)
+
+
+def field_names(c):
+    names = c.props["FILTER_NAME"]["elements"]
+    return [names[f"FILTER_SLOT_NAME_{i + 1}"]["value"] for i in range(len(names))]
+
+
+def test_empty_slots():
+    """A slot without a filter is normal: its field is left empty. That
+    refused the whole set, with a red light and, in sight, only the generic
+    rule. An empty field now becomes "Empty_<slot>": unique by the slot number,
+    valid for the firmware, the same in every language."""
+    print("empty name fields: a slot without a filter")
+    bench = Bench(language="it_IT.UTF-8")
+    c = Client(INDI_PORT)
+    try:
+        bench.connect(c)
+        c.pump(1.5)
+
+        # the case seen in Ekos: four filters, the fifth slot left empty
+        before = len(c.messages)
+        set_names(c, ["Lum", "Red", "Green", "Blue", ""])
+        ok(c.state("FILTER_NAME") == "Ok",
+           "a set with an empty slot is accepted - the wheel took it too",
+           c.state("FILTER_NAME"))
+        ok(field_names(c) == ["Lum", "Red", "Green", "Blue", "Empty_5"],
+           "and the empty slot shows its name, Empty_5, as Ekos will list it",
+           str(field_names(c)))
+        log = " ".join(c.messages[before:])
+        ok("Posizione 5" in log and '"Empty_5"' in log,
+           "the log says which slot was named and how", log[-250:])
+        ok("rifiutato" not in log and "Ammessi" not in log,
+           "and nothing is refused", log[-250:])
+
+        # several empty slots, one of them only blanks: the slot number keeps
+        # them apart, so the duplicate rule is not tripped
+        set_names(c, ["Lum", "Red", "", "  ", ""])
+        ok(c.state("FILTER_NAME") == "Ok",
+           "several empty slots are accepted together", c.state("FILTER_NAME"))
+        ok(field_names(c) == ["Lum", "Red", "Empty_3", "Empty_4", "Empty_5"],
+           "each with its own name", str(field_names(c)))
+
+        # the second use: the set sent again as the panel now shows it
+        set_names(c, field_names(c))
+        ok(c.state("FILTER_NAME") == "Ok",
+           "sending the set again as shown is accepted", c.state("FILTER_NAME"))
+
+        # a filter put back into an empty slot takes its place
+        set_names(c, ["Lum", "Red", "Green", "Empty_4", "Empty_5"])
+        ok(field_names(c)[2] == "Green" and c.state("FILTER_NAME") == "Ok",
+           "a slot that was empty takes a filter name again", str(field_names(c)))
+
+        # an empty slot together with a really bad name: the set is refused,
+        # the empty slot is NOT announced as named, and the refusal of the
+        # bad one is the line in sight
+        shown = field_names(c)
+        before = len(c.messages)
+        set_names(c, ["Lum", "Red 2", "Green", "", "Empty_5"])
+        ok(c.state("FILTER_NAME") == "Alert",
+           "a bad name next to an empty slot is still refused",
+           c.state("FILTER_NAME"))
+        ok(field_names(c) == shown,
+           "and the fields go back as they were", str(field_names(c)))
+        ok("Posizione 2" in c.messages[-1] and "spazio" in c.messages[-1],
+           "the specific reason is the newest line", c.messages[-1])
+        ok(not any("lasciata vuota" in m for m in c.messages[before:]),
+           "and no slot is announced as named by a set that was refused",
+           str(c.messages[before:]))
     finally:
         c.close()
         bench.close()
@@ -1797,6 +1900,204 @@ def test_wrong_port():
             os.unlink(silent)
 
 
+def test_motor_supply():
+    print("the motor's 12 V after the USB: refused, then set up and said")
+    # The assembly guide's order, USB first: the wheel talks, the motor
+    # driver does not until the 12 V arrive. A filter change then is refused
+    # with a sentence that names the 12 V, and the first one after the 12 V
+    # moves, with one line saying the driver was set up (EV_DRIVER).
+    start = time.monotonic()
+    bench = Bench("--vm-off-for", "6000")
+    c = Client(INDI_PORT)
+    try:
+        bench.connect(c)
+        c.pump(1.0)
+        c.set_number("FILTER_SLOT", "FILTER_SLOT_VALUE", 3)
+        ok(c.wait_state("FILTER_SLOT", ("Ok", "Alert"), 10) == "Alert",
+           "no 12 V: the filter change is refused", c.state("FILTER_SLOT"))
+        ok(any("12 V supply connected" in m for m in c.messages),
+           "and the log names the 12 V", str(c.messages[-3:]))
+        c.pump(max(0.0, 7.0 - (time.monotonic() - start)))     # the 12 V arrive
+        c.set_number("FILTER_SLOT", "FILTER_SLOT_VALUE", 3)
+        ok(c.wait_state("FILTER_SLOT", ("Ok", "Alert"), 30) == "Ok",
+           "12 V on: the filter change arrives", c.state("FILTER_SLOT"))
+        c.pump(1.0)
+        said = [m for m in c.messages if "got its 12 V after the wheel had started" in m]
+        ok(len(said) == 1, "and the log says once that the driver was set up", str(said))
+    finally:
+        c.close()
+        bench.close()
+
+
+def start_simulator(link, *knobs):
+    """Another simulator - another wheel on the cable, the same serial number."""
+    launch = [sys.executable, str(SIMULATOR)] if IS_PYTHON else [str(SIMULATOR)]
+    sim = subprocess.Popen([*launch, "--pty", "--link", link, *knobs],
+                           stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    for _ in range(100):
+        if os.path.exists(link):
+            break
+        time.sleep(0.05)
+    return sim
+
+
+def stop(process):
+    try:
+        process.send_signal(signal.SIGINT)
+        process.wait(timeout=3)
+    except Exception:
+        try:
+            process.kill()
+        except Exception:
+            pass
+
+
+def replace_link(path, target):
+    if os.path.islink(path) or os.path.exists(path):
+        os.unlink(path)
+    os.symlink(target, path)
+
+
+def test_usb_unplugged():
+    print("the wheel's USB unplugged and plugged back: the driver finds it again")
+    # SEEN ON THE REFERENCE WHEEL: unplugged and plugged back, the wheel came
+    # back as another ttyACMn while the driver stayed "Connected" on the dead
+    # descriptor - "Write Error: Input/output error" 25 times in a few
+    # seconds, the angle frozen, commands lost - until Disconnect/Connect by
+    # hand. Here the port the user chose is a name that VANISHES with the
+    # wheel (like /dev/ttyACM1), and the wheel comes back on a new pty, found
+    # through its by-id link (the bench's own folder, see Bench).
+    lost_text = ("USB link to the wheel was lost", "collegamento USB con la ruota")
+    back_text = ("is back on", "è tornata su")
+    down_text = ("not reachable right now", "non è raggiungibile")
+
+    def count(texts):
+        return sum(1 for m in c.messages if any(t in m for t in texts))
+
+    def wait_message(texts, seconds):
+        end = time.monotonic() + seconds
+        while time.monotonic() < end:
+            c.pump(0.2)
+            if count(texts):
+                return True
+        return False
+
+    acm = f"/tmp/wheelly_acm_{os.getpid()}"
+    second = f"/tmp/wheelly_link2_{os.getpid()}"
+    third = f"/tmp/wheelly_link3_{os.getpid()}"
+    bench = Bench()
+    by_id = os.path.join(bench.by_id, "usb-Espressif_Wheelly_bench-if00")
+    replace_link(acm, os.path.realpath(SERIAL))
+    replace_link(by_id, os.path.realpath(SERIAL))
+    c = Client(INDI_PORT)
+    sims = []
+    try:
+        c.pump(1.0)
+        c.set_text("DEVICE_PORT", "PORT", acm)
+        c.pump(0.4)
+        c.set_switch("CONNECTION", "CONNECT", ["DISCONNECT"])
+        ok(c.wait_state("CONNECTION", ("Ok", "Alert"), 15) == "Ok",
+           "connected on the port that will vanish", c.state("CONNECTION"))
+        c.pump(1.5)
+
+        # UNPLUGGED: the wheel comes back on another pty, the old name goes
+        sims.append(start_simulator(second))
+        stop(bench.sim)
+        os.unlink(acm)
+        replace_link(by_id, os.path.realpath(second))
+        ok(wait_message(lost_text, 8.0), "the loss is noticed and said",
+           str(c.messages[-3:]))
+        c.pump(0.5)
+        lost_state = c.state("CONNECTION")
+        connect_on = c.props.get("CONNECTION", {}).get("elements", {}) \
+                      .get("CONNECT", {}).get("value")
+        position_lost = c.state("WHEELLY_POSITION")
+        ok(wait_message(back_text, 20.0), "and the wheel is found again, by its by-id link",
+           str(c.messages[-3:]))
+        ok(lost_state == "Ok" and connect_on == "On",
+           "while it was away: still connected for Ekos, CONNECTION On and Ok",
+           f"{lost_state} {connect_on}")
+        ok(position_lost == "Alert", "but the frozen position shown in Alert", position_lost)
+        ok(c.wait_state("WHEELLY_POSITION", ("Ok",), 5) == "Ok",
+           "and live again once it is back", c.state("WHEELLY_POSITION"))
+        back = [m for m in c.messages if any(t in m for t in back_text)]
+        ok(back and by_id in back[-1], "on the link that follows the USB serial", str(back))
+        c.pump(2.0)
+        ok(count(lost_text) == 1 and count(back_text) == 1,
+           "ONE line for the loss and ONE for the return, not one per poll",
+           f"lost {count(lost_text)}, back {count(back_text)}")
+        ok(not any("Write Error" in m or "not answering" in m or "non risponde" in m
+                   for m in c.messages),
+           "and no write errors in the log", str([m for m in c.messages if "rror" in m]))
+
+        # it works: a filter change on the wheel found again
+        c.set_number("FILTER_SLOT", "FILTER_SLOT_VALUE", 3)
+        ok(c.wait_state("FILTER_SLOT", ("Ok", "Alert"), 30) == "Ok",
+           "a filter change after the reconnection arrives", c.state("FILTER_SLOT"))
+
+        # THE SECOND TIME (a defect of the second use hides from a test that
+        # unplugs once): now the name the user chose comes back, and the by-id
+        # link is gone - the configured port is tried first.
+        sims.append(start_simulator(third))
+        stop(sims[0])
+        os.unlink(by_id)
+        replace_link(acm, os.path.realpath(third))
+        ok(_wait_count(c, back_text, 2, 25.0),
+           "unplugged a second time: found again on the port the user chose",
+           str(c.messages[-3:]))
+        ok(count(lost_text) == 2, "with one more line for the loss", str(count(lost_text)))
+        ok(count(down_text) == 0, "and no complaints while nobody asked anything",
+           str(count(down_text)))
+
+        # Disconnect and Connect by hand still work after a reconnection:
+        # the descriptor the driver opened itself is released
+        c.set_switch("CONNECTION", "DISCONNECT", ["CONNECT"])
+        c.wait_state("CONNECTION", ("Idle",), 10)
+        c.pump(0.5)
+        held = driver_descriptors_on(bench, os.path.realpath(third))
+        ok(held == 0, "after Disconnect the driver holds no descriptor on the wheel's port",
+           f"{held} still open")
+        c.set_switch("CONNECTION", "CONNECT", ["DISCONNECT"])
+        ok(c.wait_state("CONNECTION", ("Ok", "Alert"), 15) == "Ok",
+           "Disconnect and Connect by hand after a reconnection: connected",
+           c.state("CONNECTION"))
+    finally:
+        c.close()
+        for sim in sims:
+            stop(sim)
+        bench.close()
+        for path in (acm, second, third):
+            if os.path.islink(path):
+                os.unlink(path)
+
+
+def driver_descriptors_on(bench, device):
+    """How many descriptors the driver process has open on `device`
+    (Linux, /proc): a descriptor the reconnection opened and Disconnect
+    forgot would keep the port - a real one, busy for the next program."""
+    found = 0
+    children = subprocess.run(["pgrep", "-P", str(bench.server.pid)],
+                              capture_output=True, text=True).stdout.split()
+    for pid in children:
+        folder = f"/proc/{pid}/fd"
+        for fd in os.listdir(folder) if os.path.isdir(folder) else []:
+            try:
+                if os.readlink(os.path.join(folder, fd)) == device:
+                    found += 1
+            except OSError:
+                pass
+    return found
+
+
+def _wait_count(c, texts, wanted, seconds):
+    end = time.monotonic() + seconds
+    while time.monotonic() < end:
+        c.pump(0.2)
+        if sum(1 for m in c.messages if any(t in m for t in texts)) >= wanted:
+            return True
+    return False
+
+
 def test_middle_band():
     print("the middle band: warn but carry on")
     # It is the most wanted behaviour and the easiest to get wrong: outside
@@ -2041,6 +2342,7 @@ def main():
                  test_seven_position_wheel,
                  test_filter_change,
                  test_name_refused,
+                 test_empty_slots,
                  test_sweep,
                  test_names_from_the_wheel_on_second_start,
                  test_slot_count_from_the_panel,
@@ -2056,6 +2358,8 @@ def main():
                  test_no_detent,
                  test_direction,
                  test_middle_band,
+                 test_usb_unplugged,
+                 test_motor_supply,
                  test_wrong_port,
                  test_wrong_device,
                  test_unknown_protocol,

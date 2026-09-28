@@ -128,11 +128,19 @@ TEXTS = {
             "Windows device names (CON, PRN, AUX, NUL, COM1-COM9, LPT1-LPT9, also "
             "with an extension) are refused. Two slots may not have the same name, "
             "ignoring upper and lower case.",
+            "A slot without a filter: leave its field empty. The driver names it "
+            "Empty_ followed by the slot number (Empty_5), which is unique and "
+            "valid, so several slots can be empty at once; the name is the same "
+            "in every language, because it is stored in the wheel and written in "
+            "the FITS header. The field and Ekos's filter list then show that "
+            "name, and the log says so.",
             "A refused name is not corrected silently: the property turns red "
             "(Alert), the field goes back to the previous name, and the log says "
             "which slot, which name, what is wrong and, when it can, a name that "
-            "would be accepted; a second log line always lists the allowed "
-            "characters. FILTER_SLOT is not touched, so a typo never stops a "
+            "would be accepted, followed by the allowed characters. That line is "
+            "always the newest in the log, the one on top in KStars; when it is "
+            "too long for one INDI message, the allowed characters go on the line "
+            "just before it. FILTER_SLOT is not touched, so a typo never stops a "
             "sequence.",
             "The number of fields follows the number of slots the wheel reports; "
             "the panel capture shows the five of a factory wheel.",

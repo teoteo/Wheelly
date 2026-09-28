@@ -52,11 +52,18 @@ class LineReader
         {
             return m_down;
         }
+        // The errno of the failure that put the channel down; 0 when the
+        // other end hung up (end of file) - which on a tty is the port gone.
+        int down_errno() const
+        {
+            return m_errno;
+        }
 
     private:
         int m_fd {-1};
         std::string m_rest;
         bool m_down {false};
+        int m_errno {0};
 };
 
 class Wheelly : public INDI::FilterWheel
@@ -69,6 +76,7 @@ class Wheelly : public INDI::FilterWheel
         // Connecting in two passes: see wheelly.cpp. It is needed because the
         // wheel is recognised by its protocol and not by the name of the port.
         bool Connect() override;
+        bool Disconnect() override;
         bool initProperties() override;
         bool updateProperties() override;
         bool ISNewNumber(const char *dev, const char *name, double values[],
@@ -267,6 +275,34 @@ class Wheelly : public INDI::FilterWheel
         // --- properties: options ------------------------------------------
         INDI::PropertyText FirmwareTP {3};
         INDI::PropertySwitch LanguageSP {3};
+
+        // --- the USB link, lost and found again -----------------------------
+        // A wheel unplugged and plugged back left the driver "Connected" on a
+        // descriptor that could only fail: every write "Input/output error",
+        // one line in the log per poll, the angle frozen in the panel, and
+        // only Disconnect/Connect by hand brought it back. Now an I/O error
+        // that means the port is gone (link_is_gone) closes the descriptor,
+        // says so ONCE, and TimerHit tries to open the wheel again, with a
+        // growing pause, until it answers with this profile's serial number.
+        // CONNECTION stays On and Ok (Ekos keeps its device, see link_lost);
+        // the position and sensor turn Alert while the link is down.
+        static bool link_is_gone(int error_number);
+        void link_lost(const std::string &why);
+        bool try_reconnect();
+        void link_found(const std::string &path);
+        void remember_alias();
+        bool m_link_lost {false};
+        bool m_reconnecting {false};         // Handshake() on a reconnection
+        double m_next_attempt {0.0};
+        double m_retry_pause_s {0.0};
+        // A descriptor opened by the reconnection, not by libindi's serial
+        // plugin, which was told to let the dead one go: closed by Disconnect().
+        int m_own_fd {-1};
+        // The /dev/serial/by-id/ link of the port in use, found at connection:
+        // it carries the USB serial number, so it points at the wheel under
+        // whatever ttyACMn the kernel gives it when it comes back.
+        std::string m_alias;
+        std::string m_port_in_use;
 
         // --- internal state -------------------------------------------------
         LineReader m_reader;
