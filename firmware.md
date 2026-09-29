@@ -24,9 +24,9 @@ manual StarDikor wheel, Ø158 mm, five slots.
 | **Protocol** | on the USB cable | the contract between the two. One file, `firmware/wheelly/wheelly_protocol.h`, included by both |
 | **`indi-wheelly` driver** | Raspberry Pi, under `indiserver` | translates the protocol into INDI properties. Decides nothing |
 
-Across all three: **every user-facing text is multilingual through keys**, English and
-Italian to start with — but not the protocol, which is an interface between machines
-(section 13).
+Across all three: **the panel and the log speak English**, as every INDI driver does; the
+guides are in English and Italian. The protocol is an interface between machines and is never
+translated (section 13).
 
 The dividing line: **the firmware decides, the driver reports.** The comparison with the
 tolerances, the retries and the final verdict are on the XIAO. So the wheel behaves the
@@ -1035,8 +1035,8 @@ error 3 expected=1..5 got=7 slot out of range
 ```
 
 Three things on the same line, each for a different reader. The **code** is for the machine,
-and it is also the **translation key** (section 13). The **named fields** are the parameters
-with which the driver builds the sentence in the user's language. The **English text** at the
+and the driver turns it into the sentence the user reads (section 13). The **named fields** are
+the parameters of that sentence. The **English text** at the
 end is very short and serves only whoever is watching the raw serial: it is the note for the
 developer, not the sentence the user sees.
 
@@ -1114,7 +1114,6 @@ really declares.
 | `WHEELLY_HOLD` | Options | number, 2 | R/W | holding current at rest in mA. **0 = off**, the default. The field shows the wheel's value, 0 included; the 150 mA suggestion is in the drift message. Second field: the **hold after arrival** in ms, `settle`, read back from the wheel at connection and sent only when it changed (an older firmware then goes to Alert only if that field is changed) |
 | `WHEELLY_DIRECTION` | Options | switch | R/W | shortest way (default) · increasing angles only · decreasing angles only — sent with `direction`, read at connection; warns in the log when the wheel's time cap is past Ekos's 30 s |
 | `WHEELLY_LED` | Options | switch | R/W | steady on · pulses while moving (default) · off · test (blinks `WHEELLY` in Morse) |
-| `WHEELLY_LANGUAGE` | Options | switch | R/W | from the system · English · Italian |
 
 **The current slot is marked in the angles.** INDI cannot colour one element, only a whole
 property, so the label of the slot the driver is on reads "▶ 2". A label reaches a client only
@@ -1127,12 +1126,11 @@ asterisk until its Set confirms it; any other move gives it back its taught angl
 separate "Save position" button (`teach` of the current slot): that Set does the same.
 
 **Property and element names are identifiers**, so they are English and fixed forever, like the
-words of the protocol. What the user reads in Ekos are the **labels**, which are free text and
-come from the catalogue of their language.
+words of the protocol. What the user reads in Ekos are the **labels**, which are free text,
+in English.
 
-**The tab names stay in English.** They sit in the same tab bar INDI creates by itself —
-*Connection*, *Options* — which cannot be translated: a bar half in Italian and half in English
-would look broken. Everything inside the tabs is ours, and is translated.
+**The tab names match INDI's own.** They sit in the same tab bar INDI creates by itself —
+*Connection*, *Options* — so the driver's tabs are named in the same way.
 
 `FILTER_NAME` is read **from the wheel** at connection and fills the standard property; if the
 user changes the names from Ekos, the driver writes them back to the wheel. The names are the
@@ -2002,89 +2000,61 @@ to disk.
 
 ---
 
-## 13. Languages: everything through keys, English and Italian
+## 13. Languages: an English driver, bilingual guides
 
-No user-facing string is written inline in the code. Each one has a **key**, and the texts are in
-separate catalogues, one per language. The starting languages are **English and Italian**. In the
-driver the catalogues are `driver/indi-wheelly/translations.cpp` and `translations_it.cpp`.
+**The driver speaks English**: the panel's labels and the log's messages are English sentences
+written in the code where they are used, as in every INDI driver. INDI takes a driver into its own
+tree only that way: its drivers are English, and translation, where there is any, belongs to the
+client. KStars translates the labels it finds in a fixed list of libindi strings; the log's
+messages are shown as they arrive.
 
-It has to be set up before writing: introducing keys afterwards means going through every string
-already written, one by one — the kind of work that never gets done.
+**The guides are in English and Italian** (`docs/driver/`, `docs/driver/it/`): the Italian page
+explains the same panel, with the same pictures and the labels as they appear on screen, in
+English, so that what the reader looks for is exactly what they see.
+
+**Rejected: a bilingual driver through translation keys.** The driver used to be built that way —
+every text a key, an English and an Italian catalogue, a Language switch in Options. It was taken
+out because INDI's maintainers do not want translation code in a driver, and keeping two drivers,
+bilingual here and English in INDI's tree, would have turned every fix made on INDI's side into a
+hand port. One driver, the same file in both places, is what keeps the copy in INDI honest.
 
 ### What is translated and what is not
 
-**The protocol is not translated.** The words of the commands and the names of the fields are not
-prose: they are **identifiers**, and they must stay the same forever, in one language. Translated,
-a firmware and a driver of different languages would no longer talk to each other.
+**The protocol is never translated.** The words of the commands and the names of the fields are
+not prose: they are **identifiers**, and they must stay the same forever. A firmware and a driver
+that did not share them would no longer talk to each other.
 
 | | language |
 |---|---|
 | commands, fields, events on the wire; INDI property names | **one, English, fixed forever** |
-| everything a human reads in Ekos or on a page | **theirs** |
+| the panel's labels and the log's messages | English, as in every INDI driver |
+| the guides | English, and Italian from a catalogue |
 | the `#` diagnostic lines and the English tail of `error` lines | English, always: they are for the developer |
 
-The criterion to tell which side a string is on: **if a machine reads it, or whoever is watching the
-raw serial, it is English and never changes. If the user reads it, it has a key and a translation.**
+### The sentences live on the host, not in the firmware
 
-### Translations live on the host, not in the firmware
-
-**The XIAO has no catalogues.** When something goes wrong the firmware sends the **error code**, the
-**parameters** as named fields, and a very short English text for whoever is watching the raw
+**The XIAO holds no user texts.** When something goes wrong the firmware sends the **error code**,
+the **parameters** as named fields, and a very short English text for whoever is watching the raw
 serial:
 
 ```
 error 3 expected=1..5 got=7 slot out of range
 ```
 
-The **code is the key**, and the fields are the parameters. The driver looks the code up in the
-catalogue of the user's language and builds the sentence.
+The driver turns the code and the fields into the sentence the user reads. The wire **stays readable
+by hand**, the value this whole protocol is built on, and a sentence is improved on the host without
+reflashing the wheel.
 
-It pays twice. The wire **stays readable by hand**, the value this whole protocol is built on. And
-adding a language, or fixing a translation, **does not require reflashing the wheel**: only the host
-is touched. Catalogues in the firmware would use flash for texts someone reads once a year, and
-need a reflash to add French.
-
-### Three rules against the classic damage
-
-**One key, one whole sentence.** Never build a sentence by gluing pieces translated separately: word
-order changes from language to language, and the result is wrong grammar that nobody rereads. The
-key carries the whole sentence, with placeholders inside for the parameters.
-
-**English is the safety net.** If a key is missing from the Italian catalogue the English is shown,
-never the bare key and never an empty string. A missing translation must be a small annoyance, not a
-broken interface.
-
-**Filter names stay ASCII anyway.** Multilingual concerns the interface, not the data: the interface
-can be in Italian, but a filter cannot be called `Luminosità`, for the reasons of section 6. They are
-two different questions and must be kept apart, or one ends up "widening" the name rule believing
-oneself consistent.
-
-### How it chooses the language, in practice
-
-The choice is in **Options → Language**: *From the system* (the default), *English*, *Italian* —
-because in an observatory the system may be in one language and the interface wanted in another.
-*From the system* reads `LC_ALL`, `LC_MESSAGES` and `LANG`, in that order, and picks Italian when the
-first one set starts with `it`, English otherwise. INDI has **no translation mechanism** of its own:
-property names are fixed identifiers, but **labels** are free text, and that is where the translated
-strings go, when the properties are created.
-
-The labels are built once, when the driver starts, and INDI clients keep the labels they received.
-So **changing the language takes effect when the driver is started again** (in Ekos: stop INDI and
-start it), not at once and not at a mere reconnection. The driver says so in the log when the choice
-changes, instead of letting it be taken for a bug.
-
-The catalogue is compiled into the driver, not read from a separate file: one file fewer to install,
-to find and to lose, and no external dependency. The Italian catalogue is a CMake option
-(`WHEELLY_ITALIAN`), so a build carried in INDI's tree can be English only.
+**Filter names stay ASCII anyway.** It is a question about the data, not the interface: a filter
+cannot be called `Luminosità`, for the reasons of section 6.
 
 ---
 
 ## 14. Still to decide
 
-- **Proposing `indi-wheelly` to INDI's main repository**, as the criterion says, or keeping it out to
-  have releases independent of the core's cycle (section 5.2; what would be handed over is in
-  `driver/indi-wheelly/upstream/`). It is not a technical decision but one of commitment: proposing
-  it upstream means taking on maintenance in public.
+- **The driver in INDI's main repository**: proposed, as the criterion says (section 5.2; the copy
+  is produced by `driver/indi-wheelly/upstream/to_indi.py`). Once it is in, a protocol change means
+  a pull request to INDI too.
 - **When to make the Alpaca bridge**, if it is ever really needed. Today it is documented, and that
   is all.
 - **The tolerances** (section 2.3): tighter values once the movement log shows the real errors in

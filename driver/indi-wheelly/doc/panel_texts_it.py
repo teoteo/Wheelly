@@ -18,27 +18,28 @@ CATALOGUE = {
     'CONNECTION/notes/1': ('5863a3bc',
         "La ruota si riconosce da quello che risponde, non dal nome della porta: il firmware "
         "comunica un numero di serie ricavato dal chip, e il driver lo ricorda nella "
-        "configurazione del profilo al primo collegamento (log: «D'ora in poi questo profilo "
-        "cerca la ruota col seriale ...»)."),
+        "configurazione del profilo al primo collegamento (log: «From now on this profile looks"
+        " for the wheel with serial ...»)."),
     'CONNECTION/notes/2': ('c4253745',
-        "Con due ruote Wheelly collegate, ogni profilo cerca prima il proprio numero di serie; una "
-        "Wheelly diversa viene saltata (log: «Questa è una Wheelly diversa ...»). Se la sua ruota "
-        "non è su nessuna porta, il driver si collega alla prima Wheelly che trova, lo dice nel "
-        "log, e da lì in poi adotta quel numero di serie."),
+        "Con due ruote Wheelly collegate, ogni profilo cerca prima il proprio numero di serie; "
+        "una Wheelly diversa viene saltata (log: «This is a different Wheelly ...»). Se la sua "
+        "ruota non è su nessuna porta, il driver si collega alla prima Wheelly che trova, lo "
+        "dice nel log, e da lì in poi adotta quel numero di serie."),
     'CONNECTION/notes/3': ('15a8fa5e',
         "La ricerca sulle altre porte la fa l'Auto Search di INDI (DEVICE_AUTO_SEARCH); con Auto "
         "Search spento si prova solo la porta in DEVICE_PORT."),
     'CONNECTION/notes/4': ('9d793d18',
-        "Messaggi nel log quando non riesce: «Il dispositivo su questa porta non ha risposto "
-        "come una ruota Wheelly. Controlla la porta.» oppure «Questo firmware parla il "
-        "protocollo X, il driver parla il Y. Aggiorna uno dei due.» Il protocollo 2 non ha il "
-        "ritocco di rotazione: un firmware del protocollo 1 punta all'angolo + il ritocco, "
-        "quindi viene rifiutato invece di essere guidato a metà - si ricarica il firmware "
-        "della ruota e si installa il driver insieme."),
+        "Messaggi nel log quando non riesce: «The device on this port did not answer as a "
+        "Wheelly wheel. Check the port.» oppure «This firmware speaks protocol X, this driver "
+        "speaks Y. Update one of the two.» Il protocollo 2 non ha il ritocco di rotazione: un "
+        "firmware del protocollo 1 punta all'angolo + il ritocco, quindi viene rifiutato invece"
+        " di essere guidato a metà - si ricarica il firmware della ruota e si installa il "
+        "driver insieme."),
     'CONNECTION/notes/5': ('e815da94',
-        "Se il canale seriale cade mentre si è collegati (errore di lettura o cavo staccato), il "
-        "log dice «La ruota non risponde.» e il collegamento va in Alert e si scollega. Un singolo "
-        "comando che non riceve risposta entro 3 s viene scritto nel log ma non fa scollegare."),
+        "Se il canale seriale cade mentre si è collegati (errore di lettura o cavo staccato), "
+        "il log dice «The wheel is not answering.» e il collegamento va in Alert e si scollega."
+        " Un singolo comando che non riceve risposta entro 3 s viene scritto nel log ma non fa "
+        "scollegare."),
     'FILTER_SLOT/what': ('e8a7ecfd',
         "La posizione del filtro standard di INDI: la posizione su cui sta la ruota, e il "
         "posto dove chiederne un'altra. Ekos scrive qui quando una sequenza cambia filtro. Il "
@@ -54,29 +55,28 @@ CATALOGUE = {
         "ruota di fabbrica, al massimo 12); passo 1."),
     'FILTER_SLOT/notes/2': ('57d53dc2',
         "Busy mentre la ruota si muove. Ok quando è arrivata entro la tolleranza Buona (log: "
-        "«Posizione N raggiunta, errore residuo X gradi.»)."),
+        "«Slot N reached, residual error X deg.»)."),
     'FILTER_SLOT/notes/3': ('cac82331',
         "Arrivata fra la tolleranza Buona e quella d'Allarme: ancora Ok, quindi la sequenza va "
-        "avanti, con un avviso nel log («Posizione N raggiunta ma fuori di X gradi, oltre la "
-        "tolleranza buona. La ripresa prosegue.»)."),
+        "avanti, con un avviso nel log («Slot N reached but off by X deg, beyond the good "
+        "tolerance. Imaging continues.»)."),
     'FILTER_SLOT/notes/4': ('231fa621',
         "Ancora oltre la tolleranza d'Allarme dopo tutti i ritentativi: Alert, che fa fermare "
-        "subito la sequenza a Ekos (log: «Posizione N NON raggiunta ... La ripresa viene fermata, "
-        "così non si scatta a ruota fuori posto.»)."),
+        "subito la sequenza a Ekos (log: «Slot N NOT reached ... Imaging is stopped so that no "
+        "frame is taken with the wheel out of place.»)."),
     'FILTER_SLOT/notes/5': ('4d0e19fb',
-        "Dopo ogni posizione non raggiunta, e dopo il limite di tempo qui sotto, una "
-        "seconda riga del log suggerisce la prima cosa da controllare: «Se il motore si "
-        "blocca o la frizione slitta, controlla prima di tutto che il fermo della ruota "
-        "(lo scatto a molla) sia stato tolto ...» - il motore non riesce a uscire dalle "
-        "sue tacche, e la guida di montaggio lo toglie nel capitolo 10, Il corpo della "
-        "ruota."),
+        "Dopo ogni posizione non raggiunta, e dopo il limite di tempo qui sotto, una seconda "
+        "riga del log suggerisce la prima cosa da controllare: «If the motor stalls or the "
+        "clutch slips, check first that the wheel's detent (its spring click stop) has been "
+        "removed ...» - il motore non riesce a uscire dalle sue tacche, e la guida di montaggio"
+        " lo toglie nel capitolo 10, Il corpo della ruota."),
     'FILTER_SLOT/notes/6': ('c0ae1ada',
         "Limiti di tempo: la ruota ricava da sé il tetto di tempo di un movimento dalla "
         "velocità del motore, dall'accelerazione, dai ritentativi, dal verso di rotazione e "
-        "dalla tenuta dopo l'arrivo, e oltre quel tetto smette di ritentare; il driver "
-        "dichiara Alert da sé se la ruota non ha finito 3 s dopo quel tetto (log: «La ruota "
-        "non ha finito entro N secondi. La ripresa viene fermata.»). Con un firmware che non "
-        "dichiara il suo tetto il limite del driver è 28 s."),
+        "dalla tenuta dopo l'arrivo, e oltre quel tetto smette di ritentare; il driver dichiara"
+        " Alert da sé se la ruota non ha finito 3 s dopo quel tetto (log: «The wheel did not "
+        "finish within N seconds. Imaging is stopped.»). Con un firmware che non dichiara il "
+        "suo tetto il limite del driver è 28 s."),
     'FILTER_SLOT/notes/7': ('d645b33a',
         "Ekos rinuncia per conto suo a un cambio filtro dopo 30 s: quando il tetto della ruota va"
         " oltre, il log lo dice (vedi WHEELLY_DIRECTION)."),
@@ -112,12 +112,12 @@ CATALOGUE = {
         "l'ultimo devono essere una lettera o una cifra. I nomi di dispositivo di Windows (CON, "
         "PRN, AUX, NUL, COM1-COM9, LPT1-LPT9, anche con un'estensione) vengono rifiutati. Due "
         "posizioni non possono avere lo stesso nome, senza distinguere maiuscole e minuscole."),
-    'FILTER_NAME/notes/2': ('7c95acdd',
+    'FILTER_NAME/notes/2': ('8f36bac7',
         "Una posizione senza filtro: lascia vuoto il suo campo. Il driver le dà il nome Empty_ "
-        "seguito dal numero della posizione (Empty_5), che è unico e valido, così più posizioni "
-        "possono essere vuote insieme; il nome è lo stesso in ogni lingua, perché è conservato "
-        "nella ruota e scritto nell'intestazione FITS. Il campo e l'elenco dei filtri di Ekos "
-        "mostrano poi quel nome, e il log lo dice."),
+        "seguito dal numero della posizione (Empty_5), che è unico e valido, così più posizioni"
+        " possono essere vuote insieme; il nome è lo stesso su ogni computer, perché è "
+        "conservato nella ruota e scritto nell'intestazione FITS. Il campo e l'elenco dei "
+        "filtri di Ekos mostrano poi quel nome, e il log lo dice."),
     'FILTER_NAME/notes/3': ('cb180e29',
         "Un nome rifiutato non viene corretto di nascosto: la proprietà diventa rossa (Alert), il "
         "campo torna al nome di prima, e il log dice quale posizione, quale nome, cosa non va e, "
@@ -133,7 +133,7 @@ CATALOGUE = {
         "numero diverso di posizioni)."),
     'FILTER_NAME/notes/6': ('b6040427',
         "Un nome nuovo resta nella ruota solo fino allo spegnimento, a meno che tu non prema "
-        "«Salva nella ruota» (WHEELLY_SAVE)."),
+        "«Save to the wheel» (WHEELLY_SAVE)."),
     'FILTER_NAME/notes/7': ('64a82554',
         "I nomi vengono sempre dalla ruota, a ogni collegamento - anche quando la configurazione "
         "INDI del computer ha dei nomi salvati da una sessione precedente: una ruota rinominata "
@@ -192,13 +192,12 @@ CATALOGUE = {
     'WHEELLY_SENSOR/notes/2': ('36987b7d',
         "Se il sensore non risponde affatto, Guadagno e Magnitude valgono 0 e MD vale 0."),
     'WHEELLY_SENSOR/notes/3': ('e4be8e7f',
-        "Quando il magnete sparisce il log mostra un errore: «Il sensore non rileva più il "
-        "magnete. È un guaio serio: controlla il cablaggio del sensore prima di continuare a "
-        "riprendere.» Una volta per episodio: se il magnete torna e poi si perde di nuovo, lo "
-        "ridice."),
+        "Quando il magnete sparisce il log mostra un errore: «The sensor no longer detects the "
+        "magnet. This is serious: check the sensor wiring before imaging further.» Una volta "
+        "per episodio: se il magnete torna e poi si perde di nuovo, lo ridice."),
     'WHEELLY_SENSOR/notes/4': ('cc609a5a',
-        "Per un controllo completo del sensore e del driver del motore usa «Controllo "
-        "dell'hardware» (WHEELLY_DIAG)."),
+        "Per un controllo completo del sensore e del driver del motore usa «Hardware check» "
+        "(WHEELLY_DIAG)."),
     'WHEELLY_SLOTS/what': ('134a40a4',
         "Quante posizioni per i filtri ha la ruota. Il numero sta nella ruota, e il driver lo "
         "legge a ogni collegamento: impostalo qui una volta, quando la ruota viene costruita. "
@@ -209,9 +208,9 @@ CATALOGUE = {
         "Il numero di posizioni per i filtri della ruota."),
     'WHEELLY_SLOTS/notes/1': ('e038e661',
         "Dopo averlo cambiato: insegna ogni posizione (i passi, poi Set sulla sua riga degli "
-        "angoli), dai i nomi ai filtri, poi premi «Salva nella ruota». Il log lo ricorda."),
+        "angoli), dai i nomi ai filtri, poi premi «Save to the wheel». Il log lo ricorda."),
     'WHEELLY_SLOTS/notes/2': ('6832b726',
-        "Nella memoria permanente della ruota non si scrive niente fino a «Salva nella ruota»: "
+        "Nella memoria permanente della ruota non si scrive niente fino a «Save to the wheel»: "
         "spegnendo la ruota tornano il numero e la taratura di prima, quindi un clic sbagliato "
         "non costa niente."),
     'WHEELLY_SLOTS/notes/3': ('cf17e406',
@@ -225,18 +224,18 @@ CATALOGUE = {
         "FILTER_SLOT; centra il filtro coi passi (WHEELLY_JOG_DOWN e WHEELLY_JOG_UP) - dopo "
         "ogni passo la sua riga mostra l'angolo in cui la ruota si trova adesso, con un "
         "asterisco, «▶ 1 *», che vuol dire non ancora tarato; premi Set su quella riga per "
-        "tararla; fai lo stesso per ogni posizione, poi premi «Salva nella ruota»."),
+        "tararla; fai lo stesso per ogni posizione, poi premi «Save to the wheel»."),
     'WHEELLY_ANGLE_1/elements/ANGLE': ('4b4de6dd',
         "Angolo di taratura della posizione, in gradi (da 0 a 360); dopo un passo, sulla "
         "posizione corrente, l'angolo in cui la ruota si trova adesso."),
     'WHEELLY_ANGLE_1/notes/1': ('15bf06ea',
         "L'asterisco, «▶ 1 *»: la riga mostra dove si trova la ruota dopo i passi, NON quello "
         "che la posizione ha imparato. Set col valore così com'è lo conferma: la posizione "
-        "prende quell'angolo e la ruota non si muove, perché è già lì (log: «La posizione 1 "
-        "vuol dire d'ora in poi l'angolo in cui la ruota si trova adesso ...»). Se lasci la "
-        "posizione senza premere Set - scegliendo un altro filtro, facendo la spazzolata, o "
-        "premendo Set su un'altra riga - la riga torna all'angolo di taratura, senza asterisco:"
-        " i passi non hanno insegnato niente."),
+        "prende quell'angolo e la ruota non si muove, perché è già lì (log: «Slot 1 now means "
+        "the angle the wheel is at right now ...»). Se lasci la posizione senza premere Set - "
+        "scegliendo un altro filtro, facendo la spazzolata, o premendo Set su un'altra riga - "
+        "la riga torna all'angolo di taratura, senza asterisco: i passi non hanno insegnato "
+        "niente."),
     'WHEELLY_ANGLE_1/notes/2': ('617da091',
         "Set su una riga con un valore diverso - scritto a mano, su qualunque riga, compresa "
         "quella con l'asterisco: la posizione prende il nuovo angolo e la ruota ci va subito, "
@@ -245,14 +244,14 @@ CATALOGUE = {
         "guardando una stella o un flat. Set su una riga col valore invariato porta soltanto la"
         " ruota a quella posizione."),
     'WHEELLY_ANGLE_1/notes/3': ('29f7528f',
-        "Ogni cambiamento è scritto nel log - «Posizione 2: 122.87° → 123.10°.» - e, col "
-        "registro dei movimenti acceso, come riga di wheelly_movements.csv con esito angle-"
-        "taught (un asterisco confermato) o angle-set (un valore scritto): il nuovo angolo "
-        "nella colonna target, il vecchio nella colonna angle, la differenza nella colonna "
-        "error. È la storia delle correzioni: un angolo che continua a spostarsi notte dopo "
-        "notte vuol dire che qualcosa nella meccanica si muove."),
+        "Ogni cambiamento è scritto nel log - «Slot 2: 122.87° → 123.10°.» - e, col registro "
+        "dei movimenti acceso, come riga di wheelly_movements.csv con esito angle-taught (un "
+        "asterisco confermato) o angle-set (un valore scritto): il nuovo angolo nella colonna "
+        "target, il vecchio nella colonna angle, la differenza nella colonna error. È la storia"
+        " delle correzioni: un angolo che continua a spostarsi notte dopo notte vuol dire che "
+        "qualcosa nella meccanica si muove."),
     'WHEELLY_ANGLE_1/notes/4': ('577960f9',
-        "Restano nella ruota solo fino allo spegnimento: premi «Salva nella ruota» per tenerli."
+        "Restano nella ruota solo fino allo spegnimento: premi «Save to the wheel» per tenerli."
         " Riavviare la ruota senza salvare riporta l'ultima taratura salvata, ed è il modo di "
         "annullare un esperimento."),
     'WHEELLY_ANGLE_1/notes/5': ('d8238b91',
@@ -274,11 +273,11 @@ CATALOGUE = {
         "ruota a cinque posizioni): si può usare, ma non è una taratura."),
     'WHEELLY_ANGLE_1/notes/9': ('a78c201f',
         "Una proprietà per posizione, non un solo WHEELLY_ANGLES con un unico Set per tutti e "
-        "un pulsante a parte, «Salva posizione» (WHEELLY_TEACH): il Set sulla riga con "
+        "un pulsante a parte, «Save position» (WHEELLY_TEACH): il Set sulla riga con "
         "l'asterisco fa quello che farebbe quel pulsante. Una ruota salvata da un firmware "
-        "precedente con un «Ritocco di rotazione» per posizione trova i ritocchi sommati ai "
-        "suoi angoli, una volta, alla prima accensione col firmware attuale. Questi angoli "
-        "sono segnati anche sul grafico della spazzolata del magnete."),
+        "precedente con un «Rotation trim» per posizione trova i ritocchi sommati ai suoi "
+        "angoli, una volta, alla prima accensione col firmware attuale. Questi angoli sono "
+        "segnati anche sul grafico della spazzolata del magnete."),
     'WHEELLY_ANGLE_2/what': ('958734a5',
         "L'angolo di taratura della posizione 2, col suo Set: funziona come la riga della "
         "posizione 1 (WHEELLY_ANGLE_1), che spiega come."),
@@ -322,11 +321,11 @@ CATALOGUE = {
     'WHEELLY_JOG_DOWN/elements/JOG_M0_1': ('77d933d5',
         "Sposta la ruota di 0,1 gradi verso angoli decrescenti."),
     'WHEELLY_JOG_DOWN/notes/1': ('c8b3d46e',
-        "Busy mentre la ruota si muove, poi Ok, e il log dice dov'è: «La ruota è a A°, a "
-        "E° da dove chiedeva il passo.» Alert se non ci è arrivata (log: «La ruota non è "
-        "arrivata dove chiedeva il passo ...», seguita dalla riga che suggerisce di "
-        "controllare che il fermo della ruota sia stato tolto), o se la ruota ha "
-        "rifiutato il passo."),
+        "Busy mentre la ruota si muove, poi Ok, e il log dice dov'è: «The wheel is at A "
+        "degrees, E degrees from where the step asked.» Alert se non ci è arrivata (log: «The "
+        "wheel did not get where the step asked ...», seguita dalla riga che suggerisce di "
+        "controllare che il fermo della ruota sia stato tolto), o se la ruota ha rifiutato il "
+        "passo."),
     'WHEELLY_JOG_DOWN/notes/2': ('bacafba1',
         "Un passo che non ha coperto almeno metà di sé stesso è un fallimento, mai un avviso: "
         "la fascia di allarme di un cambio filtro è più larga dei passi piccoli, quindi "
@@ -341,8 +340,8 @@ CATALOGUE = {
         "equidistanti; l'etichetta segue il numero di posizioni. Su una ruota a due posizioni "
         "il passo è mezzo giro, e va nel verso che dice il suo pulsante."),
     'WHEELLY_JOG_DOWN/notes/5': ('2b72bb1b',
-        "Rifiutato mentre la ruota si muove (log: «Non si può spostare la ruota di un passo "
-        "mentre si muove ...»)."),
+        "Rifiutato mentre la ruota si muove (log: «Cannot move the wheel by a step while it is "
+        "moving ...»)."),
     'WHEELLY_JOG_DOWN/notes/6': ('1dd7cd7a',
         "Due righe e non una: KStars mostra più di quattro pulsanti esclusivi come un menu a "
         "tendina. Non c'è un passo di 0,05 gradi: è sotto quello che il sensore sa leggere (un"
@@ -363,21 +362,21 @@ CATALOGUE = {
         "Busy mentre la ruota si muove, poi Ok o Alert, come WHEELLY_JOG_DOWN."),
     'WHEELLY_SAVE/what': ('afd616e1',
         "Tutto quello che cambi nel pannello di taratura sta nella memoria di lavoro della "
-        "ruota finché non premi «Salva nella ruota»; salvare è un atto voluto, così puoi "
+        "ruota finché non premi «Save to the wheel»; salvare è un atto voluto, così puoi "
         "sperimentare liberamente. Il pulsante agisce una volta e torna su. Lo stesso pulsante "
-        "c'è anche in Options, sotto «Configurazione della ruota» (WHEELLY_CONFIG)."),
+        "c'è anche in Options, sotto «Wheel configuration» (WHEELLY_CONFIG)."),
     'WHEELLY_SAVE/elements/SAVE': ('8b60ccb5',
         "Scrive nella memoria permanente della ruota tutto quello che contiene: numero di "
         "posizioni, angoli di taratura, nomi dei filtri, tolleranze, corrente di marcia e di "
         "tenuta, tenuta dopo l'arrivo, velocità, accelerazione, verso di rotazione e modo del "
-        "LED. Log: «Taratura salvata nella ruota.»"),
+        "LED. Log: «Calibration saved in the wheel.»"),
     'WHEELLY_SAVE/notes/1': ('ab9eff15',
         "Ok quando la ruota ha salvato, Alert quando non ci è riuscita; il motivo è nel log "
-        "(per esempio «La ruota non è riuscita a salvare nella sua memoria.»)."),
+        "(per esempio «The wheel could not save to its memory.»)."),
     'WHEELLY_SAVE/notes/2': ('0b9b90a5',
         "La posizione di un filtro si insegna col Set sulla sua riga degli angoli "
-        "(WHEELLY_ANGLE_1 e le altre), quindi qui non c'è un pulsante «Ritara qui la "
-        "posizione», e non ci sono ritocchi da azzerare."),
+        "(WHEELLY_ANGLE_1 e le altre), quindi qui non c'è un pulsante «Set current slot here», "
+        "e non ci sono ritocchi da azzerare."),
     'WHEELLY_TOLERANCE/what': ('5043fac3',
         "Quanto preciso deve essere un cambio filtro, e quanto ci prova la ruota. Dopo un "
         "movimento la ruota confronta l'errore residuo con due soglie: entro Buona è un "
@@ -401,7 +400,7 @@ CATALOGUE = {
         "I ritentativi hanno anche un limite di tempo: la ruota smette di ritentare dopo 25 s "
         "dall'inizio del movimento."),
     'WHEELLY_TOLERANCE/notes/3': ('881f18e5',
-        "Restano nella ruota fino allo spegnimento; premi «Salva nella ruota» per tenerle."),
+        "Restano nella ruota fino allo spegnimento; premi «Save to the wheel» per tenerle."),
     'WHEELLY_TOLERANCE/notes/4': ('0122b52d',
         "Salvate anche nella configurazione INDI, ma al collegamento i valori mostrati sono "
         "quelli letti dalla ruota; la copia salvata viene mandata alla ruota solo quando si "
@@ -414,17 +413,17 @@ CATALOGUE = {
         "valori più stretti si possono provare quando il registro dei movimenti mostra gli errori "
         "veri."),
     'WHEELLY_DIAG/what': ('e2cf7b51',
-        "Fa alla ruota una domanda sola: sta parlando davvero col suo sensore e col suo driver del "
-        "motore? La risposta va nel riquadro del log. È la prima cosa da premere quando la ruota "
-        "fa qualcosa di inatteso: un filo allentato sul driver del motore si presenta come «il "
-        "motore non gira» e ti manda a cercare nei posti sbagliati."),
+        "Fa alla ruota una domanda sola: sta parlando davvero col suo sensore e col suo driver "
+        "del motore? La risposta va nel riquadro del log. È la prima cosa da premere quando la "
+        "ruota fa qualcosa di inatteso: un filo allentato sul driver del motore si presenta "
+        "come «the motor does not turn» e ti manda a cercare nei posti sbagliati."),
     'WHEELLY_DIAG/elements/RUN': ('be55cbb0',
         "Manda il controllo; la risposta compare nel log."),
     'WHEELLY_DIAG/notes/1': ('598a0b50',
-        "Righe del log, in ordine: «Chiedo alla ruota se sta parlando davvero col suo sensore e "
-        "col suo driver del motore:», poi 'AS5600 at 0x36: responding' con una riga "
-        "'STATUS md=... AGC=... MAG=...', oppure 'AS5600 at 0x36: SILENT' con il consiglio di "
-        "controllare il cablaggio e il ponticello VDD5V-VDD3V3 sul modulo."),
+        "Righe del log, in ordine: «Asking the wheel whether it can really talk to its sensor "
+        "and its motor driver:», poi 'AS5600 at 0x36: responding' con una riga 'STATUS md=... "
+        "AGC=... MAG=...', oppure 'AS5600 at 0x36: SILENT' con il consiglio di controllare il "
+        "cablaggio e il ponticello VDD5V-VDD3V3 sul modulo."),
     'WHEELLY_DIAG/notes/2': ('09a48fb7',
         "Quando la magnitude è sotto 350 una riga in più dice che il magnete è troppo lontano o "
         "fuori centro."),
@@ -449,8 +448,8 @@ CATALOGUE = {
         "Avvia la spazzolata. La ruota si muove."),
     'WHEELLY_SWEEP/notes/1': ('619cf443',
         "La ruota si muove davvero: falla a coperchio aperto, mai durante una sequenza (log: "
-        "«Faccio un giro completo misurando il magnete a ogni passo ...»). FILTER_SLOT va in "
-        "Busy a ogni passo."),
+        "«Turning all the way round and measuring the magnet at every step ...»). FILTER_SLOT "
+        "va in Busy a ogni passo."),
     'WHEELLY_SWEEP/notes/2': ('e7ce32eb',
         "Un salto per posizione (5 su una ruota di fabbrica): la ruota finisce sulla posizione da "
         "cui era partita."),
@@ -460,22 +459,22 @@ CATALOGUE = {
     'WHEELLY_SWEEP/notes/4': ('9d5c28e4',
         "Rifiutata, con Alert, mentre è in corso un cambio filtro o un'altra spazzolata."),
     'WHEELLY_SWEEP/notes/5': ('b477928f',
-        "Alla fine: Ok, il grafico viene mandato in «Ultima spazzolata» (WHEELLY_SWEEP_PLOT), una "
-        "copia viene scritta nella cartella delle spazzolate, e il log dà il numero di campioni, "
-        "il minimo e il massimo della magnitude e l'escursione in conteggi e in percentuale, poi "
-        "il percorso del file."),
+        "Alla fine: Ok, il grafico viene mandato in «Last sweep» (WHEELLY_SWEEP_PLOT), una "
+        "copia viene scritta nella cartella delle spazzolate, e il log dà il numero di "
+        "campioni, il minimo e il massimo della magnitude e l'escursione in conteggi e in "
+        "percentuale, poi il percorso del file."),
     'WHEELLY_SWEEP/notes/6': ('9f736311',
         "Se un salto fallisce o va oltre il tempo, o si sono presi meno di 4 campioni, il "
-        "grafico non viene fatto e la proprietà va in Alert (log: «La spazzolata si è fermata "
-        "prima di finire il giro ...»)."),
+        "grafico non viene fatto e la proprietà va in Alert (log: «The sweep stopped before "
+        "finishing the turn ...»)."),
     'WHEELLY_SWEEP/notes/7': ('80e36a97',
         "Ogni salto è un movimento normale, quindi viene scritto anche nel registro dei movimenti "
         "quando è acceso."),
     'WHEELLY_SWEEP_PLOT/what': ('4d967992',
         "Il grafico dell'ultima spazzolata, mandato al client come file PNG. Nel pannello una "
         "proprietà di tipo file non mostra immagini: KStars salva il file dove tiene i file "
-        "ricevuti, e il driver non sa quale sia quel posto. Per questo il driver scrive anche una "
-        "copia sua e ne mostra il percorso in «File su disco» (WHEELLY_FILES)."),
+        "ricevuti, e il driver non sa quale sia quel posto. Per questo il driver scrive anche "
+        "una copia sua e ne mostra il percorso in «Files on disk» (WHEELLY_FILES)."),
     'WHEELLY_SWEEP_PLOT/elements/PLOT': ('56fabd9c',
         "Il PNG dell'ultima spazzolata: magnitude (conteggi) in funzione dell'angolo (gradi), con "
         "una griglia ogni 45 gradi, gli angoli di taratura delle posizioni segnati, e il numero "
@@ -489,8 +488,9 @@ CATALOGUE = {
         "accanto alla proprietà, spuntata di base)."),
     'WHEELLY_SWEEP_PLOT/notes/3': ('7b197e47',
         "Il file non è compresso (qualche centinaio di kB)."),
-    'WHEELLY_SWEEP_PLOT/notes/4': ('f9cd2d65',
-        "I testi dentro il grafico seguono la lingua del driver, in maiuscolo senza accenti."),
+    'WHEELLY_SWEEP_PLOT/notes/4': ('49c177dd',
+        "I testi dentro il grafico sono in maiuscolo senza accenti: il carattere del grafico "
+        "non ne ha altri."),
     'WHEELLY_SWEEP_DIR/what': ('424ff9f5',
         "La cartella in cui il driver scrive una copia di ogni grafico della spazzolata. Di base "
         "è la cartella Documents nella home del computer su cui gira il driver (su un Raspberry, "
@@ -504,9 +504,9 @@ CATALOGUE = {
         "non si sovrascrive niente."),
     'WHEELLY_SWEEP_DIR/notes/2': ('b5bc039a',
         "Quando la cambi il driver crea la cartella (un livello solo) e controlla di poterci "
-        "scrivere. Se non può, la proprietà diventa rossa e il log dice «La cartella ... adesso "
-        "non si può usare: ... Le spazzolate non verranno salvate finché non si potrà.» Il "
-        "valore viene tenuto comunque (un disco può semplicemente non essere ancora montato)."),
+        "scrivere. Se non può, la proprietà diventa rossa e il log dice «The folder ... cannot "
+        "be used right now: ... The sweeps will not be saved until it can.» Il valore viene "
+        "tenuto comunque (un disco può semplicemente non essere ancora montato)."),
     'WHEELLY_SWEEP_DIR/notes/3': ('b348197e',
         "Salvata subito nella configurazione INDI."),
     'WHEELLY_SWEEP_DIR/notes/4': ('588ee90c',
@@ -516,12 +516,12 @@ CATALOGUE = {
         "filtro finito, da aprire in un foglio di calcolo quando vuoi vedere quanto è precisa la "
         "ruota nell'arco di una notte o di mesi. Spento di base."),
     'WHEELLY_LOG/elements/LOG_ON': ('68ab8590',
-        "Scrive il registro dei movimenti (log: «Registro dei movimenti acceso: <percorso>»)."),
+        "Scrive il registro dei movimenti (log: «Movement log on: <path>»)."),
     'WHEELLY_LOG/elements/LOG_OFF': ('5f1527ef',
-        "Smette di scriverlo (log: «Registro dei movimenti spento.»)."),
+        "Smette di scriverlo (log: «Movement log off.»)."),
     'WHEELLY_LOG/notes/1': ('0dd21c13',
         "Il file è ~/.indi/wheelly_movements.csv sul computer su cui gira il driver, fisso; il "
-        "suo percorso è sempre mostrato in «File su disco». Le righe nuove si aggiungono in "
+        "suo percorso è sempre mostrato in «Files on disk». Le righe nuove si aggiungono in "
         "fondo; non si cancella niente."),
     'WHEELLY_LOG/notes/2': ('f5ec81ea',
         "Colonne: timestamp (UTC, ISO 8601), slot (la posizione chiesta), target (angolo "
@@ -540,16 +540,16 @@ CATALOGUE = {
         "Percorso del CSV del registro dei movimenti. Mostrato anche quando il registro è "
         "spento."),
     'WHEELLY_FILES/elements/SWEEP': ('27b887b1',
-        "Percorso dell'ultimo grafico della spazzolata scritto dal driver, oppure «non ancora "
-        "scritta»."),
+        "Percorso dell'ultimo grafico della spazzolata scritto dal driver, oppure «not written "
+        "yet»."),
     'WHEELLY_FILES/notes/1': ('65834d39',
         "Sola lettura."),
     'WHEELLY_FILES/notes/2': ('ecf5326c',
-        "«Ultima spazzolata» mostra «non ancora scritta» dopo ogni avvio del driver, finché non "
-        "si fa una spazzolata; i grafici più vecchi restano nella cartella delle spazzolate."),
+        "«Last sweep» mostra «not written yet» dopo ogni avvio del driver, finché non si fa una"
+        " spazzolata; i grafici più vecchi restano nella cartella delle spazzolate."),
     'WHEELLY_FILES/notes/3': ('2434ef8b',
-        "Alert quando non è stato possibile scrivere l'ultimo grafico; il motivo è nel log («Non "
-        "riesco a scrivere il grafico in ...»)."),
+        "Alert quando non è stato possibile scrivere l'ultimo grafico; il motivo è nel log "
+        "(«Cannot write the plot to ...»)."),
     'DEBUG/what': ('c0f7d789',
         "L'interruttore di debug standard di INDI. Quando è abilitato, INDI aggiunge le "
         "impostazioni del livello di debug e dell'uscita del log; col livello 'Driver Debug' "
@@ -563,7 +563,7 @@ CATALOGUE = {
     'DEBUG/notes/1': ('ccdd594b',
         "Salvato nella configurazione INDI e ripristinato all'avvio del driver."),
     'DEBUG/notes/2': ('fcfbc80b',
-        "Al livello di debug il driver scrive anche «Vado alla posizione N.» all'inizio di ogni "
+        "Al livello di debug il driver scrive anche «Moving to slot N.» all'inizio di ogni "
         "movimento."),
     'DEBUG/notes/3': ('5b74a65b',
         "Finiscono nel log anche le interrogazioni di stato, parecchie al secondo: rispegnilo "
@@ -584,7 +584,7 @@ CATALOGUE = {
         "Il file di configurazione standard di INDI di questo dispositivo, tenuto sul computer "
         "su cui gira il driver (~/.indi/, col nome del dispositivo). Attenzione: la taratura "
         "non sta qui: angoli, nomi dei filtri, correnti e modo del LED sono conservati nella "
-        "ruota con «Salva nella ruota». La configurazione tiene le impostazioni di questo "
+        "ruota con «Save to the wheel». La configurazione tiene le impostazioni di questo "
         "computer e di questo profilo."),
     'CONFIG_PROCESS/elements/CONFIG_LOAD': ('75b354e3',
         "Ricarica la configurazione salvata e la applica."),
@@ -594,12 +594,12 @@ CATALOGUE = {
         "Carica il file di configurazione di base che INDI tiene accanto alla configurazione."),
     'CONFIG_PROCESS/elements/CONFIG_PURGE': ('2aaf873e',
         "Cancella il file di configurazione."),
-    'CONFIG_PROCESS/notes/1': ('010daad3',
+    'CONFIG_PROCESS/notes/1': ('64ec432a',
         "Cosa aggiunge Wheelly alle voci standard di INDI (collegamento, porta, baud rate, "
         "ricerca automatica, debug, periodo di interrogazione, posizione del filtro, nomi dei "
         "filtri, joystick): i dati del firmware, compreso il numero di serie della ruota di "
-        "questo profilo, le tolleranze, la cartella delle spazzolate, l'interruttore del "
-        "registro dei movimenti e la lingua."),
+        "questo profilo, le tolleranze, la cartella delle spazzolate e l'interruttore del "
+        "registro dei movimenti."),
     'CONFIG_PROCESS/notes/2': ('591614ee',
         "Load riapplica i valori salvati come se fossero stati scritti a mano: le tolleranze "
         "vengono mandate alla ruota (solo nella memoria di lavoro), e viene chiesta la posizione "
@@ -607,12 +607,11 @@ CATALOGUE = {
     'CONFIG_PROCESS/notes/3': ('0ed0f9d1',
         "Purge dimentica anche quale ruota appartiene a questo profilo; il collegamento "
         "successivo adotta la prima Wheelly che trova."),
-    'CONFIG_PROCESS/notes/4': ('9fd77e1f',
+    'CONFIG_PROCESS/notes/4': ('0c9952a0',
         "Alcune voci si salvano da sole quando cambiano: la cartella delle spazzolate, "
-        "l'interruttore del registro dei movimenti, la lingua, il numero di serie imparato, la "
-        "porta."),
+        "l'interruttore del registro dei movimenti, il numero di serie imparato, la porta."),
     'WHEELLY_CONFIG/what': ('56294122',
-        "«Salva nella ruota», anche qui: scrive nella memoria permanente della ruota tutto "
+        "«Save to the wheel», anche qui: scrive nella memoria permanente della ruota tutto "
         "quello che la ruota contiene, come fa il pulsante con lo stesso nome nella scheda "
         "Calibration and Diagnostics (WHEELLY_SAVE). Sta subito sotto Configuration perché le "
         "impostazioni di questa scheda che stanno nella ruota - motore, tenuta, verso, LED - si"
@@ -620,8 +619,8 @@ CATALOGUE = {
     'WHEELLY_CONFIG/elements/SAVE': ('716393c2',
         "Scrive nella ruota numero di posizioni, angoli di taratura, nomi dei filtri, "
         "tolleranze, corrente di marcia e di tenuta, tenuta dopo l'arrivo, velocità, "
-        "accelerazione, verso di rotazione e modo del LED. Log: «Taratura salvata nella "
-        "ruota.»"),
+        "accelerazione, verso di rotazione e modo del LED. Log: «Calibration saved in the "
+        "wheel.»"),
     'WHEELLY_CONFIG/notes/1': ('ea8e99c8',
         "Configuration, sopra, è di INDI e salva le impostazioni di questo computer e di questo"
         " profilo, non quelle della ruota: l'una non sostituisce l'altra. Una riga a sé e non "
@@ -629,7 +628,7 @@ CATALOGUE = {
         "mostrerebbe cinque come un menu a tendina."),
     'WHEELLY_CONFIG/notes/2': ('c9f90927',
         "C'è sempre, come Configuration; premuto con la ruota scollegata va in Alert e il log "
-        "dice «Prima collega la ruota.»"),
+        "dice «Connect the wheel first.»"),
     'POLLING_PERIOD/what': ('f5cf3938',
         "Il periodo di interrogazione standard di INDI. Per Wheelly è ogni quanto il driver "
         "chiede alla ruota il suo stato: posizione, errore residuo, letture del sensore, la fine "
@@ -665,8 +664,8 @@ CATALOGUE = {
         "Niente di specifico di Wheelly: ogni richiesta diventa un movimento normale con le "
         "stesse tolleranze e gli stessi ritentativi."),
     'USEJOYSTICK/notes/3': ('4c692564',
-        "Un movimento chiesto dal joystick compare in «Posizione» come ogni altro: Busy mentre "
-        "la ruota gira."),
+        "Un movimento chiesto dal joystick compare in «Filter slot» come ogni altro: Busy "
+        "mentre la ruota gira."),
     'SNOOP_JOYSTICK/what': ('a399c38c',
         "Il nome del dispositivo joystick INDI che questo driver ascolta quando il joystick è "
         "abilitato. Proprietà standard di INDI."),
@@ -732,12 +731,12 @@ CATALOGUE = {
         "ruota fa il successivo al doppio della velocità e dell'accelerazione (al massimo 1000"
         " passi/s) per uscire dalla tacca."),
     'WHEELLY_MOTOR/notes/7': ('45a794df',
-        "Il tetto di tempo della ruota su un movimento segue la velocità: se con i nuovi valori "
-        "il cambio filtro più lungo possibile andasse oltre i 30 s dopo i quali Ekos rinuncia, il"
-        " log avverte («Con queste impostazioni del motore il cambio di filtro più lungo può "
-        "durare fino a N s ...»)."),
+        "Il tetto di tempo della ruota su un movimento segue la velocità: se con i nuovi valori"
+        " il cambio filtro più lungo possibile andasse oltre i 30 s dopo i quali Ekos rinuncia,"
+        " il log avverte («With these motor settings the longest filter change can take up to N"
+        " s ...»)."),
     'WHEELLY_MOTOR/notes/8': ('da809c5e',
-        "Resta nella ruota fino allo spegnimento; premi «Salva nella ruota» per tenerla. Non "
+        "Resta nella ruota fino allo spegnimento; premi «Save to the wheel» per tenerla. Non "
         "viene salvata nella configurazione INDI."),
     'WHEELLY_MOTOR/notes/9': ('a3cc9e8b',
         "Alert se la ruota ha rifiutato il valore; il motivo è nel log."),
@@ -792,7 +791,7 @@ CATALOGUE = {
         "collegamento; un firmware precedente non ce l'ha, tiene i suoi 300 ms fissi, e una "
         "modifica di questo campo va in Alert."),
     'WHEELLY_HOLD/notes/8': ('da809c5e',
-        "Resta nella ruota fino allo spegnimento; premi «Salva nella ruota» per tenerla. Non "
+        "Resta nella ruota fino allo spegnimento; premi «Save to the wheel» per tenerla. Non "
         "viene salvata nella configurazione INDI."),
     'WHEELLY_DIRECTION/what': ('fa07a4c3',
         "Da che parte può girare la ruota per raggiungere una posizione. Una meccanica più "
@@ -817,14 +816,14 @@ CATALOGUE = {
         "tratti di avvicinamento non sono ritentativi. Se è arrivata lo giudica sempre "
         "l'angolo letto."),
     'WHEELLY_DIRECTION/notes/2': ('2c35d4c8',
-        "In un verso solo un movimento può essere quasi un giro intero, e un ritentativo un altro"
-        " giro: il tetto di tempo della ruota su un movimento cresce di conseguenza. Se il cambio"
-        " filtro più lungo possibile andasse oltre i 30 s dopo i quali Ekos rinuncia, il log "
-        "avverte («Con queste impostazioni del motore il cambio di filtro più lungo può durare "
-        "fino a N s ...») - quando si imposta il verso o la velocità del motore, e al "
-        "collegamento. Alza la velocità, o scegli la via più corta se la ruota lo permette."),
+        "In un verso solo un movimento può essere quasi un giro intero, e un ritentativo un "
+        "altro giro: il tetto di tempo della ruota su un movimento cresce di conseguenza. Se il"
+        " cambio filtro più lungo possibile andasse oltre i 30 s dopo i quali Ekos rinuncia, il"
+        " log avverte («With these motor settings the longest filter change can take up to N s "
+        "...») - quando si imposta il verso o la velocità del motore, e al collegamento. Alza "
+        "la velocità, o scegli la via più corta se la ruota lo permette."),
     'WHEELLY_DIRECTION/notes/3': ('da809c5e',
-        "La ruota la tiene finché non viene spenta; premi «Salva nella ruota» per conservarla. "
+        "La ruota la tiene finché non viene spenta; premi «Save to the wheel» per conservarla. "
         "Non è salvata nella configurazione di INDI."),
     'WHEELLY_DIRECTION/notes/4': ('fe9c1bb8',
         "Grigio (Idle) solo con un firmware che non conosce l'impostazione; Alert se la ruota ha "
@@ -859,7 +858,7 @@ CATALOGUE = {
     'WHEELLY_LED/table/2/1': ('281cdfb9',
         "Respira piano (1,7 s)"),
     'WHEELLY_LED/table/2/2': ('6f1f8a4c',
-        "Va a un'altra posizione (in «Pulsa durante il movimento»)"),
+        "Va a un'altra posizione (in «Pulses while moving»)"),
     'WHEELLY_LED/table/2/3': ('9874ff12',
         "Arriva"),
     'WHEELLY_LED/table/3/1': ('5a1dbe78',
@@ -888,7 +887,7 @@ CATALOGUE = {
         "Circa 6,7 s"),
     'WHEELLY_LED/notes/1': ('f282aeb0',
         "Un modo nuovo resta nella ruota solo fino allo spegnimento; il log ti ricorda di "
-        "premere «Salva nella ruota» per tenerlo."),
+        "premere «Save to the wheel» per tenerlo."),
     'WHEELLY_LED/notes/2': ('c96af8a6',
         "Fai la prova a coperchio aperto o di giorno: il LED sta dentro il cammino ottico. Il "
         "log lo dice quando la prova comincia."),
@@ -898,30 +897,10 @@ CATALOGUE = {
     'WHEELLY_LED/notes/4': ('fe31fae9',
         "I segnali d'allarme della tabella si mostrano uno alla volta, prima il più grave "
         "(magnete, poi posizione non raggiunta, poi deriva), alla luminosità del culmine della "
-        "pulsazione. In «Spento» non ce n'è nessuno: è anche il modo per girare la ruota a mano "
+        "pulsazione. In «Off» non ce n'è nessuno: è anche il modo per girare la ruota a mano "
         "col motore non alimentato, cosa che altrimenti verrebbe letta come una deriva."),
     'WHEELLY_LED/notes/5': ('187b1296',
         "Alert se la ruota ha rifiutato il comando."),
-    'WHEELLY_LANGUAGE/what': ('9e8e002d',
-        "La lingua delle etichette del pannello e dei messaggi del driver nel log: inglese o "
-        "italiano. «Come il sistema» segue la localizzazione del computer su cui gira il driver "
-        "(LC_ALL, LC_MESSAGES o LANG che cominciano con 'it' danno l'italiano; tutto il resto "
-        "dà l'inglese)."),
-    'WHEELLY_LANGUAGE/elements/AUTO': ('3495f3d0',
-        "Segue la localizzazione del sistema del computer del driver (di base)."),
-    'WHEELLY_LANGUAGE/elements/EN': ('449abdb4',
-        "Inglese."),
-    'WHEELLY_LANGUAGE/elements/IT': ('54b579bd',
-        "Italiano."),
-    'WHEELLY_LANGUAGE/notes/1': ('b348197e',
-        "Salvata subito nella configurazione INDI."),
-    'WHEELLY_LANGUAGE/notes/2': ('29780b1e',
-        "Le etichette si costruiscono una volta sola, all'avvio del driver: la nuova lingua si "
-        "vede dopo aver fermato e fatto ripartire INDI in Ekos - scollegarsi e ricollegarsi non "
-        "basta. Il log lo dice."),
-    'WHEELLY_LANGUAGE/notes/3': ('431aad29',
-        "I nomi delle schede e le proprietà standard di INDI restano in inglese; anche le righe "
-        "del Controllo dell'hardware sono testo del firmware e restano in inglese."),
     'DRIVER_INFO/what': ('0aeec448',
         "Informazioni standard di INDI sul driver: il nome, il programma che lo esegue, la "
         "versione e il tipo di dispositivo."),
@@ -1024,18 +1003,18 @@ CATALOGUE = {
         "cavo USB a 115200 baud e si riconosce da quello che risponde e dal numero di serie, non "
         "dal nome della porta, quindi con Auto Search acceso raramente serve cambiare qualcosa "
         "qui."),
-    'tabs/Options': ('9e0b7f02',
+    'tabs/Options': ('bd4fd9fb',
         "Le opzioni standard di INDI (debug, simulazione, file di configurazione, periodo di "
         "interrogazione, joystick) e le impostazioni della macchina: informazioni sul firmware,"
-        " corrente del motore, velocità e accelerazione, tenuta a riposo, verso di rotazione, "
-        "LED e lingua. Motore, tenuta, verso e LED stanno nella ruota e restano dopo lo "
-        "spegnimento solo con «Salva nella ruota», subito sotto Configuration o nella scheda "
-        "Calibration and Diagnostics."),
+        " corrente del motore, velocità e accelerazione, tenuta a riposo, verso di rotazione e "
+        "LED. Motore, tenuta, verso e LED stanno nella ruota e restano dopo lo spegnimento solo"
+        " con «Save to the wheel», subito sotto Configuration o nella scheda Calibration and "
+        "Diagnostics."),
     'tabs/Calibration and Diagnostics': ('a7c8215e',
         "Tarare e controllare la ruota, cose da fare a coperchio aperto o durante la messa a "
         "punto, non nel mezzo di una sequenza: gli angoli di taratura, i passi, il pulsante per"
         " salvare, le tolleranze, il controllo dell'hardware, la spazzolata del magnete col suo"
         " grafico, e il registro dei movimenti. Le modifiche alla taratura stanno nella memoria"
-        " di lavoro della ruota finché non premi «Salva nella ruota». Le spiegazioni di quello "
+        " di lavoro della ruota finché non premi «Save to the wheel». Le spiegazioni di quello "
         "che è successo vanno nel riquadro del log in fondo, non in campi aggiunti."),
 }

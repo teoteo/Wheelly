@@ -15,7 +15,7 @@ indiserver with a home of its own, so the real configuration is not touched).
 
     python3 capture_panel.py OUT_DIR [path/to/indi_wheelly] [path/to/simulator]
 
-Writes OUT_DIR/panel_en.xml and OUT_DIR/panel_it.xml: every def*Vector the
+Writes OUT_DIR/panel_en.xml: every def*Vector the
 driver sends, in order, then the set*Vector that follow the connection (the
 values the panel shows once connected).
 """
@@ -68,8 +68,8 @@ class Recorder(P.Client):
                 self._collect(element)
 
 
-def capture(language, xml_file):
-    bench = P.Bench(language=language)
+def capture(xml_file):
+    bench = P.Bench()
     c = Recorder(P.INDI_PORT)
     try:
         result = bench.connect(c)
@@ -91,6 +91,5 @@ def capture(language, xml_file):
 
 if __name__ == "__main__":
     os.makedirs(out_dir, exist_ok=True)
-    for language, code in (("en_US.UTF-8", "en"), ("it_IT.UTF-8", "it")):
-        n = capture(language, os.path.join(out_dir, "panel_%s.xml" % code))
-        print("%s: %d properties" % (code, n))
+    n = capture(os.path.join(out_dir, "panel_en.xml"))
+    print("%d properties" % n)

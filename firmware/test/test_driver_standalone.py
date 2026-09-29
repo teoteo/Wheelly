@@ -27,12 +27,11 @@ Checks:
   - the two copies of wheelly_protocol.h are identical;
   - no source of the driver includes anything through "../", i.e. from
     outside its folder (the old include would fail here);
-  - the Italian catalogue, translations_it.cpp, has exactly the keys of the
-    English one, translations.cpp. They used to be one table with three
-    columns; the Italian is a file of its own so that INDI's English-only build can leave it out (CMake WHEELLY_ITALIAN); what the
-    table's shape guaranteed - every key translated, no translation of a key
-    that no longer exists - is now checked here. The keys are read from the
-    two arrays' text, which is plain enough: one `{"key",` per entry;
+  - the driver is English only, with the texts written where they are
+    used, as every INDI driver's: INDI's maintainers asked for the
+    translation layer (tr("msg.key") and its catalogues) to be removed, so
+    no tr(/trf( call, no translations.h and no key-shaped string
+    ("msg.x", "prop.x", ...) may come back;
   - every C++ file of the driver is already in INDI's style: astyle with the
     options of INDI's README leaves it unchanged. INDI's own check
     (scripts/check-codestyle.sh) only looks at the lines a pull request
@@ -84,19 +83,15 @@ def first_difference(a: bytes, b: bytes) -> str:
     return f"one is longer: firmware {len(la)} lines, driver {len(lb)} lines"
 
 
-def catalogue_keys(path, array):
-    """The keys of one catalogue array, in order."""
-    text = path.read_text(encoding="utf-8")
-    # "ARRAY[] = {" on one line or, in INDI's style, the brace on the next
-    m = re.search(r"\b" + array + r"\[\]\s*=\s*\{", text)
-    if m is None:
-        return []
-    start = m.end()
-    body = text[start:text.index("\n};", start)]
-    # an entry may open on one line and carry its key on the next (INDI's
-    # astyle breaks long entries that way): the key is the first string after
-    # the brace, whitespace and newlines between them allowed
-    return re.findall(r'\{\s*"([^"]+)"\s*,', body)
+def translation_traces(path):
+    """Lines of a driver source that bring the translation layer back."""
+    found = []
+    for n, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+        code = line.split("//")[0]
+        if (re.search(r"\btrf?\(", code) or "translations.h" in code or
+                re.search(r'"(msg|prop|nome|err|num)\.[a-z0-9.\-]+"', code)):
+            found.append(f"{path.name}:{n}")
+    return found
 
 
 def main():
@@ -121,17 +116,12 @@ def main():
     ok(not outside, "no driver source includes from outside its folder",
        ", ".join(outside))
 
-    en = catalogue_keys(DRIVER / "translations.cpp", "CATALOGUE")
-    it = catalogue_keys(DRIVER / "translations_it.cpp", "ITALIAN_CATALOGUE")
-    ok(len(en) > 100, "the English catalogue is read", f"{len(en)} keys")
-    ok(len(set(en)) == len(en), "no key twice in the English catalogue",
-       sorted({k for k in en if en.count(k) > 1}))
-    ok(len(set(it)) == len(it), "no key twice in the Italian catalogue",
-       sorted({k for k in it if it.count(k) > 1}))
-    ok(not set(en) - set(it), "every English key has its Italian text",
-       sorted(set(en) - set(it)))
-    ok(not set(it) - set(en), "no Italian text for a key English does not have",
-       sorted(set(it) - set(en)))
+    traces = []
+    for path in sorted(DRIVER.glob("*.cpp")) + sorted(DRIVER.glob("*.h")):
+        traces += translation_traces(path)
+    ok(not list(DRIVER.glob("translations*")), "no translation catalogue in the driver folder",
+       ", ".join(p.name for p in DRIVER.glob("translations*")))
+    ok(not traces, "no translation call or key in the driver sources", ", ".join(traces[:8]))
 
     astyle = shutil.which("astyle")
     if astyle is None:

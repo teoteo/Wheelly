@@ -10,8 +10,10 @@ the part of the panel the paragraph explains, and a guide that follows the
 driver by itself - a property added or removed must not leave it silently
 wrong. So nothing is listed by hand:
 
-  - WHAT is in the panel comes from panel_en.xml / panel_it.xml, captured from
-    the real compiled driver (refresh_panel.sh), labels in both languages;
+  - WHAT is in the panel comes from panel_en.xml, captured from the real
+    compiled driver (refresh_panel.sh). The driver is English only, as every
+    INDI driver: the Italian page shows the same panel, the same pictures and
+    the same labels, and explains them in Italian;
   - the pictures are drawn from the same XML (draw_panel.py);
   - the words are panel_texts.py, one entry per property, in English; the
     other languages are catalogues checked against it (panel_language.py), and
@@ -105,7 +107,6 @@ def wheelly_own():
 
 def problems():
     en, order, tabs = read_panel("en")
-    it, _o, _s = read_panel("it")
     T = texts()
     out = []
     for n in order:
@@ -133,8 +134,6 @@ def problems():
     for n in sorted(names_in_source() - set(order)):
         out.append("wheelly.cpp declares %s but panel_en.xml does not have it: capture the "
                    "panel again (doc/refresh_panel.sh)" % n)
-    if set(it) != set(en):
-        out.append("panel_en.xml and panel_it.xml do not have the same properties: capture again")
     for n, t in T.TEXTS.items():
         everything = " ".join([t.get("what", "")] + list(t.get("elements", {}).values())
                          + list(t.get("notes", [])))
@@ -143,17 +142,13 @@ def problems():
     # every other language follows the English (panel_language)
     for l in panel_language.LANGUAGES[1:]:
         out += panel_language.problems(l)
-    # and every picture a page shows is there: draw_panel.py names a
-    # tab's picture after the tab in THAT language's capture, the page after
-    # the English one - the same today, as the driver does not translate its
-    # tabs, and a broken picture the day it does
-    for l in panel_language.LANGUAGES:
-        missing = [f for f in [picture(n, l) for n in order]
-                   + [tab_picture(i, g, l) for i, g in enumerate(tabs, 1)]
-                   if not os.path.exists(os.path.join(OUT_DIR, f))]
-        if missing:
-            out.append("%s: %d pictures missing, the first %s: draw them again (panel_guide.py)"
-                       % (l, len(missing), missing[0]))
+    # and every picture the pages show is there (both pages show the same)
+    missing = [f for f in [picture(n) for n in order]
+               + [tab_picture(i, g) for i, g in enumerate(tabs, 1)]
+               if not os.path.exists(os.path.join(OUT_DIR, f))]
+    if missing:
+        out.append("%d pictures missing, the first %s: draw them again (panel_guide.py)"
+                   % (len(missing), missing[0]))
     return out
 
 
@@ -164,24 +159,21 @@ def draw():
               " the ones in docs/driver/img stay")
         return
     os.makedirs(IMG, exist_ok=True)
-    # one set per language: the Italian page shows the panel as the driver
-    # draws it in Italian (Options -> Language)
-    for language in panel_language.LANGUAGES:
-        r = subprocess.run([py, os.path.join(HERE, "draw_panel.py"),
-                            os.path.join(HERE, "panel_%s.xml" % language), IMG, COLORS],
-                           capture_output=True, text=True)
-        if r.returncode != 0:
-            raise SystemExit("draw_panel.py failed:\n" + r.stderr[-800:])
+    # one set, the panel as the driver draws it, for both pages
+    r = subprocess.run([py, os.path.join(HERE, "draw_panel.py"),
+                        os.path.join(HERE, "panel_en.xml"), IMG, COLORS],
+                       capture_output=True, text=True)
+    if r.returncode != 0:
+        raise SystemExit("draw_panel.py failed:\n" + r.stderr[-800:])
 
 
-def picture(n, language):
-    return "img/%s-%s.png" % (language, n.lower().replace("_", "-"))
+def picture(n):
+    return "img/en-%s.png" % n.lower().replace("_", "-")
 
 
-def tab_picture(i, g, language):
-    # g is the ENGLISH tab name: the pictures of both languages are named
-    # after the tab's position and its English name
-    return "img/%s-%d-%s.png" % (language, i, re.sub(r"\W+", "-", g).strip("-").lower())
+def tab_picture(i, g):
+    # named after the tab's position and its name
+    return "img/en-%d-%s.png" % (i, re.sub(r"\W+", "-", g).strip("-").lower())
 
 
 def limits(e, language):
@@ -207,22 +199,20 @@ UI = {
         description="Every command and option of the Wheelly INDI driver's panel, with the "
                     "part of the panel it talks about.",
         lede="Every command and option of the panel, with the part of the panel it "
-                  "talks about. Labels in English and, in brackets, in Italian. In the "
+                  "talks about. In the "
                   "contents, ● marks what is Wheelly's own and ○ what is standard INDI.",
         generated="*Generated* by `driver/indi-wheelly/doc/panel_guide.py` from the panel "
                  "the real driver declares (captured with `doc/refresh_panel.sh`) and from "
                  "`doc/panel_texts.py`: do not edit it by hand. The pictures are drawn from "
-                 "the same capture, in the theme KStars has on AstroArch. The panel's labels "
-                 "are given in English and, in brackets, in Italian - the driver speaks both "
-                 "(Options → Language).",
+                 "the same capture, in the theme KStars has on AstroArch.",
         kinds_md="Each entry is marked 🟦 **Wheelly** when the property is this driver's own, "
                 "or ⬜ *standard INDI* when it comes from INDI itself: every INDI driver of "
                 "the kind has it, Ekos knows it, and it behaves here as it does everywhere, "
                 "bar what the entry says.",
         contents="Contents", skip="Skip to content", driver="INDI driver",
-        in_this_tab="In this tab", element="Element", other_label_header="Label (Italian)",
+        in_this_tab="In this tab", element="Element",
         per_port="one per port found", read_only="read-only", limits="%s to %s, step %s",
-        std="standard INDI", language="Language", other="it",
+        std="standard INDI",
         filter="Filter the properties", no_match="No property matches."),
     "it": dict(
         title="Il driver INDI di Wheelly: il pannello di controllo",
@@ -231,40 +221,36 @@ UI = {
         description="Ogni comando e ogni opzione del pannello del driver INDI di Wheelly, "
                     "con la parte del pannello di cui si parla.",
         lede="Ogni comando e ogni opzione del pannello, con la parte del pannello di "
-                  "cui si parla. Etichette in italiano e, fra parentesi, in inglese. "
+                  "cui si parla. Le etichette sono in inglese, come sullo schermo. "
                   "Nell'indice ● segna ciò che è proprio di Wheelly e ○ ciò che è INDI standard.",
         generated="*Generato* da `driver/indi-wheelly/doc/panel_guide.py` a partire dal "
                  "pannello che dichiara il driver vero (catturato con "
                  "`doc/refresh_panel.sh`) e dai testi di `doc/panel_texts.py`, tradotti in "
                  "`doc/panel_texts_it.py`: non va modificato a mano. Le immagini sono "
-                 "disegnate dalla stessa cattura, col tema che KStars ha su AstroArch. Le "
-                 "etichette del pannello sono in italiano e, fra parentesi, in inglese: il "
-                 "driver parla tutte e due le lingue (Opzioni → Lingua).",
+                 "disegnate dalla stessa cattura, col tema che KStars ha su AstroArch. Il "
+                 "pannello è in inglese, come quello di ogni driver INDI: le etichette sono "
+                 "riportate come appaiono sullo schermo, e il testo le spiega in italiano.",
         kinds_md="Ogni voce è segnata 🟦 **Wheelly** quando la proprietà è di questo driver, "
                 "o ⬜ *INDI standard* quando viene da INDI stesso: ce l'ha ogni driver INDI "
                 "del genere, Ekos la conosce, e qui si comporta come dappertutto, salvo "
                 "quello che dice la voce.",
         contents="Indice", skip="Vai al contenuto", driver="Driver INDI",
-        in_this_tab="In questa scheda", element="Elemento", other_label_header="Etichetta (inglese)",
+        in_this_tab="In questa scheda", element="Elemento",
         per_port="una per porta trovata", read_only="sola lettura",
-        limits="da %s a %s, passo %s", std="INDI standard", language="Lingua", other="en",
+        limits="da %s a %s, passo %s", std="INDI standard",
         filter="Filtra le proprietà", no_match="Nessuna proprietà corrisponde."),
 }
 
 
 def write(language="en"):
     en, order, tabs = read_panel("en")
-    it, _o, _s = read_panel("it")
-    # the panel as the reader sees it (their language) and the other one,
-    # given in brackets where it differs
-    here, there = (en, it) if language == "en" else (it, en)
+    here = en
     TEXTS, TABS = panel_language.translated(language)
     U = UI[language]
     # the Italian pages sit in it/, and reach pictures and style one level up
     up = "" if language == "en" else "../"
     anchor = lambda s: re.sub(r"[^a-z0-9]+", "-", s.lower()).strip("-")
-    tab_name = lambda g: next((here[n]["tab"] for n in order if en[n]["tab"] == g), g)
-    other_tab_name = lambda g: next((there[n]["tab"] for n in order if en[n]["tab"] == g), g)
+    tab_name = lambda g: g
     kind_md = {True: "🟦 **Wheelly**", False: "⬜ *%s*" % U["std"]}
     kind_html = {True: ("wheelly", "Wheelly"), False: ("std", U["std"])}
     md = ["<!--", "SPDX-FileCopyrightText: 2026 Matteo Beretta",
@@ -277,9 +263,9 @@ def write(language="en"):
     body_html = []
     mine = wheelly_own()
     for i, g in enumerate(tabs, 1):
-        gq, gl = tab_name(g), other_tab_name(g)
-        md += ["## %s" % gq, "", "*(%s)*" % gl if gl != gq else "", "",
-               TABS.get(g, ""), "", "![%s](%s%s)" % (gq, up, tab_picture(i, g, language)), "",
+        gq = tab_name(g)
+        md += ["## %s" % gq, "",
+               TABS.get(g, ""), "", "![%s](%s%s)" % (gq, up, tab_picture(i, g)), "",
                "| %s | |" % U["in_this_tab"], "|---|---|"]
         in_tab = [n for n in order if en[n]["tab"] == g]
         md += ["| [%s](#%s) | %s |" % (here[n]["label"], anchor(here[n]["label"]),
@@ -287,46 +273,37 @@ def write(language="en"):
         # the anchors of the tabs are the ENGLISH names in both languages, so
         # that the pill keeps the reader where they were (#hash follows it)
         body_html.append("<h2 id=\"%s\">%s</h2>" % (anchor(g), html.escape(gq)))
-        if gl != gq:
-            body_html.append("<p class=\"it\">%s</p>" % html.escape(gl))
         body_html.append("<p>%s</p>" % html.escape(TABS.get(g, "")))
         body_html.append("<img class=\"scheda\" src=\"%s%s\" alt=\"%s\">"
-                          % (up, tab_picture(i, g, language), html.escape(gq)))
+                          % (up, tab_picture(i, g), html.escape(gq)))
         for n in in_tab:
-            p, pl, t = here[n], there.get(n, here[n]), TEXTS.get(n, {})
+            p, t = here[n], TEXTS.get(n, {})
             ro = " · %s" % U["read_only"] if p["perm"] == "ro" else ""
-            # the other language's label only where it differs: libindi's
-            # standard properties are not translated, and "Debug (Debug)" says nothing
-            other_label = pl["label"] if pl["label"] != p["label"] else ""
-            md += ["### %s%s" % (p["label"], " *(%s)*" % other_label if other_label else ""), "",
+            md += ["### %s" % p["label"], "",
                    "%s · `%s`%s" % (kind_md[n in mine], n, ro), "",
-                   "![%s](%s%s)" % (p["label"], up, picture(n, language)), "",
+                   "![%s](%s%s)" % (p["label"], up, picture(n)), "",
                    t.get("what", ""), ""]
             css_class, kind_name = kind_html[n in mine]
-            body_html.append("<section class=\"passo voce %s\" id=\"%s\"><h3>%s%s</h3>"
-                              % (css_class, n.lower(), html.escape(p["label"]),
-                                 " <span class=\"it\">(%s)</span>" % html.escape(other_label) if other_label else ""))
+            body_html.append("<section class=\"passo voce %s\" id=\"%s\"><h3>%s</h3>"
+                              % (css_class, n.lower(), html.escape(p["label"])))
             body_html.append("<p class=\"nome\"><span class=\"badge %s\">%s</span> <code>%s</code>%s</p>"
                               % (css_class, kind_name, n, html.escape(ro)))
-            body_html.append("<img src=\"%s%s\" alt=\"%s\">" % (up, picture(n, language), html.escape(p["label"])))
+            body_html.append("<img src=\"%s%s\" alt=\"%s\">" % (up, picture(n), html.escape(p["label"])))
             body_html.append("<p>%s</p>" % html.escape(t.get("what", "")))
-            md += ["| %s | %s | |" % (U["element"], U["other_label_header"]), "|---|---|---|"]
-            body_html.append("<table><tr><th>%s</th><th>%s</th><th></th></tr>"
-                              % (U["element"], U["other_label_header"]))
-            other_labels = {e["name"]: e["label"] for e in pl["elements"]}
+            md += ["| %s | |" % U["element"], "|---|---|"]
+            body_html.append("<table><tr><th>%s</th><th></th></tr>" % U["element"])
             if t.get("variable_elements"):
-                md.append("| *(%s)* | | %s |" % (U["per_port"], t["variable_elements"]))
-                body_html.append("<tr><td><em>%s</em></td><td></td><td>%s</td></tr>"
+                md.append("| *(%s)* | %s |" % (U["per_port"], t["variable_elements"]))
+                body_html.append("<tr><td><em>%s</em></td><td>%s</td></tr>"
                                   % (U["per_port"], html.escape(t["variable_elements"])))
             for e in ([] if t.get("variable_elements") else p["elements"]):
                 d = t.get("elements", {}).get(e["name"], "")
                 lim = limits(e, language)
                 if lim:
                     d = (d + " " if d else "") + "(%s)" % lim
-                md.append("| %s | %s | %s |" % (e["label"], other_labels.get(e["name"], ""), d))
-                body_html.append("<tr><td>%s</td><td class=\"it\">%s</td><td>%s</td></tr>"
-                                  % (html.escape(e["label"]), html.escape(other_labels.get(e["name"], "")),
-                                     html.escape(d)))
+                md.append("| %s | %s |" % (e["label"], d))
+                body_html.append("<tr><td>%s</td><td>%s</td></tr>"
+                                  % (html.escape(e["label"]), html.escape(d)))
             body_html.append("</table>")
             md.append("")
             # a table of its own, where an entry needs one (the LED's signals)
@@ -361,20 +338,18 @@ def write(language="en"):
                          root=assembly),
               # THE FILTER (the field, its style and its
               # script are guide/site.py's, shared with the assembly guide): 34 properties in four tabs are
-              # too many to find by eye. It looks in the label in both languages
-              # and in the INDI name, so "slot", "posizione" and FILTER_SLOT all
-              # find the same entry - whoever reads the Italian page may know the
-              # name from Ekos, in English, or from a forum post
+              # too many to find by eye. It looks in the label and in the INDI
+              # name, so "slot" and FILTER_SLOT find the same entry
               site_.filter_field(U["filter"], U["no_match"]),
               "<nav><ol>"]
     for i, g in enumerate(tabs, 1):
         contents.append("<li class=\"cap attuale\" data-cerca=\"%s\"><a href=\"#%s\"><span class=\"num\">%d</span>"
                       "<span>%s</span></a><ol class=\"passi\">"
-                      % (html.escape(" ".join({tab_name(g), other_tab_name(g)})), anchor(g), i,
+                      % (html.escape(tab_name(g)), anchor(g), i,
                          html.escape(tab_name(g))))
         for n in order:
             if en[n]["tab"] == g:
-                search_text = " ".join([here[n]["label"], there.get(n, here[n])["label"], n])
+                search_text = " ".join([here[n]["label"], n])
                 contents.append("<li data-cerca=\"%s\"><a href=\"#%s\"><span class=\"num\">%s</span><span>%s</span></a></li>"
                               % (html.escape(search_text), n.lower(), "●" if n in mine else "○",
                                  html.escape(here[n]["label"])))

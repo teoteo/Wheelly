@@ -23,11 +23,6 @@ set(WHEELLY_VERSION_MINOR 1)
 set(WHEELLY_DEVICE_NAME "Wheelly" CACHE STRING
     "Device name shown by INDI clients")
 
-# The Italian texts (translations_it.cpp). ON here, where the project speaks
-# English and Italian; the copy proposed to INDI builds with it OFF, because
-# INDI's drivers are English only - and an option, not a fork, is what lets
-# the same folder serve both. OFF also hides the Language switch.
-option(WHEELLY_ITALIAN "Compile in the Italian catalogue" ON)
 
 # On Arch there is no installed FindINDI.cmake, but there is libindi.pc.
 # pkg-config is tried first, falling back on find_package, so the file works
@@ -46,11 +41,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/wheelly_config.h.cmake
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/indi_wheelly.xml.cmake
                ${CMAKE_CURRENT_BINARY_DIR}/indi_wheelly.xml)
 
-set(WHEELLY_SOURCES wheelly.cpp translations.cpp plot.cpp)
-if(WHEELLY_ITALIAN)
-    list(APPEND WHEELLY_SOURCES translations_it.cpp)
-endif()
-add_executable(indi_wheelly ${WHEELLY_SOURCES})
+add_executable(indi_wheelly wheelly.cpp plot.cpp)
 
 target_include_directories(indi_wheelly PRIVATE
     ${CMAKE_CURRENT_BINARY_DIR}

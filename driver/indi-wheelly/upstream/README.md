@@ -12,9 +12,10 @@ itself. Everything below was checked against **indilib/indi master `4661ccd`**.
 python3 driver/indi-wheelly/upstream/to_indi.py PATH/TO/indi
 ```
 
-puts the driver's files, the CMake block, the `drivers.xml` entry (with the version
-read from this folder's `CMakeLists.txt`) and the documentation into a checkout of
-indilib/indi. Run again on the same tree it replaces what it put there, so the same
+puts the driver's files, the CMake block and the `drivers.xml` entry (with the version
+read from this folder's `CMakeLists.txt`) into a checkout of indilib/indi, and
+`to_indi.py --docs PATH/TO/drivers-docs` puts the driver's page into a checkout of
+[indilib/drivers-docs](https://github.com/indilib/drivers-docs). Run again on the same tree it replaces what it put there, so the same
 command serves every later pull request.
 
 ## Which repository
@@ -34,19 +35,18 @@ Into `drivers/filter_wheel/wheelly/` of INDI's tree (the list is `DRIVER_FILES` 
 | file | |
 |---|---|
 | `wheelly.cpp`, `wheelly.h` | the driver |
-| `translations.cpp`, `translations.h` | the English texts, by key |
 | `plot.cpp`, `plot.h` | the magnet sweep plot |
 | `wheelly_protocol.h` | the protocol, byte for byte `firmware/wheelly/wheelly_protocol.h` |
-| `wheelly_config.h.cmake` | version, device name, `WHEELLY_ITALIAN` |
+| `wheelly_config.h.cmake` | version and device name |
 
-Not copied: `translations_it.cpp` (INDI's drivers are English), this folder's own
+Not copied: this folder's own
 `CMakeLists.txt` and `indi_wheelly.xml.cmake` (INDI builds and lists the driver its own
 way, below), `driver_bench.py` and `doc/` (they need the simulator in `firmware/`, which
 stays here), and `upstream/`.
 
-A subfolder, not files loose in `drivers/filter_wheel/`, because the driver has seven
-files and two of them have names (`translations`, `plot`) too generic for a folder shared
-by fifteen drivers. INDI already does it this way for the Shelyak driver in
+A subfolder, not files loose in `drivers/filter_wheel/`, because the driver has six
+files and one of them has a name (`plot`) too generic for a folder shared by fifteen
+drivers. INDI already does it this way for the Shelyak driver in
 `drivers/spectrograph/shelyak/`: sources in a subfolder, named from the category's
 `CMakeLists.txt`, no `CMakeLists.txt` of their own.
 
@@ -59,7 +59,7 @@ of the protocol header differ).
 - [`CMakeLists-indi.txt`](CMakeLists-indi.txt): the block `to_indi.py` appends to
   `drivers/filter_wheel/CMakeLists.txt`. Modelled on the filter wheels already there
   (`xagyl_wheel`, `rasa_filtercube`: one executable, linked to `indidriver`, installed to
-  `bin`) and on Shelyak for the subfolder. It sets `WHEELLY_ITALIAN` OFF.
+  `bin`) and on Shelyak for the subfolder.
 - [`drivers-xml-entry.xml`](drivers-xml-entry.xml): the `<device>` to add in the
   *Filter Wheels* group of INDI's `drivers.xml`, `manufacturer="DIY"` as INDI files
   MyFocuserPro2, ESP32go and the other self-built devices.
@@ -100,11 +100,13 @@ without looking at it.
 
 ## Language
 
-INDI's drivers are English. `WHEELLY_ITALIAN` (CMake option, ON in this repository) is
-what lets the same folder serve both without a fork: OFF, `translations_it.cpp` is not
-compiled, the driver speaks English whatever the system language, and the Language
-switch is not defined. Both ways were built and tried; the English-only
-binary, started under `LANG=it_IT.UTF-8`, showed English labels and no Language switch.
+INDI's drivers are English, and INDI's maintainers asked, in the first review, for the
+translation layer to go: no keys, no catalogues, no Language switch. The driver was
+changed here, not only in the copy: it is English in this repository too, with the texts
+written where they are used, so the copy in INDI and the driver here are the same files
+and a fix made on INDI's side can be brought back as it is. The guides stay bilingual.
+`firmware/test/test_driver_standalone.py` fails if a `tr(` call, a key or a catalogue
+comes back.
 
 ## Licence
 
@@ -125,15 +127,21 @@ and the one in this repository are the same files under the same licence.
 
 ## Documentation
 
-CONTRIBUTING requires a page in INDI's shape (overview, features, installation,
-configuration, usage and tips, screenshots): it is [`doc/index.md`](doc/index.md),
-which `to_indi.py` puts in `drivers/filter_wheel/doc/wheelly/` with the pictures it
-links. The pictures are not kept twice: they are taken from the panel guide's renders
-in `docs/driver/img/`. The page is short on purpose and links the full panel guide.
+INDI's maintainers keep driver pages in
+[indilib/drivers-docs](https://github.com/indilib/drivers-docs), not in INDI's tree
+(CONTRIBUTING still says `doc/` in the driver's folder; the first review asked for
+drivers-docs). The page is [`doc/wheelly.md`](doc/wheelly.md) with its metadata
+[`doc/wheelly.yaml`](doc/wheelly.yaml) and the 300x300 thumbnail `doc/wheelly.webp`,
+in that repository's shape (overview, features, installation, configuration, usage
+and tips); `to_indi.py --docs` puts them in `src/content/docs/filter-wheels/generic/
+wheelly/`, fills in the version and converts the screenshots to WebP from the panel
+guide's renders in `docs/driver/img/`, so they are not kept twice. Manufacturer
+*Generic*, as drivers-docs files the other self-built devices. The page is short on
+purpose and links the full panel guide.
 
 ## Still to do
 
-- Pull request opened: indilib/indi#2499. Whether Core or 3rd-party is asked in its
+- Pull requests opened: indilib/indi#2499 (driver) and indilib/drivers-docs#42 (page). Whether Core or 3rd-party is asked in its
   description rather than on the forum first, since CONTRIBUTING's rule is plain.
 - After the move, the protocol header in INDI's tree is a third copy the check here
   cannot see: a protocol change means a pull request to INDI too, and INDI's driver

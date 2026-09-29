@@ -16,16 +16,22 @@ It checks, in order:
   - that the driver presents itself as a filter wheel and connects;
   - which PANEL every property ends up in, which can only be checked by
     looking at the XML: indi_getprop does not show the groups;
-  - that the labels are translated, and change when the language changes;
+  - that the driver speaks English whatever the locale: labels and log
+    messages are the same under an Italian LANG, and there is no language
+    switch in the panel;
   - that a filter change succeeds and FILTER_SLOT comes back Ok;
   - that an invalid filter name is REFUSED, with an explanation as the newest
     log line, and that an empty name field (a slot without a filter) is not;
   - that a wheel that never arrives puts FILTER_SLOT in Alert, which is what
     stops the capture sequence in Ekos.
 
-The expected texts compared against the driver's messages stay in the
-language the driver speaks in that test: many tests run with an Italian LANG
-on purpose, to check the Italian catalogue.
+The driver is English only: INDI's drivers speak English, and a translation
+layer inside one driver was not wanted upstream, so the texts are written
+inline in wheelly.cpp and every expected text here is English. Many tests
+still run under an Italian LANG on purpose: a driver that picked up the
+locale - a translated label, a decimal comma in a number it formats - would
+fail their English comparisons, so the locale leaking in is caught
+everywhere, not only in one dedicated check.
 """
 
 import os
@@ -359,12 +365,13 @@ EXPECTED_PANELS = {
     "WHEELLY_SWEEP_DIR":  "Calibration and Diagnostics",
     "WHEELLY_FIRMWARE":   "Options",
     "WHEELLY_CONFIG":     "Options",
-    "WHEELLY_LANGUAGE":   "Options",
 }
 
 
 def test_panels_and_language():
-    print("panels, labels and language")
+    print("panels, labels, and English under an Italian locale")
+    # An Italian LANG on purpose: the driver is English only, and what is
+    # worth guarding now is that the locale does not leak into what it shows.
     bench = Bench(language="it_IT.UTF-8")
     c = Client(INDI_PORT)
     try:
@@ -381,9 +388,16 @@ def test_panels_and_language():
                  if n in c.props and c.props[n].get("group") != expected}
         ok(not wrong, "every property is in the right panel", str(wrong))
 
-        # The labels are translated: with an Italian LANG, Italian must show.
+        # English labels even with an Italian LANG: there is no catalogue to
+        # pick from any more, and none must come back.
         label = c.props.get("WHEELLY_ANGLE_1", {}).get("elements", {}).get("ANGLE", {}).get("label", "")
-        ok(label == "Angolo di taratura (°)", "the labels are in Italian", label)
+        ok(label == "Calibration angle (°)",
+           "with an Italian LANG the labels are still English", label)
+        # No language switch: the translation layer is gone, and a switch
+        # left in the panel would be a control that changes nothing.
+        ok("WHEELLY_LANGUAGE" not in c.props,
+           "there is no language switch in the panel",
+           str(c.props.get("WHEELLY_LANGUAGE", {}).get("group")))
         # one row per slot, and no single vector nor "Save position"
         ok(angle_rows(c) == ["WHEELLY_ANGLE_%d" % i for i in range(1, 6)]
            and "WHEELLY_ANGLES" not in c.props and "WHEELLY_TEACH" not in c.props,
@@ -400,20 +414,19 @@ def test_panels_and_language():
         at = options.index("CONFIG_PROCESS") if "CONFIG_PROCESS" in options else -9
         config = c.props.get("WHEELLY_CONFIG", {})
         ok(options[at + 1:at + 2] == ["WHEELLY_CONFIG"]
-           and config.get("label") == "Configurazione della ruota"
+           and config.get("label") == "Wheel configuration"
            and {k: v.get("label") for k, v in config.get("elements", {}).items()}
-               == {"SAVE": "Salva nella ruota"},
-           "Options: 'Configurazione della ruota' right under INDI's Configuration",
+               == {"SAVE": "Save to the wheel"},
+           "Options: 'Wheel configuration' right under INDI's Configuration",
            f"{options} {config.get('label')} {config.get('elements')}")
         ok(len(c.props.get("CONFIG_PROCESS", {}).get("elements", {})) == 4,
            "and INDI's own Configuration keeps its four buttons",
            str(list(c.props.get("CONFIG_PROCESS", {}).get("elements", {}))))
-        ok(c.props.get("FILTER_SLOT", {}).get("label", "") == "Posizione",
+        ok(c.props.get("FILTER_SLOT", {}).get("label", "") == "Filter slot",
            "the base class properties' labels as well",
            c.props.get("FILTER_SLOT", {}).get("label", ""))
 
-        # The NAMES, on the other hand, are not: they are identifiers and
-        # stay English for ever.
+        # The property NAMES are identifiers, English whatever the labels.
         ok(all(n.isupper() or "_" in n for n in EXPECTED_PANELS),
            "the property names stay English identifiers")
 
@@ -422,22 +435,15 @@ def test_panels_and_language():
         values = [v["value"] for v in names.values()]
         ok("Lum" in values and "Ha" in values,
            "the filter names come from the wheel", str(values))
-    finally:
-        c.close()
-        bench.close()
 
-    # and in English
-    bench = Bench(language="en_US.UTF-8")
-    c = Client(INDI_PORT)
-    try:
-        bench.connect(c)
-        c.pump(2.0)
-        label = c.props.get("WHEELLY_ANGLE_1", {}).get("elements", {}).get("ANGLE", {}).get("label", "")
-        ok(label == "Calibration angle (°)", "with an English LANG the labels are English",
-           label)
-        ok(c.props.get("WHEELLY_CONFIG", {}).get("label") == "Wheel configuration",
-           "and the Options row is 'Wheel configuration'",
-           str(c.props.get("WHEELLY_CONFIG", {}).get("label")))
+        # and the log, under the same Italian LANG, is English too
+        before = len(c.messages)
+        c.set_number("FILTER_SLOT", "FILTER_SLOT_VALUE", 2)
+        c.wait_state("FILTER_SLOT", ("Ok", "Alert"), 20)
+        c.pump(0.5)
+        text = " ".join(c.messages[before:])
+        ok("Slot 2 reached, residual error" in text,
+           "with an Italian LANG the log is still English", text[-250:])
     finally:
         c.close()
         bench.close()
@@ -505,7 +511,7 @@ def test_name_refused():
         # and the price was seeing it truncated with an ellipsis in the column,
         # because the label is also visible text. See firmware.md, section 5.1.
         label = c.props["FILTER_NAME"]["label"]
-        ok(label == "Nomi dei filtri",
+        ok(label == "Filter names",
            "the names' label states the field's name and nothing else", label)
         ok("WHEELLY_NAME_RULE" not in c.props,
            "and there is no extra property stating the rule")
@@ -533,21 +539,21 @@ def test_name_refused():
         # enough on its own - which position, which name, what is wrong, and
         # what to write instead.
         log = " ".join(c.messages[-4:])
-        ok("Posizione 1" in log, "the message says which position",
+        ok("Slot 1" in log, "the message says which position",
            log[-250:])
         ok('"Lum 31mm"' in log, "and repeats the refused name", log[-250:])
-        ok("spazio" in log,
+        ok("there is a space" in log,
            "and NAMES the offending character, instead of listing the allowed ones",
            log[-250:])
         ok('"Lum_31mm"' in log,
            "and proposes a good name derived from the one written", log[-250:])
-        ok("Ammessi" in log and "cifre" in log and "32" in log,
+        ok("Allowed" in log and "digits" in log and "32" in log,
            "and ALWAYS lists the characters that can be used", log[-250:])
         # The refusal must be the NEWEST line: KStars' log puts the newest on
         # top and its status bar shows only that one. With the rule sent after
         # the refusal, the line in sight was the generic rule, and which slot
         # and why stayed hidden under it.
-        ok("Posizione 1" in c.messages[-1] and "spazio" in c.messages[-1],
+        ok("Slot 1" in c.messages[-1] and "there is a space" in c.messages[-1],
            "the refusal itself is the newest line, the one in sight",
            c.messages[-1])
 
@@ -560,7 +566,7 @@ def test_name_refused():
         c.wait_state("FILTER_NAME", ("Alert",), 5)
         # too long for one line: the rule and the refusal go on two, and the
         # refusal is still the newest
-        ok("Posizione 1" in c.messages[-1] and "Ammessi" in c.messages[-2],
+        ok("Slot 1" in c.messages[-1] and "Allowed" in c.messages[-2],
            "on two lines the rule comes first and the refusal last",
            str(c.messages[-2:]))
 
@@ -573,7 +579,7 @@ def test_name_refused():
         c.set_text("FILTER_NAME", "FILTER_SLOT_NAME_1", "H-alfà")
         c.wait_state("FILTER_NAME", ("Alert",), 5)
         log = " ".join(c.messages[before_accent:])
-        ok("accentata" in log,
+        ok("accented" in log,
            "an accented letter is described as such, not printed by halves",
            log[-250:])
 
@@ -587,12 +593,12 @@ def test_name_refused():
         c.set_text("FILTER_NAME", "FILTER_SLOT_NAME_2", "ha")
         c.wait_state("FILTER_NAME", ("Alert",), 5)
         log = " ".join(c.messages[before_dup:])
-        ok("maiuscole" in log,
+        ok("upper and lower case" in log,
            "a duplicate is explained as such", log[-250:])
-        ok("sarebbe accettato" not in log,
+        ok("would be accepted" not in log,
            "and nothing is proposed there: cleaning it up would leave it the same",
            log[-250:])
-        ok("Ammessi" in log,
+        ok("Allowed" in log,
            "but the allowed characters are there all the same, as in every refusal",
            log[-250:])
 
@@ -600,12 +606,12 @@ def test_name_refused():
         # have all gone by: an INDI message is a char[MAXINDIMESSAGE] with
         # MAXINDIMESSAGE = 255, and what does not fit vanishes silently. It
         # happened: with the rule appended to the refusal, "-Lum-" arrived
-        # truncated to "...una cif". The limit lets 254 bytes through, so
+        # truncated mid-word. The limit lets 254 bytes through, so
         # measuring is not enough: a whole sentence ends with a full stop.
-        ours = [m for m in c.messages if "rifiutato" in m or "Ammessi" in m]
+        ours = [m for m in c.messages if "refused" in m or "Allowed" in m]
         # four refusals, each with its rule - on one line or on two
-        ok(sum("rifiutato" in m for m in ours) >= 4
-           and sum("Ammessi" in m for m in ours) >= 4,
+        ok(sum("refused" in m for m in ours) >= 4
+           and sum("Allowed" in m for m in ours) >= 4,
            "and all the refusal messages have arrived", str(len(ours)))
         truncated = [m for m in ours
                      if len(m.encode("utf-8")) > 254 or not m.endswith(".")]
@@ -652,9 +658,9 @@ def test_empty_slots():
            "and the empty slot shows its name, Empty_5, as Ekos will list it",
            str(field_names(c)))
         log = " ".join(c.messages[before:])
-        ok("Posizione 5" in log and '"Empty_5"' in log,
+        ok("Slot 5" in log and '"Empty_5"' in log,
            "the log says which slot was named and how", log[-250:])
-        ok("rifiutato" not in log and "Ammessi" not in log,
+        ok("refused" not in log and "Allowed" not in log,
            "and nothing is refused", log[-250:])
 
         # several empty slots, one of them only blanks: the slot number keeps
@@ -686,9 +692,9 @@ def test_empty_slots():
            c.state("FILTER_NAME"))
         ok(field_names(c) == shown,
            "and the fields go back as they were", str(field_names(c)))
-        ok("Posizione 2" in c.messages[-1] and "spazio" in c.messages[-1],
+        ok("Slot 2" in c.messages[-1] and "there is a space" in c.messages[-1],
            "the specific reason is the newest line", c.messages[-1])
-        ok(not any("lasciata vuota" in m for m in c.messages[before:]),
+        ok(not any("left empty" in m for m in c.messages[before:]),
            "and no slot is announced as named by a set that was refused",
            str(c.messages[before:]))
     finally:
@@ -742,7 +748,7 @@ def test_sweep():
            f"started from {start}, ended on {arrival}")
 
         text = " ".join(c.messages[-4:])
-        ok("Spazzolata finita" in text and "escursione" in text,
+        ok("Sweep done" in text and "excursion" in text,
            "the message says how it went", text[-250:])
 
         # the plot
@@ -801,8 +807,8 @@ def test_sweep():
         # rate a turn gave twenty, and twenty points over three hundred and
         # sixty degrees are a constellation, not a measurement: hence the
         # denser polling during the sweep.
-        said = [m for m in c.messages if "Spazzolata finita" in m]
-        count = int(re.search(r"(\d+) campioni", said[-1]).group(1)) if said else 0
+        said = [m for m in c.messages if "Sweep done" in m]
+        count = int(re.search(r"(\d+) samples", said[-1]).group(1)) if said else 0
         ok(count >= 30, "and there are enough samples to draw a curve",
            f"{count} samples")
 
@@ -878,7 +884,7 @@ def test_sweep():
         ok(c.state("WHEELLY_SWEEP_DIR") == "Alert",
            "a folder that cannot be written goes to alarm",
            c.state("WHEELLY_SWEEP_DIR"))
-        ok("non si può usare" in " ".join(c.messages[before_folder:]),
+        ok("cannot be used right now" in " ".join(c.messages[before_folder:]),
            "saying so at once, instead of letting the first sweep find out",
            " ".join(c.messages[before_folder:])[-200:])
         c.set_text("WHEELLY_SWEEP_DIR", "DIR", elsewhere)
@@ -894,7 +900,7 @@ def test_sweep():
         ok(c.state("WHEELLY_SWEEP") == "Alert",
            "and while the wheel is moving the sweep is refused",
            c.state("WHEELLY_SWEEP"))
-        ok("aspetta che si fermi" in " ".join(c.messages[before:]),
+        ok("wait for it to stop" in " ".join(c.messages[before:]),
            "saying why", " ".join(c.messages[before:])[-200:])
     finally:
         c.close()
@@ -935,7 +941,9 @@ def test_slot_count_from_the_panel():
     that have their own names - lengthening them with resize() gave elements
     without a name."""
     print("the number of positions from the panel")
-    bench = Bench()
+    # An Italian LANG on purpose: the pitch label is computed with printf,
+    # and a locale leaking in would write "51,43" instead of "51.43".
+    bench = Bench(language="it_IT.UTF-8")
     c = Client(INDI_PORT)
     try:
         ok(bench.connect(c) == "Ok", "the driver connects")
@@ -973,7 +981,7 @@ def test_slot_count_from_the_panel():
                "%d positions: exactly %d rows, WHEELLY_ANGLE_1..%d" % (count, count, count),
                str(angles))
             text = " ".join(c.messages[before:])
-            ok("Save" in text or "Salva" in text,
+            ok("Save to the wheel" in text,
                "%d positions: the log says that keeping them needs a save" % count,
                text[-200:])
     finally:
@@ -987,7 +995,7 @@ def test_angle_set():
     new angle sends 'angle n' for that slot and moves the wheel there at once,
     as the position control does; a Set on an unchanged row sends no angle and
     only takes the wheel to its slot. Every change is said in the log,
-    "Posizione 3: 144.00° → 145.50°", and written in the movement register. A
+    "Slot 3: 144.00° → 145.50°", and written in the movement register. A
     value the wheel refuses leaves the old one, in Alert, with the wheel's
     reason. The exchange is watched with Driver Debug on."""
     print("the calibration angles: Set on a row, the move, the log")
@@ -1025,7 +1033,7 @@ def test_angle_set():
         sent = [m for m in text.split("-> ")[1:] if m.startswith("angle ")]
         ok(result == "Ok" and len(sent) == 1 and sent[0].startswith("angle 3 145.50"),
            "Set on row 3: only 'angle 3' reaches the wheel", f"{result} {sent}")
-        ok("Posizione 3: 144.00° → 145.50°" in text,
+        ok("Slot 3: 144.00° → 145.50°" in text,
            "and the log says the change, old → new", text[-300:])
         ok("-> go 3" in text,
            "Set on row 3: the wheel goes to that slot at once", text[-300:])
@@ -1041,9 +1049,9 @@ def test_angle_set():
         arrive()
         # a value the wheel refuses: Alert, the old value, the wheel's reason
         result, text = set_one(2, "400")
-        why = [m for m in text.split("  ") if "Posizione 2" in m]
+        why = [m for m in text.split("  ") if "Slot 2" in m]
         ok(result == "Alert" and angle_row(c, 2)[1] == 72.0
-           and "Posizione 2: l'angolo non è stato cambiato" in text and "-> go" not in text,
+           and "Slot 2: the angle was not changed" in text and "-> go" not in text,
            "an angle out of range: Alert, the old value stays, the log says why, no move",
            f"{result} {angle_row(c, 2)} {text[-300:]}")
         # the movement register: a row per change, with its own outcome
@@ -1182,7 +1190,7 @@ def test_live_row():
         ok("-> angle 2 %.2f" % live in text and "-> go" not in text,
            "live row: Set as shown teaches slot 2 at the live angle, and nothing moves",
            text[-400:])
-        ok("Posizione 2: 72.00° → %.2f°" % live in text,
+        ok("Slot 2: 72.00° → %.2f°" % live in text,
            "live row: and the log says old → new", text[-300:])
         label, value = angle_row(c, 2)
         ok(label == "▶ 2" and abs(value - live) < 0.01,
@@ -1291,14 +1299,14 @@ def test_failure_stops_the_capture():
         ok(result == "Alert",
            "FILTER_SLOT goes to Alert: that is what stops the sequence in Ekos", result)
         text = " ".join(c.messages[-5:])
-        ok("NON raggiunta" in text or "ritentativ" in text,
+        ok("NOT reached" in text and "retries" in text,
            "and the message explains what happened", text[-250:])
         # the hint on slip or stall: a detent left in place is
         # the first suspect, and the log says where the guide removes it
         text = " ".join(c.messages[-6:])
-        # "Il corpo della ruota." is the END of the line: an INDI message is
+        # "The wheel body." is the END of the line: an INDI message is
         # cut silently at 255 characters, and a cut hint would lose it
-        ok("fermo della ruota" in text and "capitolo 10, Il corpo della ruota." in text,
+        ok("wheel's detent" in text and "chapter 10, The wheel body." in text,
            "and suggests checking that the detent was removed (guide, chapter 10)",
            text[-300:])
     finally:
@@ -1323,13 +1331,13 @@ def test_faulty_sensor():
         before = len(c.messages)
         c.pump(6.0)
         text = " ".join(c.messages[before:])
-        ok("spostata" in text or "sola" in text,
+        ok("moved" in text and "on its own" in text,
            "the driver says it moved by itself", text[-260:])
-        ok("tenuta" in text.lower(), "and suggests the holding current", text[-260:])
+        ok("holding current" in text.lower(), "and suggests the holding current", text[-260:])
         ok("150" in text, "also saying what value to start from", text[-260:])
         # and it does not ask "if yours has none": the detent
         # is always removed, the holding current is the single advice
-        ok("tacca" not in text, "and asks nothing about a detent", text[-260:])
+        ok("detent" not in text.lower(), "and asks nothing about a detent", text[-260:])
     finally:
         c.close()
         bench.close()
@@ -1344,7 +1352,7 @@ def test_faulty_sensor():
         result = c.wait_state("FILTER_SLOT", ("Alert",), 10)
         ok(result == "Alert", "with a silent sensor the filter change fails", result)
         text = " ".join(c.messages[-6:])
-        ok("ponticello" in text or "sensore" in text.lower(),
+        ok("jumper" in text and "sensor" in text.lower(),
            "and the message sends you to look in the right place", text[-250:])
     finally:
         c.close()
@@ -1364,7 +1372,7 @@ def test_flickering_magnet():
         before = len(c.messages)
         bench.connect(c)
         c.pump(5.5)
-        lost = [m for m in c.messages[before:] if "non rileva più il magnete" in m]
+        lost = [m for m in c.messages[before:] if "no longer detects the magnet" in m]
         ok(1 <= len(lost) <= 2, "the lost magnet is in the log once per episode",
            f"{len(lost)} messages")
     finally:
@@ -1386,15 +1394,15 @@ def test_calibration():
         before = len(c.messages)
         c.set_switch("WHEELLY_SAVE", "SAVE")
         result = c.wait_state("WHEELLY_SAVE", ("Ok", "Alert"), 8)
-        ok(result == "Ok" and "Taratura salvata nella ruota" in " ".join(c.messages[before:]),
+        ok(result == "Ok" and "Calibration saved in the wheel" in " ".join(c.messages[before:]),
            "saving into the wheel succeeds", result)
         # the same, from Options
         before = len(c.messages)
         c.set_switch("WHEELLY_CONFIG", "SAVE")
         result = c.wait_state("WHEELLY_CONFIG", ("Ok", "Alert"), 8)
         c.pump(0.3)
-        ok(result == "Ok" and "Taratura salvata nella ruota" in " ".join(c.messages[before:]),
-           "and from Options, 'Configurazione della ruota'", result)
+        ok(result == "Ok" and "Calibration saved in the wheel" in " ".join(c.messages[before:]),
+           "and from Options, 'Wheel configuration'", result)
 
         # The holding current is off by default: the light is grey AND THE
         # FIELD SAYS 0, the wheel's real value. Rejected: keeping the
@@ -1413,7 +1421,7 @@ def test_calibration():
         c.wait_state("WHEELLY_HOLD", ("Ok", "Alert"), 8)
         c.pump(0.6)
         text = " ".join(c.messages[before:])
-        ok("scalda" in text.lower() and "tenuta" in text.lower(),
+        ok("warms up" in text.lower() and "holding current" in text.lower(),
            "and switching it on says what it costs", text[-250:])
         # and switched off again from the panel it turns GREY, as on
         # connection: green would make the same state read two ways
@@ -1524,7 +1532,7 @@ def test_settle_hold():
     property, read back from the wheel at connection, sent to it when changed,
     and the move time cap following it."""
     print("the hold after arrival, in the holding property")
-    WARNING = "più dei 30 s dopo i quali Ekos rinuncia"
+    WARNING = "more than the 30 s after which Ekos gives up"
     bench = Bench(language="it_IT.UTF-8")
     c = Client(INDI_PORT)
     try:
@@ -1534,8 +1542,8 @@ def test_settle_hold():
         ok("SETTLE_MS" in hold and abs(float(hold["SETTLE_MS"]["value"]) - 300) < 0.001,
            "the holding property has the hold after arrival, 300 ms from the wheel",
            str(hold.get("SETTLE_MS")))
-        ok(hold.get("SETTLE_MS", {}).get("label") == "Tenuta dopo l'arrivo (ms)",
-           "labelled in the panel's language", str(hold.get("SETTLE_MS")))
+        ok(hold.get("SETTLE_MS", {}).get("label") == "Hold after arrival (ms)",
+           "labelled in English, whatever the locale", str(hold.get("SETTLE_MS")))
         ok(len(hold) == 2, "and no new property: the same one, two fields", str(list(hold)))
 
         # set from the panel: it reaches the wheel, and the cap follows it -
@@ -1647,9 +1655,9 @@ def test_jog():
             ok(list(got) == elements and len(got) <= 4,
                f"jog: {row} has its buttons, at most four", str(list(got)))
             labels.update({k: v.get("label") for k, v in got.items()})
-        ok(labels.get("JOG_M_PITCH") == "-72°" and labels.get("JOG_M0_1") == "-0,1°"
+        ok(labels.get("JOG_M_PITCH") == "-72°" and labels.get("JOG_M0_1") == "-0.1°"
            and labels.get("JOG_P10") == "+10°" and labels.get("JOG_P_PITCH") == "+72°",
-           "jog: 360/5, 10, 1, 0.1 each way, translated", str(labels))
+           "jog: 360/5, 10, 1, 0.1 each way, with a decimal point whatever the locale", str(labels))
         ok("TEACH" not in c.props.get("WHEELLY_SAVE", {}).get("elements", {})
            and "WHEELLY_TEACH" not in c.props,
            "jog: no teach action nor 'Save position': the Set on the row teaches",
@@ -1659,8 +1667,8 @@ def test_jog():
         c.pump(0.5)
         start = angle()
         result, text = press("JOG_P1")
-        ok(result == "Ok" and "da dove chiedeva il passo" in text,
-           "jog +1: Ok, and the log says where the wheel is, in Italian", f"{result} {text[-200:]}")
+        ok(result == "Ok" and "from where the step asked" in text,
+           "jog +1: Ok, and the log says where the wheel is", f"{result} {text[-200:]}")
         ok(abs(angle() - start - 1.0) <= 0.5,
            "jog +1: the wheel really moved one degree", f"{start} -> {angle()}")
         ok(c.state("FILTER_SLOT") == "Ok", "jog: FILTER_SLOT is not a filter change",
@@ -1678,7 +1686,7 @@ def test_jog():
         c.pump(0.8)
         text = " ".join(c.messages[before:])
         taught = angle_row(c, 2)[1]
-        ok(result == "Ok" and abs(taught - now) < 0.1 and "Salva nella ruota" in text,
+        ok(result == "Ok" and abs(taught - now) < 0.1 and "Save to the wheel" in text,
            "Set on row 2: slot 2 takes the angle the jogs reached, and says how to keep it",
            f"{result} {taught} vs {now} {text[-200:]}")
         # one pitch: from slot 2 to slot 3, the jog's own verdict
@@ -1691,7 +1699,7 @@ def test_jog():
         c.set_number("FILTER_SLOT", "FILTER_SLOT_VALUE", 4)
         c.pump(0.1)
         result, text = press("JOG_P10")
-        ok(result == "Alert" and "mentre si muove" in text,
+        ok(result == "Alert" and "while it is moving" in text,
            "jog: refused while the wheel moves, and says why", f"{result} {text[-200:]}")
         c.wait_state("FILTER_SLOT", ("Ok", "Alert"), 20)
     finally:
@@ -1707,7 +1715,7 @@ def test_no_detent():
     wheel). What it does instead: when the motor stalls, the log suggests
     checking that the detent was really removed. The stall here is the
     simulator's asymmetric detent left in place, and the jog +10 goes up the
-    steep flank, so the jog fails; in English, the other catalog."""
+    steep flank, so the jog fails."""
     print("no detent option, and the hint on a stall")
     bench = Bench("--stall", "up", "--ms-per-degree", "2")
     c = Client(INDI_PORT)
@@ -1762,7 +1770,7 @@ def test_direction():
     print("the direction of travel")
     bench = Bench("--stall", "up", language="it_IT.UTF-8")
     c = Client(INDI_PORT)
-    WARNING = "più dei 30 s dopo i quali Ekos rinuncia"
+    WARNING = "more than the 30 s after which Ekos gives up"
 
     def elements():
         e = c.props.get("WHEELLY_DIRECTION", {}).get("elements", {})
@@ -1803,9 +1811,9 @@ def test_direction():
            and c.state("WHEELLY_DIRECTION") == "Ok",
            "direction: on connection the shortest way, the factory default, read from the wheel",
            "%s %s" % (elements(), c.state("WHEELLY_DIRECTION")))
-        ok(labels.get("DIR_SHORTEST") == "La via più corta"
-           and labels.get("DIR_UP") == "Solo angoli crescenti",
-           "direction: the labels are translated", str(labels))
+        ok(labels.get("DIR_SHORTEST") == "Shortest way"
+           and labels.get("DIR_UP") == "Increasing angles only",
+           "direction: the labels, English whatever the locale", str(labels))
 
         # end to end, on the wheel that stalls going up: the shortest way from
         # slot 1 to slot 2 (0 -> 72 degrees) is up, into the steep flank
@@ -1816,7 +1824,7 @@ def test_direction():
         ok(result == "Ok" and elements()["DIR_DOWN"] == "On",
            "direction: 'decreasing angles only' from the panel, accepted and read back",
            "%s %s" % (result, elements()))
-        ok("Salva nella ruota" in text, "direction: and the log reminds to save", text[-200:])
+        ok("Save to the wheel" in text, "direction: and the log reminds to save", text[-200:])
         ok(go(2) == "Ok", "direction: one way down, 1 -> 2 arrives despite the stall going up")
         ok(go(1) == "Ok", "direction: and back to 1, still down")
         result, text = choose("DIR_SHORTEST")
@@ -1889,7 +1897,7 @@ def test_wrong_port():
            "and Auto Search was off: no other serial port was tried",
            str({k: v.get("value") for k, v in auto.items()}))
         text = " ".join(c.messages[-4:])
-        ok("Wheelly" in text or "ruota" in text.lower() or "porta" in text.lower(),
+        ok("Wheelly" in text or "wheel" in text.lower() or "port" in text.lower(),
            "and says so, instead of behaving strangely", text[-200:])
     finally:
         c.close()
@@ -1967,9 +1975,9 @@ def test_usb_unplugged():
     # hand. Here the port the user chose is a name that VANISHES with the
     # wheel (like /dev/ttyACM1), and the wheel comes back on a new pty, found
     # through its by-id link (the bench's own folder, see Bench).
-    lost_text = ("USB link to the wheel was lost", "collegamento USB con la ruota")
-    back_text = ("is back on", "è tornata su")
-    down_text = ("not reachable right now", "non è raggiungibile")
+    lost_text = ("USB link to the wheel was lost",)
+    back_text = ("is back on",)
+    down_text = ("not reachable right now",)
 
     def count(texts):
         return sum(1 for m in c.messages if any(t in m for t in texts))
@@ -2026,7 +2034,7 @@ def test_usb_unplugged():
         ok(count(lost_text) == 1 and count(back_text) == 1,
            "ONE line for the loss and ONE for the return, not one per poll",
            f"lost {count(lost_text)}, back {count(back_text)}")
-        ok(not any("Write Error" in m or "not answering" in m or "non risponde" in m
+        ok(not any("Write Error" in m or "not answering" in m
                    for m in c.messages),
            "and no write errors in the log", str([m for m in c.messages if "rror" in m]))
 
@@ -2134,9 +2142,9 @@ def test_middle_band():
            "in the middle band FILTER_SLOT comes back Ok: the capture goes on",
            result)
         text = " ".join(c.messages[before:])
-        ok("prosegue" in text or "tolleranza" in text,
+        ok("Imaging continues" in text and "tolerance" in text,
            "but the warning is there and says so", text[-250:])
-        ok("NON raggiunta" not in text,
+        ok("NOT reached" not in text,
            "and it is not mistaken for a failure", text[-250:])
     finally:
         c.close()
@@ -2191,7 +2199,7 @@ def test_wrong_device():
            "a device that answers but is not a Wheelly is REFUSED",
            result)
         text = " ".join(c.messages[-4:])
-        ok("Wheelly" in text or "porta" in text.lower(),
+        ok("Wheelly" in text or "port" in text.lower(),
            "and the message sends you to check the port", text[-200:])
     finally:
         stop.set()
@@ -2218,13 +2226,13 @@ def test_unknown_protocol():
     # the next one, and the previous one: protocol 1 had the rotation trim,
     # and its target meant angle + trim
     for other in (protocol.PROTOCOL_VERSION + 1, protocol.PROTOCOL_VERSION - 1):
-        bench = Bench("--protocol-version", str(other), language="en_US.UTF-8")
+        bench = Bench("--protocol-version", str(other))
         c = Client(INDI_PORT)
         try:
             result = bench.connect(c)
             ok(result == "Alert", f"protocol {other} is refused", str(result))
             text = " ".join(c.messages[-6:])
-            # the English text of msg.wrong.protocol, with both numbers in it
+            # the protocol refusal, with both numbers in it
             ok(f"speaks protocol {other}" in text
                and f"this driver speaks {protocol.PROTOCOL_VERSION}" in text,
                "and the message states both versions", text[-250:])
@@ -2235,8 +2243,7 @@ def test_unknown_protocol():
 
 def test_too_many_positions():
     print("a wheel with more positions than the driver handles")
-    # The warning goes through the catalogue and states the whole range
-    # (not English written in the code, and not only the maximum).
+    # The warning states the whole range, not only the maximum.
     if not IS_PYTHON:
         print("  (simulator only: the real firmware already refuses the number)")
         return
@@ -2249,9 +2256,9 @@ def test_too_many_positions():
         bench.connect(c)
         c.pump(1.0)
         text = " ".join(c.messages)
-        ok(f"dichiara {too_many} posizioni" in text
-           and f"da {protocol.MIN_SLOTS} a {protocol.MAX_SLOTS}" in text,
-           "the warning is translated and states the whole range", text[-300:])
+        ok(f"reports {too_many} slots" in text
+           and f"from {protocol.MIN_SLOTS} to {protocol.MAX_SLOTS}" in text,
+           "the warning states the whole range", text[-300:])
     finally:
         c.close()
         bench.close()

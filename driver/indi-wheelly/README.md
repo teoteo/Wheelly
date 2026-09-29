@@ -35,11 +35,11 @@ place (`TRADEMARK.md`).
 
 Where cmake is missing, one g++ line does the same. This is what
 `doc/refresh_panel.sh` runs on AstroArch: `wheelly_config.h` is made from `wheelly_config.h.cmake` with the
-version and device name read from `CMakeLists.txt` and `WHEELLY_ITALIAN` set to 1, then
+version and device name read from `CMakeLists.txt`, then
 
 ```sh
 g++ -std=c++17 -O2 -Wall -Wextra -Ibuild -I. $(pkg-config --cflags libindi) \
-    wheelly.cpp translations.cpp translations_it.cpp plot.cpp -o build/indi_wheelly \
+    wheelly.cpp plot.cpp -o build/indi_wheelly \
     $(pkg-config --libs libindi) -lindidriver
 ```
 
@@ -95,21 +95,13 @@ plug moves. So `Handshake()` sends `version` and accepts the port only if the an
 - The **number of slots** comes from the wheel at connection (`slots=` in the `version`
   answer); the driver sizes `FILTER_SLOT`, the names, angles and trims to it.
 
-## Languages
+## Language
 
-Every user-facing text goes through a translation key; the English catalogue is
-`translations.cpp`, the Italian one `translations_it.cpp`, by the same keys (the check in
-`firmware/test/test_driver_standalone.py` fails if they part). The choice is in **Options → Language**:
-*From the system* (the default: Italian if `LC_ALL`, `LC_MESSAGES` or `LANG` starts with
-`it`, English otherwise), *English* or *Italian*. The labels are built once, when the driver
-starts, so a new choice takes effect when the driver is **started again** (in Ekos: stop
-INDI and start it again); the log says so. Tab names stay in English, as INDI's own
-*Connection* and *Options* do.
-
-The Italian catalogue is a CMake option, `-DWHEELLY_ITALIAN=ON` by default. With `OFF` -
-the way the driver is meant to be built inside INDI's tree, where drivers are English -
-`translations_it.cpp` is not compiled, the driver speaks English whatever the system
-language, and the Language switch is not shown at all.
+The driver speaks English, as every INDI driver: the labels and the log messages are
+written in the code where they are used. The guides are bilingual (below); the panel is
+not, because INDI takes into its tree only English drivers without translation code, and
+one driver, the same file here and there, is simpler to keep right than two. The reasons,
+and the bilingual driver it replaced, are in `firmware.md`, section 13.
 
 ## The bench test
 
@@ -124,7 +116,7 @@ are `build/indi_wheelly` and the simulator; the second argument can instead be t
 **firmware compiled for the PC** (`firmware/test/firmware_bench.cpp`), and running the test
 against both checks that the two halves of the project agree. It checks, among other
 things, which **tab** each property lands in (only visible in the XML: `indi_getprop` does
-not show groups), that labels are translated and follow the language, that a filter change
+not show groups), that the driver speaks English even under an Italian `LANG`, that a filter change
 succeeds, that an invalid filter name is refused with an explanation, and that a wheel
 that never arrives puts `FILTER_SLOT` in `Alert`, which is what stops an Ekos sequence.
 

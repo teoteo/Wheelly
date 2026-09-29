@@ -1,4 +1,9 @@
-# Wheelly Filter Wheel
+---
+title: Wheelly
+categories: ["filter-wheels"]
+description: Open-hardware motorisation for manual filter wheels, closed-loop on a magnetic encoder
+thumbnail: ./wheelly.webp
+---
 
 ## Device Overview
 
@@ -63,7 +68,7 @@ rule is needed, but the user running INDI must be allowed to open serial ports
    wheel on its own; the baud rate does not matter, since the ESP32-S3 uses its
    native USB port.
 
-![Main Control](en-1-main-control.png)
+![Main Control](./images/1-main-control.webp)
 
 *Main Control*: slot, filter names, where the wheel is (angle, residual error,
 retries) and the magnetic sensor.
@@ -77,7 +82,7 @@ The first time, open **Calibration and Diagnostics**:
 3. Press **Save to the wheel**. Until then every change lives in the wheel's
    working memory only, and switching the wheel off undoes it.
 
-![Calibration and Diagnostics](en-4-calibration-and-diagnostics.png)
+![Calibration and Diagnostics](./images/4-calibration-and-diagnostics.webp)
 
 ## Usage & Tips
 

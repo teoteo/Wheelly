@@ -1,0 +1,14 @@
+# Display Names (Human-Friendly - Required)
+driver_name: Wheelly
+manufacturer_name: Generic
+
+# Categories (Required - can be multiple)
+categories:
+  - filter-wheels
+
+# Additional Metadata (Optional)
+website: https://github.com/teoteo/Wheelly
+executable: indi_wheelly
+platforms: Linux
+author: Matteo Beretta
+version: @WHEELLY_VERSION@

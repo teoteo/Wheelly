@@ -2,8 +2,8 @@
 # SPDX-FileCopyrightText: 2026 Matteo Beretta
 # SPDX-License-Identifier: LGPL-2.1-or-later
 #
-# Capture the INDI panel the driver really declares, in English and Italian,
-# and bring it back into the repository as doc/panel_en.xml and panel_it.xml -
+# Capture the INDI panel the driver really declares and bring it back into
+# the repository as doc/panel_en.xml -
 # the source of the panel guide (docs/driver/).
 #
 # WHY ON ASTROARCH: the driver builds only there (libindi's headers are not on
@@ -41,11 +41,10 @@ NAME=$(sed -n 's/^set(WHEELLY_DEVICE_NAME "\([^"]*\)".*/\1/p' "$HERE/../CMakeLis
 ssh "$HOST" "cd $REMOTE/driver/indi-wheelly && mkdir -p build \
   && sed -e 's/@WHEELLY_VERSION_MAJOR@/$MAJOR/' -e 's/@WHEELLY_VERSION_MINOR@/$MINOR/' \
          -e 's/@WHEELLY_DEVICE_NAME@/$NAME/' \
-         -e 's/^#cmakedefine01 WHEELLY_ITALIAN$/#define WHEELLY_ITALIAN 1/' \
          wheelly_config.h.cmake > build/wheelly_config.h \
   && g++ -std=c++17 -O2 -Wall -Wextra -Ibuild -I. \$(pkg-config --cflags libindi) \
-         wheelly.cpp translations.cpp translations_it.cpp plot.cpp -o build/indi_wheelly \
+         wheelly.cpp plot.cpp -o build/indi_wheelly \
          \$(pkg-config --libs libindi) -lindidriver \
   && python3 doc/capture_panel.py $REMOTE/out"
-scp -q "$HOST:$REMOTE/out/panel_en.xml" "$HOST:$REMOTE/out/panel_it.xml" "$HERE/"
-echo "panel captured into $HERE/panel_en.xml and panel_it.xml"
+scp -q "$HOST:$REMOTE/out/panel_en.xml" "$HERE/"
+echo "panel captured into $HERE/panel_en.xml"

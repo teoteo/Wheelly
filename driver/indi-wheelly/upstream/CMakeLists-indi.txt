@@ -11,25 +11,18 @@
 # one executable linked to indidriver, installed to bin - and on the Shelyak
 # driver in drivers/spectrograph/, which keeps its sources in a subfolder and
 # names them from the category's CMakeLists.txt, without a CMakeLists.txt of
-# its own. A subfolder because the driver has seven files, two of them with
-# names (translations, plot) too generic for a folder shared by fifteen
-# drivers.
-#
-# WHEELLY_ITALIAN is 0: INDI's drivers are English only. The Italian catalogue
-# (translations_it.cpp) is then neither listed nor copied, and the driver has
-# no Language switch.
+# its own. A subfolder because the driver has six files, one of them with a
+# name (plot) too generic for a folder shared by fifteen drivers.
 
 # ############### Wheelly Filter Wheel ################
 set(WHEELLY_VERSION_MAJOR @WHEELLY_VERSION_MAJOR@)
 set(WHEELLY_VERSION_MINOR @WHEELLY_VERSION_MINOR@)
 set(WHEELLY_DEVICE_NAME "Wheelly")
-set(WHEELLY_ITALIAN OFF)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/wheelly/wheelly_config.h.cmake
                ${CMAKE_CURRENT_BINARY_DIR}/wheelly/wheelly_config.h)
 
 SET(wheelly_SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/wheelly/wheelly.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/wheelly/translations.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/wheelly/plot.cpp)
 
 add_executable(indi_wheelly ${wheelly_SRC})

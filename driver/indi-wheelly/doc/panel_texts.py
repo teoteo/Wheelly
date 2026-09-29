@@ -131,7 +131,7 @@ TEXTS = {
             "A slot without a filter: leave its field empty. The driver names it "
             "Empty_ followed by the slot number (Empty_5), which is unique and "
             "valid, so several slots can be empty at once; the name is the same "
-            "in every language, because it is stored in the wheel and written in "
+            "on every computer, because it is stored in the wheel and written in "
             "the FITS header. The field and Ekos's filter list then show that "
             "name, and the log says so.",
             "A refused name is not corrected silently: the property turns red "
@@ -548,8 +548,8 @@ TEXTS = {
             "The client receives it only if it accepts files from this property "
             "(in KStars, the check box next to the property, on by default).",
             "The file is not compressed (a few hundred kB).",
-            "The texts inside the plot follow the driver language, in capital "
-            "letters without accents.",
+            "The texts inside the plot are in capital letters without accents: "
+            "the plot's font has no others.",
         ],
     },
     "WHEELLY_SWEEP_DIR": {
@@ -681,15 +681,15 @@ TEXTS = {
             "What Wheelly adds to the standard INDI items (connection, port, baud "
             "rate, auto search, debug, polling period, filter slot, filter names, "
             "joystick): the firmware data including the serial number of this "
-            "profile's wheel, the tolerances, the sweeps folder, the movement log "
-            "switch and the language.",
+            "profile's wheel, the tolerances, the sweeps folder and the movement "
+            "log switch.",
             "Load re-applies the saved values as if typed: the tolerances are sent "
             "to the wheel (working memory only), and the saved filter slot is "
             "requested, so the wheel may move.",
             "Purge also forgets which wheel belongs to this profile; the next "
             "connection adopts whichever Wheelly it finds.",
             "Some items are saved on their own when they change: the sweeps "
-            "folder, the movement log switch, the language, the learned serial "
+            "folder, the movement log switch, the learned serial "
             "number, the port.",
         ],
     },
@@ -988,27 +988,6 @@ TEXTS = {
             "Alert if the wheel refused the command.",
         ],
     },
-    "WHEELLY_LANGUAGE": {
-        "what": (
-            "The language of the panel labels and of the driver's log messages: "
-            "English or Italian. 'From the system' follows the locale of the "
-            "computer running the driver (LC_ALL, LC_MESSAGES or LANG starting "
-            "with 'it' gives Italian; anything else gives English)."
-        ),
-        "elements": {
-            "AUTO": "Follow the system locale of the driver's computer (default).",
-            "EN": "English.",
-            "IT": "Italian.",
-        },
-        "notes": [
-            "Saved in the INDI configuration immediately.",
-            "The labels are built once, when the driver starts: the new language "
-            "shows after INDI is stopped and started again in Ekos - disconnecting "
-            "and reconnecting is not enough. The log says so.",
-            "Tab names and the standard INDI properties stay in English; the lines "
-            "of the Hardware check are firmware text and stay in English too.",
-        ],
-    },
 
     # --------------------------------------------------------------- Connection
     "DRIVER_INFO": {
@@ -1146,7 +1125,7 @@ TABS = {
         "The standard INDI options (debug, simulation, configuration file, "
         "polling period, joystick) and the settings of the machine: firmware "
         "information, motor current, speed and acceleration, holding current at "
-        "rest, direction of travel, LED and language. Motor, holding "
+        "rest, direction of travel and LED. Motor, holding "
         "current, direction and LED "
         "settings live in "
         "the wheel and are kept after power-off only with 'Save to the wheel', "
