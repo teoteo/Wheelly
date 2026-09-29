@@ -680,8 +680,9 @@ CATALOGUE = {
         "problema, e per sapere a quale ruota è legato questo profilo."),
     'WHEELLY_FIRMWARE/elements/FW': ('ea7b61d4',
         "Versione del firmware che gira sulla ruota."),
-    'WHEELLY_FIRMWARE/elements/PROTO': ('5302549c',
-        "Versione del protocollo del firmware. Questo driver accetta solo 1."),
+    'WHEELLY_FIRMWARE/elements/PROTO': ('27b1bb51',
+        "Versione del protocollo del firmware. Il driver accetta solo la versione per cui è "
+        "stato compilato; un'altra viene rifiutata alla connessione."),
     'WHEELLY_FIRMWARE/elements/SERIAL': ('f4523784',
         "Numero di serie della ruota, ricavato dal firmware dall'indirizzo MAC del chip, quindi "
         "diverso per ogni ruota."),

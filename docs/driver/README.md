@@ -413,7 +413,7 @@ What the wheel said about itself when the driver connected: firmware version, pr
 | Element | Label (Italian) | |
 |---|---|---|
 | Version | Versione | Firmware version running on the wheel. |
-| Protocol | Protocollo | Protocol version of the firmware. This driver accepts only 1. |
+| Protocol | Protocollo | Protocol version of the firmware. The driver accepts only the version it was built for; another one is refused at connection. |
 | Serial number | Numero di serie | Serial number of the wheel, derived by the firmware from the chip's MAC address, so it differs for every wheel. |
 
 - Read-only.

@@ -702,7 +702,7 @@ bool Wheelly::command(const std::string &text, Fields *fields,
     if (m_reader.channel_down() && link_is_gone(m_reader.down_errno()))
     {
         link_lost(m_reader.down_errno() ? strerror(m_reader.down_errno())
-                                        : tr("msg.link.hangup"));
+                  : tr("msg.link.hangup"));
         return false;
     }
     LOG_ERROR(tr("msg.no.answer"));
@@ -767,7 +767,7 @@ bool Wheelly::Handshake()
     {
         if (!m_reconnecting)
             LOGF_ERROR("%s", trf("msg.wrong.protocol",
-            {c[F_PROTO], std::to_string(PROTOCOL_VERSION)}).c_str());
+        {c[F_PROTO], std::to_string(PROTOCOL_VERSION)}).c_str());
         return false;
     }
 

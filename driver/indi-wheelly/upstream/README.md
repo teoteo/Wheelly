@@ -4,8 +4,18 @@
 # Proposing the driver to INDI
 
 What is ready, and what is left, for proposing `indi_wheelly` for inclusion in INDI
-itself. Nothing here has been sent anywhere: no fork, no pull request, no forum post.
-Everything below was checked against **indilib/indi master `224173c`**.
+itself. Everything below was checked against **indilib/indi master `4661ccd`**.
+
+**The copy in INDI is produced, never edited there**:
+
+```sh
+python3 driver/indi-wheelly/upstream/to_indi.py PATH/TO/indi
+```
+
+puts the driver's files, the CMake block, the `drivers.xml` entry (with the version
+read from this folder's `CMakeLists.txt`) and the documentation into a checkout of
+indilib/indi. Run again on the same tree it replaces what it put there, so the same
+command serves every later pull request.
 
 ## Which repository
 
@@ -18,7 +28,8 @@ says to ask on the [INDI forum](https://indilib.org/forum.html) first.
 
 ## What is copied, and where
 
-Into `drivers/filter_wheel/wheelly/` of INDI's tree:
+Into `drivers/filter_wheel/wheelly/` of INDI's tree (the list is `DRIVER_FILES` in
+`to_indi.py`):
 
 | file | |
 |---|---|
@@ -45,7 +56,7 @@ of the protocol header differ).
 
 ## CMake and drivers.xml
 
-- [`CMakeLists-indi.txt`](CMakeLists-indi.txt): the lines to append to
+- [`CMakeLists-indi.txt`](CMakeLists-indi.txt): the block `to_indi.py` appends to
   `drivers/filter_wheel/CMakeLists.txt`. Modelled on the filter wheels already there
   (`xagyl_wheel`, `rasa_filtercube`: one executable, linked to `indidriver`, installed to
   `bin`) and on Shelyak for the subfolder. It sets `WHEELLY_ITALIAN` OFF.
@@ -53,12 +64,16 @@ of the protocol header differ).
   *Filter Wheels* group of INDI's `drivers.xml`, `manufacturer="DIY"` as INDI files
   MyFocuserPro2, ESP32go and the other self-built devices.
 
-**Tried** on a Raspberry Pi (Arch Linux ARM, gcc): INDI master
-cloned in `/tmp`, the seven files and the CMake lines added, `make indi_wheelly` - which
-builds `libindidriver` from the same tree first (2 min 12 s with `-j3`). INDI compiles
-its drivers with `-Wall -Wextra -Werror`: the driver built with **no warning**, linked to
-the tree's own `libindidriver.so.2`, and under `indiserver`, against the simulator, it
-connected, showed English labels under `LANG=it_IT.UTF-8` and no Language switch. One quirk
+**Tried** on a Raspberry Pi (Arch Linux ARM, gcc) against master `4661ccd`: INDI
+cloned in `/tmp`, `to_indi.py` run on it, `make indi_wheelly` - which builds
+`libindidriver` from the same tree first (82 s with `-j3`). INDI compiles its drivers
+with `-Wall -Wextra -Werror` (checked in the target's `flags.make`): the driver built
+with **no warning**, linked to the tree's own `libindidriver`, and under `indiserver`,
+with `LANG=it_IT.UTF-8`, it connected to the **real wheel**, read firmware, protocol,
+filter names, position and sensor, showed no Language switch, and disconnected cleanly.
+`to_indi.py` was also run twice on the same tree (the second run leaves it identical)
+and on a tree where another driver's block follows ours (ours is replaced, the other
+kept). One quirk
 of INDI's, not ours: on a glibc as recent as Arch's, INDI's `configure` stops at
 "Could NOT find Iconv", because its `-Werror` meets glibc's `_FORTIFY_SOURCE requires
 compiling with optimization` warning inside CMake's own test programs. Passing
@@ -77,8 +92,11 @@ astyle --style=allman --align-reference=name --indent-switches --indent-modifier
 ```
 
 The driver's sources and both copies of the protocol header are in that style
-(astyle 3.6.18, `brew install astyle`). Run it again on any C++ file of the
-driver after editing it.
+(astyle 3.6.18, `brew install astyle`), and `firmware/test/test_driver_standalone.py`
+fails when a whole file is not: INDI's script only looks at the lines a pull request
+changes, so a file can drift here unnoticed. Do not trust INDI's script on the Mac:
+its regex `(.*?)` is not accepted by macOS's bash 3.2, and it then passes every file
+without looking at it.
 
 ## Language
 
@@ -105,12 +123,18 @@ and the one in this repository are the same files under the same licence.
 - LGPL still allows commercial use; what it adds is that changes to the driver
   itself must be shared under the same licence.
 
-## Still to do before proposing
+## Documentation
 
-- **`drivers/filter_wheel/doc/wheelly/index.md`**: CONTRIBUTING requires it (overview,
-  features, installation, configuration, usage and tips, screenshots). The material is
-  in the panel guide, `docs/driver/`; it has to be written in INDI's shape, in English.
-- Ask on the INDI forum whether Core or 3rd-party, then fork and open the pull request.
+CONTRIBUTING requires a page in INDI's shape (overview, features, installation,
+configuration, usage and tips, screenshots): it is [`doc/index.md`](doc/index.md),
+which `to_indi.py` puts in `drivers/filter_wheel/doc/wheelly/` with the pictures it
+links. The pictures are not kept twice: they are taken from the panel guide's renders
+in `docs/driver/img/`. The page is short on purpose and links the full panel guide.
+
+## Still to do
+
+- Pull request opened: indilib/indi#2499. Whether Core or 3rd-party is asked in its
+  description rather than on the forum first, since CONTRIBUTING's rule is plain.
 - After the move, the protocol header in INDI's tree is a third copy the check here
   cannot see: a protocol change means a pull request to INDI too, and INDI's driver
   refuses a firmware with another `PROTOCOL_VERSION`, which is what keeps it safe

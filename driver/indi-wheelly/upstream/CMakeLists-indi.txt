@@ -1,11 +1,11 @@
 # SPDX-FileCopyrightText: 2026 Matteo Beretta
 # SPDX-License-Identifier: LGPL-2.1-or-later
 #
-# The lines to APPEND to indilib/indi's drivers/filter_wheel/CMakeLists.txt,
-# with this folder's driver sources copied to drivers/filter_wheel/wheelly/
-# (see upstream/README.md for which files). Not used by this repository's
-# build: it is here so that what is proposed to INDI is written, and tried
-# (upstream/README.md says how and when), not improvised on the day.
+# The lines to_indi.py appends to indilib/indi's drivers/filter_wheel/
+# CMakeLists.txt - everything from the banner below to the end of this file.
+# The @...@ fields are filled by to_indi.py from this folder's CMakeLists.txt,
+# so the version proposed to INDI cannot fall behind the driver's own. Not
+# used by this repository's build.
 #
 # Modelled on the filter wheels already there - xagyl_wheel, rasa_filtercube:
 # one executable linked to indidriver, installed to bin - and on the Shelyak
@@ -20,8 +20,8 @@
 # no Language switch.
 
 # ############### Wheelly Filter Wheel ################
-set(WHEELLY_VERSION_MAJOR 0)
-set(WHEELLY_VERSION_MINOR 1)
+set(WHEELLY_VERSION_MAJOR @WHEELLY_VERSION_MAJOR@)
+set(WHEELLY_VERSION_MINOR @WHEELLY_VERSION_MINOR@)
 set(WHEELLY_DEVICE_NAME "Wheelly")
 set(WHEELLY_ITALIAN OFF)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/wheelly/wheelly_config.h.cmake

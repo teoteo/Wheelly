@@ -781,7 +781,10 @@ TEXTS = {
         ),
         "elements": {
             "FW": "Firmware version running on the wheel.",
-            "PROTO": "Protocol version of the firmware. This driver accepts only 1.",
+            "PROTO": (
+                "Protocol version of the firmware. The driver accepts only the "
+                "version it was built for; another one is refused at connection."
+            ),
             "SERIAL": (
                 "Serial number of the wheel, derived by the firmware from the "
                 "chip's MAC address, so it differs for every wheel."

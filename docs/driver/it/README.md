@@ -413,7 +413,7 @@ Quello che la ruota ha detto di sé quando il driver si è collegato: versione d
 | Elemento | Etichetta (inglese) | |
 |---|---|---|
 | Versione | Version | Versione del firmware che gira sulla ruota. |
-| Protocollo | Protocol | Versione del protocollo del firmware. Questo driver accetta solo 1. |
+| Protocollo | Protocol | Versione del protocollo del firmware. Il driver accetta solo la versione per cui è stato compilato; un'altra viene rifiutata alla connessione. |
 | Numero di serie | Serial number | Numero di serie della ruota, ricavato dal firmware dall'indirizzo MAC del chip, quindi diverso per ogni ruota. |
 
 - Sola lettura.

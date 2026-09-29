@@ -32,13 +32,22 @@ Checks:
     columns; the Italian is a file of its own so that INDI's English-only build can leave it out (CMake WHEELLY_ITALIAN); what the
     table's shape guaranteed - every key translated, no translation of a key
     that no longer exists - is now checked here. The keys are read from the
-    two arrays' text, which is plain enough: one `{"key",` per entry.
+    two arrays' text, which is plain enough: one `{"key",` per entry;
+  - every C++ file of the driver is already in INDI's style: astyle with the
+    options of INDI's README leaves it unchanged. INDI's own check
+    (scripts/check-codestyle.sh) only looks at the lines a pull request
+    changes, and on macOS's bash 3.2 its regex fails and it passes everything
+    without looking; checking the whole file here, on every run, is what
+    keeps the copy proposed to INDI clean. Skipped, and said so, when astyle
+    is not installed (brew install astyle).
 
     python3 test_driver_standalone.py
 """
 
 import pathlib
 import re
+import shutil
+import subprocess
 import sys
 
 HERE = pathlib.Path(__file__).resolve().parent
@@ -46,6 +55,13 @@ ROOT = HERE.parent.parent
 SOURCE = ROOT / "firmware" / "wheelly" / "wheelly_protocol.h"
 DRIVER = ROOT / "driver" / "indi-wheelly"
 COPY = DRIVER / "wheelly_protocol.h"
+
+# INDI's README, "Code Style", and its scripts/check-codestyle.sh
+ASTYLE_OPTIONS = [
+    "--style=allman", "--align-reference=name", "--indent-switches",
+    "--indent-modifiers", "--indent-classes", "--pad-oper",
+    "--indent-col1-comments", "--lineend=linux", "--max-code-length=124",
+]
 
 failed = []
 
@@ -116,6 +132,20 @@ def main():
        sorted(set(en) - set(it)))
     ok(not set(it) - set(en), "no Italian text for a key English does not have",
        sorted(set(it) - set(en)))
+
+    astyle = shutil.which("astyle")
+    if astyle is None:
+        print("  skipped: INDI code style (astyle not installed)")
+    else:
+        unstyled = []
+        for path in sorted(DRIVER.glob("*.cpp")) + sorted(DRIVER.glob("*.h")):
+            text = path.read_bytes()
+            styled = subprocess.run([astyle, *ASTYLE_OPTIONS], input=text,
+                                    capture_output=True, check=True).stdout
+            if styled != text:
+                unstyled.append(path.name)
+        ok(not unstyled, "every driver source is in INDI's code style (astyle)",
+           ", ".join(unstyled) + " - run astyle with INDI's options on it")
 
     print()
     if failed:
