@@ -202,7 +202,12 @@ Monthly or once, on GitHub Sponsors — the *Sponsor* button at the top of this
 page goes to the same place.
 
 It pays for Claude tokens, for filament, for the parts that get printed three
-times before they fit, and for the hours. Nothing in the project is held back
+times before they fit, and for the hours.
+
+<a href="docs/img/wheelly-rejects.jpg"><img src="docs/img/wheelly-rejects.jpg" width="320" alt="A cutting mat covered in discarded printed parts: rings, arms, motor mounts and brackets in yellow, grey and black"></a><br>
+<sub>The parts that did not make it (click to enlarge).</sub>
+
+Nothing in the project is held back
 for sponsors:
 there is no paid version, no private repository and no feature behind a
 paywall.
