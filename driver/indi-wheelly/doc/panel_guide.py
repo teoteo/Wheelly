@@ -142,6 +142,9 @@ def problems():
     # every other language follows the English (panel_language)
     for l in panel_language.LANGUAGES[1:]:
         out += panel_language.problems(l)
+    # the published sweep viewer is the source's copy (the driver's log links it)
+    if not os.path.exists(VIEWER_OUT) or open(VIEWER_OUT, "rb").read() != open(VIEWER, "rb").read():
+        out.append("docs/tools/sweep.html is not a copy of doc/sweep_viewer.html: run panel_guide.py")
     # and every picture the pages show is there (both pages show the same)
     missing = [f for f in [picture(n) for n in order]
                + [tab_picture(i, g) for i, g in enumerate(tabs, 1)]
@@ -149,6 +152,22 @@ def problems():
     if missing:
         out.append("%d pictures missing, the first %s: draw them again (panel_guide.py)"
                    % (len(missing), missing[0]))
+    # and none is left over: a property taken out of the driver leaves its
+    # drawing behind, and a published folder of pictures nobody shows is litter
+    used = {picture(n) for n in order} | {tab_picture(i, g) for i, g in enumerate(tabs, 1)}
+    for n, t in T.TEXTS.items():
+        if t.get("figure"):
+            for l in panel_language.LANGUAGES:
+                used.add(figure_picture(n, l))
+                if not os.path.exists(os.path.join(OUT_DIR, figure_picture(n, l))):
+                    out.append("%s: its figure is missing (%s): run panel_guide.py" % (n, figure_picture(n, l)))
+            for f in t["figure"]["sweeps"]:
+                if not os.path.exists(os.path.join(HERE, f)):
+                    out.append("%s: the figure's sweep %s is missing" % (n, f))
+    if os.path.isdir(IMG):
+        stale = sorted("img/" + f for f in os.listdir(IMG) if f.endswith(".png") and "img/" + f not in used)
+        if stale:
+            out.append("%d pictures no page shows, the first %s: delete them" % (len(stale), stale[0]))
     return out
 
 
@@ -165,6 +184,39 @@ def draw():
                        capture_output=True, text=True)
     if r.returncode != 0:
         raise SystemExit("draw_panel.py failed:\n" + r.stderr[-800:])
+
+
+def figure_picture(n, language):
+    return "img/%s-%s-figure.png" % (language, n.lower().replace("_", "-"))
+
+
+# The figures come from the sweep viewer itself, fed with sweeps kept in doc/
+# (measured on the reference wheel), in headless Chrome: the picture in the
+# guide is what the page draws, and it is drawn again when the page changes.
+CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+
+
+def draw_figures():
+    import base64
+    T = texts()
+    if not os.path.exists(CHROME):
+        print("  figures NOT redrawn: Google Chrome is missing; the ones in docs/driver/img stay")
+        return
+    for n, t in T.TEXTS.items():
+        if not t.get("figure"):
+            continue
+        parts = []
+        for f in t["figure"]["sweeps"]:
+            with open(os.path.join(HERE, f), "rb") as fh:
+                parts.append("name=%s&csv=%s" % (os.path.basename(f), base64.b64encode(fh.read()).decode()))
+        for language in panel_language.LANGUAGES:
+            url = "file://%s#lang=%s&view=figure&%s" % (VIEWER, language, "&".join(parts))
+            out = os.path.join(OUT_DIR, figure_picture(n, language))
+            r = subprocess.run([CHROME, "--headless=new", "--disable-gpu", "--hide-scrollbars",
+                                "--window-size=920,615", "--screenshot=" + out, url],
+                               capture_output=True, text=True)
+            if r.returncode != 0 or not os.path.exists(out):
+                raise SystemExit("the figure of %s could not be drawn: %s" % (n, r.stderr[-400:]))
 
 
 def picture(n):
@@ -315,6 +367,15 @@ def write(language="en"):
                 body_html.append("<table><tr>" + "".join("<th>%s</th>" % html.escape(h) for h in tab["header"])
                                   + "</tr>" + "".join("<tr>" + "".join("<td>%s</td>" % html.escape(c) for c in r)
                                                       + "</tr>" for r in tab["rows"]) + "</table>")
+            # a figure, where an entry has one: a picture that is not the
+            # panel (the sweep viewer's before and after), drawn per language
+            if t.get("figure"):
+                f = figure_picture(n, language)
+                md += ["![%s](%s%s)" % (t["figure"]["caption"], up, f), "",
+                       "*%s*" % t["figure"]["caption"], ""]
+                body_html.append("<figure><img src=\"%s%s\" alt=\"%s\"><figcaption>%s</figcaption></figure>"
+                                  % (up, f, html.escape(t["figure"]["caption"]),
+                                     html.escape(t["figure"]["caption"])))
             if t.get("notes"):
                 md += ["- " + x for x in t["notes"]] + [""]
                 body_html.append("<ul>" + "".join("<li>%s</li>" % html.escape(x) for x in t["notes"]) + "</ul>")
@@ -392,7 +453,22 @@ def write(language="en"):
     print("docs/driver (%s): %d properties in %d tabs" % (language, len(order), len(tabs)))
 
 
+# The sweep viewer: one self-contained page (sweep_viewer.html, next to this
+# file) published at docs/tools/sweep.html, where the driver's log and the
+# guide point. Copied, not written by hand in docs/, like everything there.
+VIEWER = os.path.join(HERE, "sweep_viewer.html")
+VIEWER_OUT = os.path.join(ROOT, "docs", "tools", "sweep.html")
+
+
+def publish_viewer():
+    os.makedirs(os.path.dirname(VIEWER_OUT), exist_ok=True)
+    with open(VIEWER, "rb") as src, open(VIEWER_OUT, "wb") as dst:
+        dst.write(src.read())
+
+
 if __name__ == "__main__":
     draw()
+    draw_figures()
     for l in panel_language.LANGUAGES:
         write(l)
+    publish_viewer()

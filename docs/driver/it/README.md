@@ -510,7 +510,7 @@ Cosa fa il LED sulla ruota. Il LED sta dentro il cammino della luce, quindi di b
 
 ## Calibration and Diagnostics
 
-Tarare e controllare la ruota, cose da fare a coperchio aperto o durante la messa a punto, non nel mezzo di una sequenza: gli angoli di taratura, i passi, il pulsante per salvare, le tolleranze, il controllo dell'hardware, la spazzolata del magnete col suo grafico, e il registro dei movimenti. Le modifiche alla taratura stanno nella memoria di lavoro della ruota finché non premi «Save to the wheel». Le spiegazioni di quello che è successo vanno nel riquadro del log in fondo, non in campi aggiunti.
+Tarare e controllare la ruota, cose da fare a coperchio aperto o durante la messa a punto, non nel mezzo di una sequenza: gli angoli di taratura, i passi, il pulsante per salvare, le tolleranze, il controllo dell'hardware, la spazzolata del magnete, e il registro dei movimenti. Le modifiche alla taratura stanno nella memoria di lavoro della ruota finché non premi «Save to the wheel». Le spiegazioni di quello che è successo vanno nel riquadro del log in fondo, non in campi aggiunti.
 
 ![Calibration and Diagnostics](../img/en-4-calibration-and-diagnostics.png)
 
@@ -528,7 +528,6 @@ Tarare e controllare la ruota, cose da fare a coperchio aperto o durante la mess
 | [Tolerances](#tolerances) | 🟦 **Wheelly** |
 | [Hardware check](#hardware-check) | 🟦 **Wheelly** |
 | [Magnet sweep](#magnet-sweep) | 🟦 **Wheelly** |
-| [Last sweep](#last-sweep) | 🟦 **Wheelly** |
 | [Sweeps folder](#sweeps-folder) | 🟦 **Wheelly** |
 | [Movement log](#movement-log) | 🟦 **Wheelly** |
 | [Files on disk](#files-on-disk) | 🟦 **Wheelly** |
@@ -569,7 +568,7 @@ Gli angoli di taratura, una riga per posizione, ognuna col suo Set: questa è qu
 - Se la ruota viene girata a mano la sua riga non la segue (segue solo i passi): per insegnare il punto in cui l'ha lasciata la mano, scrivi nella riga l'angolo mostrato in WHEELLY_POSITION e premi Set.
 - La freccia resta sulla posizione mentre la ruota viene spostata a passi fuori da lì per centrarla. INDI non sa colorare un campo, e un'etichetta arriva al client solo quando la proprietà viene definita, quindi il driver definisce di nuovo le righe - e con loro le proprietà che le seguono in questa scheda, che altrimenti finirebbero sopra - solo alla fine di un passo, a un cambio di posizione e a una taratura, mai mentre la ruota viene soltanto osservata.
 - Una ruota mai tarata ha le posizioni equidistanti (0, 72, 144, 216 e 288 gradi su una ruota a cinque posizioni): si può usare, ma non è una taratura.
-- Una proprietà per posizione, non un solo WHEELLY_ANGLES con un unico Set per tutti e un pulsante a parte, «Save position» (WHEELLY_TEACH): il Set sulla riga con l'asterisco fa quello che farebbe quel pulsante. Una ruota salvata da un firmware precedente con un «Rotation trim» per posizione trova i ritocchi sommati ai suoi angoli, una volta, alla prima accensione col firmware attuale. Questi angoli sono segnati anche sul grafico della spazzolata del magnete.
+- Una proprietà per posizione, non un solo WHEELLY_ANGLES con un unico Set per tutti e un pulsante a parte, «Save position» (WHEELLY_TEACH): il Set sulla riga con l'asterisco fa quello che farebbe quel pulsante. Una ruota salvata da un firmware precedente con un «Rotation trim» per posizione trova i ritocchi sommati ai suoi angoli, una volta, alla prima accensione col firmware attuale. Il visualizzatore delle spazzolate segna questi angoli sulla spazzolata del magnete.
 
 ### 2
 
@@ -718,36 +717,25 @@ Fa alla ruota una domanda sola: sta parlando davvero col suo sensore e col suo d
 
 ![Magnet sweep](../img/en-wheelly-sweep.png)
 
-La spazzolata del magnete: la ruota fa un giro completo, una posizione alla volta, sempre nello stesso verso, e il driver registra la magnitude del sensore e l'angolo a ogni interrogazione. Alla fine disegna un grafico della magnitude in funzione dell'angolo. Più piccola è la variazione sul giro, meglio è centrato il magnete: usala prima e dopo aver regolato il traferro del sensore o il magnete.
+La spazzolata del magnete: la ruota fa un giro completo, una posizione alla volta, sempre nello stesso verso, e il driver registra a ogni interrogazione la magnitudine del sensore e l'angolo. Alla fine li scrive in un file CSV nella cartella delle spazzolate. Più la variazione lungo il giro è piccola, più il magnete è centrato: usala prima e dopo aver regolato il traferro del sensore o il magnete.
 
 | Elemento | |
 |---|---|
 | Turn all the way round | Avvia la spazzolata. La ruota si muove. |
 
+![La ruota di riferimento prima (19:05) e dopo (19:08) aver centrato il sensore, nel visualizzatore delle spazzolate: l'escursione lungo il giro è scesa da 81 a 28 conteggi, e il punto più debole è salito da 369 a 427, ben lontano dalla linea dei 350.](../img/it-wheelly-sweep-figure.png)
+
+*La ruota di riferimento prima (19:05) e dopo (19:08) aver centrato il sensore, nel visualizzatore delle spazzolate: l'escursione lungo il giro è scesa da 81 a 28 conteggi, e il punto più debole è salito da 369 a 427, ben lontano dalla linea dei 350.*
+
 - La ruota si muove davvero: falla a coperchio aperto, mai durante una sequenza (log: «Turning all the way round and measuring the magnet at every step ...»). FILTER_SLOT va in Busy a ogni passo.
 - Un salto per posizione (5 su una ruota di fabbrica): la ruota finisce sulla posizione da cui era partita.
 - Durante la spazzolata il driver interroga ogni 100 ms invece che ogni POLLING_PERIOD, per avere abbastanza campioni.
 - Rifiutata, con Alert, mentre è in corso un cambio filtro o un'altra spazzolata.
-- Alla fine: Ok, il grafico viene mandato in «Last sweep» (WHEELLY_SWEEP_PLOT), una copia viene scritta nella cartella delle spazzolate, e il log dà il numero di campioni, il minimo e il massimo della magnitude e l'escursione in conteggi e in percentuale, poi il percorso del file.
-- Se un salto fallisce o va oltre il tempo, o si sono presi meno di 4 campioni, il grafico non viene fatto e la proprietà va in Alert (log: «The sweep stopped before finishing the turn ...»).
-- Ogni salto è un movimento normale, quindi viene scritto anche nel registro dei movimenti quando è acceso.
-
-### Last sweep
-
-🟦 **Wheelly** · `WHEELLY_SWEEP_PLOT` · sola lettura
-
-![Last sweep](../img/en-wheelly-sweep-plot.png)
-
-Il grafico dell'ultima spazzolata, mandato al client come file PNG. Nel pannello una proprietà di tipo file non mostra immagini: KStars salva il file dove tiene i file ricevuti, e il driver non sa quale sia quel posto. Per questo il driver scrive anche una copia sua e ne mostra il percorso in «Files on disk» (WHEELLY_FILES).
-
-| Elemento | |
-|---|---|
-| Plot | Il PNG dell'ultima spazzolata: magnitude (conteggi) in funzione dell'angolo (gradi), con una griglia ogni 45 gradi, gli angoli di taratura delle posizioni segnati, e il numero di campioni, il minimo, il massimo e l'escursione scritti sopra. |
-
-- Sola lettura. Dichiarato apposta col formato '.wheelly.png': con un semplice '.png' KStars apre una finestra di visualizzazione che, chiudendola, chiude anche il pannello INDI; con questa estensione salva soltanto il file. Il nome finisce comunque in .png.
-- Il client lo riceve solo se accetta file da questa proprietà (in KStars, la casella accanto alla proprietà, spuntata di base).
-- Il file non è compresso (qualche centinaio di kB).
-- I testi dentro il grafico sono in maiuscolo senza accenti: il carattere del grafico non ne ha altri.
+- Alla fine: Ok, i campioni vengono scritti nella cartella delle spazzolate, e il log dà il numero di campioni, il minimo e il massimo della magnitudine e l'escursione in conteggi e in percentuale, poi il percorso del file.
+- Per vedere la spazzolata come curva, apri il file con il visualizzatore delle spazzolate, https://teoteo.github.io/Wheelly/tools/sweep.html: una pagina sola, da usare online oppure salvata e aperta dal disco, senza rete. Disegna la magnitudine al variare dell'angolo con gli angoli di taratura segnati, e più spazzolate sovrapposte, per confrontare un prima e un dopo. Il file resta sul tuo computer. È anche un normale CSV, che si apre con qualunque foglio di calcolo.
+- Il driver non disegna niente: un driver INDI misura e comunica, e l'immagine è compito del visualizzatore.
+- Se un salto fallisce o va oltre il tempo, o se i campioni sono meno di 4, non viene scritto niente e la proprietà va in Alert (log: «The sweep stopped before finishing the turn ...»).
+- Ogni salto è un movimento normale, quindi finisce anche nel registro dei movimenti quando è acceso.
 
 ### Sweeps folder
 
@@ -755,16 +743,17 @@ Il grafico dell'ultima spazzolata, mandato al client come file PNG. Nel pannello
 
 ![Sweeps folder](../img/en-wheelly-sweep-dir.png)
 
-La cartella in cui il driver scrive una copia di ogni grafico della spazzolata. Di base è la cartella Documents nella home del computer su cui gira il driver (su un Raspberry, quella del Raspberry, non del tuo portatile). Indirizzala altrove, per esempio su un disco esterno, se tieni lì i tuoi dati.
+La cartella in cui il driver scrive ogni spazzolata. Se non la cambi è la cartella Documents nella home del computer su cui gira il driver (su un Raspberry, quella del Raspberry, non del tuo portatile). Puntala altrove, per esempio su un disco esterno, se tieni lì i tuoi dati.
 
 | Elemento | |
 |---|---|
 | Folder | Percorso della cartella. Un '~/' iniziale diventa la cartella home. |
 
-- Ogni spazzolata ha il suo file, chiamato YYYY-MM-DD_HH-MM-SS_wheelly_sweep.png in ora locale, così si possono confrontare una spazzolata prima e una dopo una regolazione; non si sovrascrive niente.
-- Quando la cambi il driver crea la cartella (un livello solo) e controlla di poterci scrivere. Se non può, la proprietà diventa rossa e il log dice «The folder ... cannot be used right now: ... The sweeps will not be saved until it can.» Il valore viene tenuto comunque (un disco può semplicemente non essere ancora montato).
+- Ogni spazzolata ha il suo file, con nome AAAA-MM-GG_HH-MM-SS_wheelly_sweep.csv in ora locale, così si possono confrontare una spazzolata prima e una dopo una regolazione; niente viene sovrascritto.
+- Il file: righe d'intestazione che cominciano con «#» - il numero di posizioni e i loro angoli di taratura - poi «angle_deg,magnitude» e una riga per campione.
+- Quando la cambi, il driver crea la cartella (un livello solo) e controlla di poterci scrivere. Se non può, la proprietà diventa rossa e il log dice «The folder ... cannot be used right now: ... The sweeps will not be saved until it can.» Il valore viene tenuto comunque (un disco può semplicemente non essere ancora montato).
 - Salvata subito nella configurazione INDI.
-- Una cartella vuota vuol dire quella di base.
+- Una cartella vuota vuol dire quella predefinita.
 
 ### Movement log
 
@@ -790,13 +779,13 @@ Accende o spegne il registro dei movimenti: un file CSV con una riga per ogni ca
 
 ![Files on disk](../img/en-wheelly-files.png)
 
-Dove sono i due file che il driver scrive, così i percorsi non si perdono nel log: il registro dei movimenti e il grafico dell'ultima spazzolata. Entrambi i percorsi sono sul computer su cui gira il driver.
+Dove stanno i due file che il driver scrive, perché i percorsi non si perdano nel log: il registro dei movimenti e l'ultima spazzolata. Tutti e due i percorsi sono sul computer su cui gira il driver.
 
 | Elemento | |
 |---|---|
 | Movement log | Percorso del CSV del registro dei movimenti. Mostrato anche quando il registro è spento. |
-| Last sweep | Percorso dell'ultimo grafico della spazzolata scritto dal driver, oppure «not written yet». |
+| Last sweep | Percorso dell'ultimo CSV di spazzolata scritto dal driver, oppure «not written yet». |
 
 - Sola lettura.
-- «Last sweep» mostra «not written yet» dopo ogni avvio del driver, finché non si fa una spazzolata; i grafici più vecchi restano nella cartella delle spazzolate.
-- Alert quando non è stato possibile scrivere l'ultimo grafico; il motivo è nel log («Cannot write the plot to ...»).
+- «Last sweep» mostra «not written yet» a ogni avvio del driver, finché non si fa una spazzolata; quelle più vecchie restano nella cartella delle spazzolate.
+- Alert quando l'ultima spazzolata non si è potuta scrivere; il motivo è nel log («Cannot write the sweep to ...»).

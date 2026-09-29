@@ -55,6 +55,8 @@ def entries(T=None):
                     yield "%s/table/%d/%d" % (n, i, j), c
         for k, x in enumerate(t.get("notes", []), 1):
             yield "%s/notes/%d" % (n, k), x
+        if t.get("figure"):
+            yield "%s/figure/caption" % n, t["figure"]["caption"]
     for g, x in T.TABS.items():
         yield "tabs/%s" % g, x
 
@@ -118,6 +120,8 @@ def translated(language):
             x["table"]["rows"] = [[t("%s/table/%d/%d" % (n, i, j), c) for j, c in enumerate(r, 1)]
                                   for i, r in enumerate(x["table"]["rows"], 1)]
         x["notes"] = [t("%s/notes/%d" % (n, k), v) for k, v in enumerate(x.get("notes", []), 1)]
+        if x.get("figure"):
+            x["figure"]["caption"] = t("%s/figure/caption" % n, x["figure"]["caption"])
     tabs = {g: t("tabs/%s" % g, x) for g, x in T.TABS.items()}
     return texts, tabs
 

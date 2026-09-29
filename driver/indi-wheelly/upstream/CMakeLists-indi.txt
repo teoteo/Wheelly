@@ -11,8 +11,9 @@
 # one executable linked to indidriver, installed to bin - and on the Shelyak
 # driver in drivers/spectrograph/, which keeps its sources in a subfolder and
 # names them from the category's CMakeLists.txt, without a CMakeLists.txt of
-# its own. A subfolder because the driver has six files, one of them with a
-# name (plot) too generic for a folder shared by fifteen drivers.
+# its own. A subfolder because the driver brings its own protocol header and
+# a configured header template, which belong together and would be the only
+# ones of their kind loose in a folder shared by fifteen drivers.
 
 # ############### Wheelly Filter Wheel ################
 set(WHEELLY_VERSION_MAJOR @WHEELLY_VERSION_MAJOR@)
@@ -22,8 +23,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/wheelly/wheelly_config.h.cmake
                ${CMAKE_CURRENT_BINARY_DIR}/wheelly/wheelly_config.h)
 
 SET(wheelly_SRC
-    ${CMAKE_CURRENT_SOURCE_DIR}/wheelly/wheelly.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/wheelly/plot.cpp)
+    ${CMAKE_CURRENT_SOURCE_DIR}/wheelly/wheelly.cpp)
 
 add_executable(indi_wheelly ${wheelly_SRC})
 target_include_directories(indi_wheelly PRIVATE

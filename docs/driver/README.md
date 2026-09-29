@@ -510,7 +510,7 @@ What the LED on the wheel does. The LED sits inside the light path, so the defau
 
 ## Calibration and Diagnostics
 
-Teaching and checking the wheel, done with the cover open or while setting up, not in the middle of a sequence: the taught angles, the jog steps, the save button, the tolerances, the hardware check, the magnet sweep with its plot, and the movement log. Changes to the calibration live in the wheel's working memory until you press 'Save to the wheel'. The explanations of what happened go to the log panel at the bottom, not into extra fields.
+Teaching and checking the wheel, done with the cover open or while setting up, not in the middle of a sequence: the taught angles, the jog steps, the save button, the tolerances, the hardware check, the magnet sweep, and the movement log. Changes to the calibration live in the wheel's working memory until you press 'Save to the wheel'. The explanations of what happened go to the log panel at the bottom, not into extra fields.
 
 ![Calibration and Diagnostics](img/en-4-calibration-and-diagnostics.png)
 
@@ -528,7 +528,6 @@ Teaching and checking the wheel, done with the cover open or while setting up, n
 | [Tolerances](#tolerances) | 🟦 **Wheelly** |
 | [Hardware check](#hardware-check) | 🟦 **Wheelly** |
 | [Magnet sweep](#magnet-sweep) | 🟦 **Wheelly** |
-| [Last sweep](#last-sweep) | 🟦 **Wheelly** |
 | [Sweeps folder](#sweeps-folder) | 🟦 **Wheelly** |
 | [Movement log](#movement-log) | 🟦 **Wheelly** |
 | [Files on disk](#files-on-disk) | 🟦 **Wheelly** |
@@ -569,7 +568,7 @@ The calibration angles, one row per slot, each with its own Set: this is slot 1'
 - A wheel turned by hand is not followed by its row (only the steps are): to teach where the hand left it, type the angle shown in WHEELLY_POSITION into the row and press Set.
 - The arrow stays on the slot while the wheel is stepped off it to centre it. INDI cannot colour a field, and a label reaches the client only when the property is defined, so the driver defines the rows again - and with them the properties after them in this tab, which would otherwise end up above them - only at the end of a step, at a change of slot and at a teach, never while the wheel is simply watched.
 - A wheel never taught has the slots evenly spaced (0, 72, 144, 216 and 288 degrees on a five-slot wheel): usable, but not a calibration.
-- One property per slot, not a single WHEELLY_ANGLES with one Set for all of them and a separate 'Save position' button (WHEELLY_TEACH): the Set on the starred row does what that button would. A wheel saved by an older firmware with a 'Rotation trim' per slot gets the trims added to its angles, once, at the first start of the current firmware. These angles are also marked on the magnet sweep plot.
+- One property per slot, not a single WHEELLY_ANGLES with one Set for all of them and a separate 'Save position' button (WHEELLY_TEACH): the Set on the starred row does what that button would. A wheel saved by an older firmware with a 'Rotation trim' per slot gets the trims added to its angles, once, at the first start of the current firmware. The sweep viewer marks these angles on the magnet sweep.
 
 ### 2
 
@@ -718,36 +717,25 @@ Asks the wheel one question: is it really talking to its sensor and to its motor
 
 ![Magnet sweep](img/en-wheelly-sweep.png)
 
-The magnet sweep: the wheel turns once all the way round, one slot at a time, always in the same direction, and the driver records the sensor magnitude and the angle at every poll. At the end it draws a plot of magnitude against angle. The smaller the variation over the turn, the better the magnet is centred: use it before and after adjusting the sensor gap or the magnet.
+The magnet sweep: the wheel turns once all the way round, one slot at a time, always in the same direction, and the driver records the sensor magnitude and the angle at every poll. At the end it writes them to a CSV file in the sweeps folder. The smaller the variation over the turn, the better the magnet is centred: use it before and after adjusting the sensor gap or the magnet.
 
 | Element | |
 |---|---|
 | Turn all the way round | Start the sweep. The wheel moves. |
 
+![The reference wheel before (19:05) and after (19:08) centring the sensor, in the sweep viewer: the excursion over the turn fell from 81 to 28 counts, and the weakest point rose from 369 to 427, well clear of the 350 line.](img/en-wheelly-sweep-figure.png)
+
+*The reference wheel before (19:05) and after (19:08) centring the sensor, in the sweep viewer: the excursion over the turn fell from 81 to 28 counts, and the weakest point rose from 369 to 427, well clear of the 350 line.*
+
 - The wheel really moves: do it with the cover open, never during a sequence (log: 'Turning all the way round and measuring the magnet at every step ...'). FILTER_SLOT goes Busy at each step.
 - One jump per slot (5 on a factory wheel): the wheel ends on the slot it started from.
 - During the sweep the driver polls every 100 ms instead of every POLLING_PERIOD, to get enough samples.
 - Refused, with Alert, while a filter change or another sweep is running.
-- At the end: Ok, the plot is sent in 'Last sweep' (WHEELLY_SWEEP_PLOT), a copy is written in the sweeps folder, and the log gives the number of samples, the magnitude minimum and maximum and the excursion in counts and in percent, then the file path.
-- If a jump fails or times out, or fewer than 4 samples were taken, no plot is made and the property goes to Alert (log: 'The sweep stopped before finishing the turn ...').
+- At the end: Ok, the samples are written to the sweeps folder, and the log gives the number of samples, the magnitude minimum and maximum and the excursion in counts and in percent, then the file path.
+- To see the sweep as a curve, open the file with the sweep viewer, https://teoteo.github.io/Wheelly/tools/sweep.html: a single page, to use online or saved and opened from the disk, with no network. It draws the magnitude against the angle with the taught angles marked, and several sweeps over each other, to compare a before and an after. The file stays on your computer. It is a plain CSV too, which any spreadsheet opens.
+- The driver draws nothing itself: an INDI driver measures and reports, and the picture is the viewer's job.
+- If a jump fails or times out, or fewer than 4 samples were taken, nothing is written and the property goes to Alert (log: 'The sweep stopped before finishing the turn ...').
 - Each jump is an ordinary move, so it is also written in the movement log when that is on.
-
-### Last sweep
-
-🟦 **Wheelly** · `WHEELLY_SWEEP_PLOT` · read-only
-
-![Last sweep](img/en-wheelly-sweep-plot.png)
-
-The plot of the last sweep, sent to the client as a PNG file. In the panel a file property shows no picture: KStars saves the file where it keeps received files, and the driver does not know that place. That is why the driver also writes its own copy and shows its path in 'Files on disk' (WHEELLY_FILES).
-
-| Element | |
-|---|---|
-| Plot | The PNG of the last sweep: magnitude (counts) against angle (degrees), with a grid every 45 degrees, the taught angles of the slots marked, and the number of samples, minimum, maximum and excursion written on it. |
-
-- Read-only. Declared with the format '.wheelly.png' on purpose: with a plain '.png' KStars opens a viewer window whose closing also closes the INDI panel; with this extension it only saves the file. The name still ends in .png.
-- The client receives it only if it accepts files from this property (in KStars, the check box next to the property, on by default).
-- The file is not compressed (a few hundred kB).
-- The texts inside the plot are in capital letters without accents: the plot's font has no others.
 
 ### Sweeps folder
 
@@ -755,13 +743,14 @@ The plot of the last sweep, sent to the client as a PNG file. In the panel a fil
 
 ![Sweeps folder](img/en-wheelly-sweep-dir.png)
 
-The folder where the driver writes a copy of each sweep plot. The default is the Documents folder in the home directory of the computer running the driver (on a Raspberry, the Raspberry's, not your laptop's). Point it elsewhere, for example to an external disk, if you keep your data there.
+The folder where the driver writes each sweep. The default is the Documents folder in the home directory of the computer running the driver (on a Raspberry, the Raspberry's, not your laptop's). Point it elsewhere, for example to an external disk, if you keep your data there.
 
 | Element | |
 |---|---|
 | Folder | Folder path. A leading '~/' is expanded to the home directory. |
 
-- Each sweep gets its own file, named YYYY-MM-DD_HH-MM-SS_wheelly_sweep.png in local time, so a sweep before and one after an adjustment can be compared; nothing is overwritten.
+- Each sweep gets its own file, named YYYY-MM-DD_HH-MM-SS_wheelly_sweep.csv in local time, so a sweep before and one after an adjustment can be compared; nothing is overwritten.
+- The file: header lines starting with '#' - the number of slots and their taught angles - then 'angle_deg,magnitude' and one line per sample.
 - When you change it the driver creates the folder (one level only) and checks it can write there. If not, the property turns red and the log says 'The folder ... cannot be used right now: ... The sweeps will not be saved until it can.' The value is kept anyway (a disk may simply not be mounted yet).
 - Saved in the INDI configuration immediately.
 - An empty folder means the default.
@@ -790,13 +779,13 @@ Turns on or off the movement log: a CSV file with one line per finished filter c
 
 ![Files on disk](img/en-wheelly-files.png)
 
-Where the two files the driver writes are, so the paths are not lost in the log: the movement log and the plot of the last sweep. Both paths are on the computer running the driver.
+Where the two files the driver writes are, so the paths are not lost in the log: the movement log and the last sweep. Both paths are on the computer running the driver.
 
 | Element | |
 |---|---|
 | Movement log | Path of the movement log CSV. Shown even when the log is off. |
-| Last sweep | Path of the last sweep plot written by the driver, or 'not written yet'. |
+| Last sweep | Path of the last sweep CSV written by the driver, or 'not written yet'. |
 
 - Read-only.
-- 'Last sweep' shows 'not written yet' after each start of the driver, until a sweep is done; older plots stay in the sweeps folder.
-- Alert when the last plot could not be written; the reason is in the log ('Cannot write the plot to ...').
+- 'Last sweep' shows 'not written yet' after each start of the driver, until a sweep is done; older sweeps stay in the sweeps folder.
+- Alert when the last sweep could not be written; the reason is in the log ('Cannot write the sweep to ...').

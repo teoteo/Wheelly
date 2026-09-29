@@ -35,7 +35,6 @@ Into `drivers/filter_wheel/wheelly/` of INDI's tree (the list is `DRIVER_FILES` 
 | file | |
 |---|---|
 | `wheelly.cpp`, `wheelly.h` | the driver |
-| `plot.cpp`, `plot.h` | the magnet sweep plot |
 | `wheelly_protocol.h` | the protocol, byte for byte `firmware/wheelly/wheelly_protocol.h` |
 | `wheelly_config.h.cmake` | version and device name |
 
@@ -44,9 +43,9 @@ Not copied: this folder's own
 way, below), `driver_bench.py` and `doc/` (they need the simulator in `firmware/`, which
 stays here), and `upstream/`.
 
-A subfolder, not files loose in `drivers/filter_wheel/`, because the driver has six
-files and one of them has a name (`plot`) too generic for a folder shared by fifteen
-drivers. INDI already does it this way for the Shelyak driver in
+A subfolder, not files loose in `drivers/filter_wheel/`, because the driver
+brings its own protocol header and a configured header template, which belong together
+and would be the only ones of their kind loose in a folder shared by fifteen drivers. INDI already does it this way for the Shelyak driver in
 `drivers/spectrograph/shelyak/`: sources in a subfolder, named from the category's
 `CMakeLists.txt`, no `CMakeLists.txt` of their own.
 

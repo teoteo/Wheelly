@@ -43,8 +43,9 @@ wheel the firmware has been set up for.
   LED mode, all stored in the wheel.
 - Diagnostics: the encoder's magnitude and flags at every poll, a hardware
   check that asks the firmware whether it can talk to the sensor and to the
-  motor driver, a magnet sweep that turns the wheel once and sends a PNG plot
-  of the field strength, and an optional CSV log of every filter change.
+  motor driver, a magnet sweep that turns the wheel once and writes the field
+  strength at every angle to a CSV file, and an optional CSV log of every
+  filter change.
 - A wheel is recognised by its serial number, not by its port: each profile
   remembers its own wheel, which matters with two wheels attached.
 
@@ -92,8 +93,10 @@ The first time, open **Calibration and Diagnostics**:
   a mechanical problem.
 - **Magnetic sensor.** *Magnitude* below 350 means the magnet is too far or off
   centre. The *Magnet sweep* measures it over a full turn: the smaller the
-  variation, the better the magnet is centred. The plot is also written to the
-  sweeps folder (default `~/Documents`).
+  variation, the better the magnet is centred. The samples are written as a CSV
+  file to the sweeps folder (default `~/Documents`); the
+  [sweep viewer](https://teoteo.github.io/Wheelly/tools/sweep.html), a single page
+  that also works saved and opened offline, draws it and compares several.
 - **Slipping or stalling.** Raise the run current in *Options → Motor* until the
   drive stops slipping, and no further. Very low speeds are weaker, not gentler:
   a small stepper has little torque there.

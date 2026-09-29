@@ -1104,7 +1104,6 @@ really declares.
 | `WHEELLY_TOLERANCE` | Calibration and Diagnostics | number, 3 | R/W | good tolerance, warn tolerance, retries |
 | `WHEELLY_DIAG` | Calibration and Diagnostics | switch | W | ask the wheel: is it really talking to the sensor and the motor driver? |
 | `WHEELLY_SWEEP` | Calibration and Diagnostics | switch | W | the sweep: a full turn measuring the magnet at every poll |
-| `WHEELLY_SWEEP_PLOT` | Calibration and Diagnostics | BLOB | read-only | the plot of the last sweep, as PNG |
 | `WHEELLY_SWEEP_DIR` | Calibration and Diagnostics | text, 1 | R/W | where sweeps are written. Default `~/Documents`, saved in the configuration |
 | `WHEELLY_LOG` | Calibration and Diagnostics | switch | R/W | the CSV movement log: on or off. **Off by default** |
 | `WHEELLY_FILES` | Calibration and Diagnostics | text, 2 | read-only | where the two files the driver leaves on disk are: the movement log and the last sweep |
@@ -1210,7 +1209,7 @@ valid in itself, and choosing another is up to whoever knows what that slot is f
 `WHEELLY_SENSOR` gives the magnitude **now**, one number at a time. But the measure that counts
 for the magnet's centring is its **excursion over the whole turn**, and that cannot be seen by
 watching a changing number. The sweep shows it: the wheel makes a full turn going from slot to
-slot, the driver records angle and magnitude at every poll, and a plot comes out at the end.
+slot, the driver records angle and magnitude at every poll, and writes them to a file at the end.
 
 **No new firmware command.** The data it needs are all in `status`, which the driver polls
 anyway: the sweep does not send a single extra byte on the serial line, it keeps the answers. A
@@ -1235,56 +1234,39 @@ continuous curve, and nothing compared the two. A test now asks `status` during 
 halves and wants the angle to change. The I2C read does not disturb the motion: the pulses come
 from a peripheral of the ESP32 and the ramp from FastAccelStepper's own task, not from `loop()`.
 
-**How the plot treats the points.** Samples taken at the same angle (within 0.1°, about one
+**The driver writes the samples, and draws nothing.** At the end of the turn it writes a CSV
+file — two header lines with the number of slots and their taught angles, then
+`angle_deg,magnitude` and one line per sample — and the log gives the numbers that matter:
+samples, minimum, maximum, excursion in counts and in percent. The curve is drawn by the
+**sweep viewer**, `docs/tools/sweep.html` on the project's site: one self-contained page, no
+library and nothing fetched, so it works saved on the disk and opened with no network, in the
+field. The file is read in the browser and never uploaded; several files are drawn over each
+other, which is what comparing a before and an after needs.
+
+*Rejected: the driver drawing a PNG and sending it as a BLOB.* It was built that way, with a
+hand-written PNG writer and font to keep the driver free of dependencies. INDI's maintainers asked
+for the drawing code to go — a driver measures and reports, the picture is the client's business —
+and a BLOB was awkward anyway: KStars opens an image BLOB in a window whose closing also takes the
+INDI panel away (both are children of the main window, unless *Independent window* is set in
+*Configure KStars → INDI*), and saves it in a folder the driver cannot know.
+
+**How the viewer treats the points.** Samples taken at the same angle (within 0.1°, about one
 count) are **one point**, at their mean: the wheel rests at every slot for a while, and those
-samples, sorted and joined, draw vertical lines that read as the field jumping where the wheel
+samples, drawn as they come, make vertical lines that read as the field jumping where the wheel
 stands still. The vertical window is **at least 200 counts**, centred on the data: stretched to
 the data alone, the reference wheel's 390–424 (measured) filled the whole height and read as a
-collapse of the field when it was an 8 % ripple. Both are checked on the Mac by
-`firmware/test/test_plot.cpp`.
+collapse of the field when it was an 8 % ripple. Both are checked by
+`firmware/test/test_sweep_viewer.mjs`, which reads the two functions out of the page itself.
 
-**The PNG is drawn by hand**, in `plot.cpp`: a palette canvas, a 5×7 font written row by row,
-and a PNG writer that does not compress — deflate *stored* blocks, which is valid zlib and costs
-twenty lines instead of a dependency. The driver has no external dependencies, and that is what,
-by INDI's `CONTRIBUTING`, lets it go into the main repository instead of `indi-3rdparty`: adding
-Qt or libpng for a diagnostic plot would be a disproportionate price. The file is about 269 kB,
-because it is not compressed; for something asked for once in a while that is fine.
-
-The font has **only unaccented capitals**, so the plot's words are chosen accordingly: a letter
-it does not know becomes a space. The background is **solid black**, not a very dark grey: the
-window that shows it is white, and next to white a near-black reads as a washed-out smudge.
-
-**How the plot is seen, and why it does not open by itself.** It is a BLOB, and a BLOB in INDI is
-not a widget: it is a file transfer. In the panel the property shows the words
-`INDI DATA STREAM` and nothing else. On arrival KStars saves it in the FITS folder; and **if** the
-extension is an image format Qt can read, it also opens its `ImageViewer` window. That window has
-two defects, and neither can be fixed from here:
-
-- **it is white.** KStars inverts its palette on purpose (`auxiliary/imageviewer.cpp`): it uses
-  the text colour as background, so with a dark theme it comes out white. It is meant for
-  astronomical images in negative. The *Invert colors* button is added in the same place;
-- **closing it also makes the INDI panel disappear.** The panel is created as a **child window**
-  of KStars' main one — `new GUIManager(Options::independentWindowINDI() ? nullptr :
-  KStars::Instance())`, and the default is `false` — and so is the plot's window: when one
-  closes, the window manager raises the parent and the other child goes behind it. The
-  *Independent window* box in *Configure KStars → INDI* fixes it, but that is a setting of the
-  machine, not something the driver can guarantee.
-
-So the declared format is **`.wheelly.png`** and not `.png`: Qt does not recognise it as an
-image, KStars just saves the file, and no window opens. The name still ends in `.png`, so any
-viewer opens it.
-
-**The driver says the path**, because the client's is not known: where KStars puts the BLOB is
-KStars' business. So the driver writes **its own copy**, for example
-`~/Documents/2026-09-15_18-23-34_wheelly_sweep.png`, and puts its path in `WHEELLY_FILES`, where
-it stays written, and in the log.
+**The driver says the path**: it puts the file's path in `WHEELLY_FILES`, where it stays written,
+and in the log, with the address of the viewer.
 
 **Each sweep its own file, in Documents.** Measuring the magnet means comparing a before and an
 after — a touch to the air gap, a screw tightened — and a fixed name that is overwritten throws
-away exactly the term of comparison. The time in the name is **local**, not UTC, unlike the one
-in the movement log: that one is read by a spreadsheet, this one by someone who remembers
-touching the wheel "last night around nine". And it is in `~/Documents`, not in the driver's
-hidden folder, because a plot is something to look at.
+away exactly the term of comparison: `~/Documents/2026-09-15_18-23-34_wheelly_sweep.csv`. The
+time in the name is **local**, not UTC, unlike the one in the movement log: that one is read by a
+spreadsheet, this one by someone who remembers touching the wheel "last night around nine". And
+it is in `~/Documents`, not in the driver's hidden folder, because a sweep is something to look at.
 
 The folder is **writable** (`WHEELLY_SWEEP_DIR`) and saved in the configuration: `~/Documents`
 is a reasonable default, not a truth for every machine, and whoever keeps data on an external
@@ -1292,12 +1274,6 @@ disk points it there. Changing it creates it at once and tries to write in it: i
 disk not mounted yet — the property goes to `Alert` and **says so**, instead of letting it be
 found out at the first lost sweep. A leading `~` is expanded by the driver, because it is
 usually the shell that expands it, and there is no shell here.
-
-The file is a **PNG** and not a JPEG: JPEG compresses lossily, and on a drawing made of thin
-lines and six-point text that means halos around every stroke.
-
-BLOBs do not arrive until the client asks for them: in KStars that is the little box next to the
-property, on by default.
 
 **`WHEELLY_SENSOR` is not a luxury.** It is the instrumentation that at the bench served to
 choose the air gap, and bringing it into Ekos means watching it while the wheel really works.

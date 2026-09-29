@@ -53,7 +53,6 @@ GUIDE_IMG = DRIVER.parent.parent / "docs" / "driver" / "img"
 # nor doc/: they need the simulator in firmware/, which stays here.
 DRIVER_FILES = [
     "wheelly.cpp", "wheelly.h",
-    "plot.cpp", "plot.h",
     "wheelly_protocol.h",
     "wheelly_config.h.cmake",
 ]

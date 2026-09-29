@@ -703,10 +703,7 @@ def test_empty_slots():
 
 
 def test_sweep():
-    print("the magnet sweep, and the PNG it produces")
-    import base64
-    import struct
-    import zlib
+    print("the magnet sweep, and the CSV it writes")
 
     bench = Bench(language="it_IT.UTF-8")
     c = Client(INDI_PORT)
@@ -715,14 +712,6 @@ def test_sweep():
         c.pump(1.5)
         start = int(float(
             c.props["FILTER_SLOT"]["elements"]["FILTER_SLOT_VALUE"]["value"]))
-
-        # BLOBs do not arrive until they are asked for: it is the CLIENT that
-        # must enable them. In KStars the checkbox next to the property does
-        # it, and it is on by default; here it is said by hand, because
-        # without it the plot would not leave the server and the test would
-        # test nothing.
-        c.send(f"<enableBLOB device='{DEVICE}'>Also</enableBLOB>")
-        c.pump(0.3)
 
         c.set_switch("WHEELLY_SWEEP", "RUN")
         # During the turn the wheel really moves: FILTER_SLOT must say so,
@@ -751,57 +740,10 @@ def test_sweep():
         ok("Sweep done" in text and "excursion" in text,
            "the message says how it went", text[-250:])
 
-        # the plot
-        ok("WHEELLY_SWEEP_PLOT" in c.props, "the plot arrives as a BLOB")
-        element = c.props["WHEELLY_SWEEP_PLOT"]["elements"]["PLOT"]
-        # The format must NOT be ".png". KStars, when the extension is an
-        # image format Qt can read, opens a window to show it - and that
-        # window is a child of the main one like the INDI panel, so closing
-        # it takes the panel along. The name still ends in .png, so that any
-        # viewer opens it.
-        ok(element.get("format") == ".wheelly.png",
-           "the format is not an image for Qt: KStars opens no window",
-           str(element.get("format")))
-
-        png = base64.b64decode(element["value"])
-        ok(png[:8] == b"\x89PNG\r\n\x1a\n", "and it really is a PNG",
-           str(png[:8]))
-        # If the plot has not arrived, the tests that follow have nothing to
-        # look at: they stop here instead of blowing up inside zlib, so the
-        # fault reads as a defect and not as a bench accident.
-        if png[:8] != b"\x89PNG\r\n\x1a\n":
-            return
-        ok(int(element.get("size", 0)) == len(png),
-           "and the declared size is the real one",
-           f"declared {element.get('size')}, arrived {len(png)}")
-
-        # We write the PNG by hand, byte by byte, with no library: so it is
-        # not enough that it starts well. It is read back chunk by chunk
-        # checking every CRC, and the zlib stream is decompressed: if the
-        # writer got a sum wrong, it shows here.
-        i, idat, header = 8, b"", None
-        broken = []
-        while i < len(png):
-            length = struct.unpack(">I", png[i:i + 4])[0]
-            kind = png[i + 4:i + 8]
-            body = png[i + 8:i + 8 + length]
-            crc = struct.unpack(">I", png[i + 8 + length:i + 12 + length])[0]
-            if crc != zlib.crc32(kind + body) & 0xFFFFFFFF:
-                broken.append(kind.decode())
-            if kind == b"IHDR":
-                header = struct.unpack(">IIBBBBB", body)
-            if kind == b"IDAT":
-                idat += body
-            i += 12 + length
-        ok(not broken, "every PNG chunk has the right CRC", str(broken))
-        ok(header is not None and header[0] == 640 and header[1] == 420,
-           "the header states the right size", str(header))
-        ok(header is not None and header[2] == 8 and header[3] == 3,
-           "eight-bit palette, as declared", str(header))
-        pixels = zlib.decompress(idat)
-        ok(len(pixels) == 420 * (640 + 1),
-           "and there are as many pixels as needed, row filter included",
-           f"{len(pixels)} instead of {420 * 641}")
+        # The driver draws nothing: INDI's maintainers asked for the drawing
+        # code to go, and the samples are written to a CSV file instead (the
+        # project's sweep viewer draws it). No plot property may come back.
+        ok("WHEELLY_SWEEP_PLOT" not in c.props, "no plot BLOB: the driver draws nothing")
 
         # There must be enough samples to draw a curve. At the normal polling
         # rate a turn gave twenty, and twenty points over three hundred and
@@ -812,41 +754,44 @@ def test_sweep():
         ok(count >= 30, "and there are enough samples to draw a curve",
            f"{count} samples")
 
-        # And the plot must contain DATA, not just the frame: without a trace -
-        # samples never collected, a wrong scale - the drawing would still be
-        # a valid PNG and all the tests above would pass just the same.
-        #
-        # The threshold is loose on purpose. Against the simulator the trace
-        # covers about 1200 pixels, against the real firmware 680: the fake
-        # sensor of the C++ bench models the same eccentricity but WITHOUT
-        # noise, so the curve is thinner. A tight threshold would have said
-        # "defect" where there was only a difference between the two fakes.
-        trace = sum(1 for b in pixels if b == 4)
-        ok(trace > 300, "and the sample trace is there, it is not a blank sheet",
-           f"{trace} trace pixels")
-
-        # The file's path must be STATED, and written in the panel: where the
-        # client saves it is the client's choice, and the driver does not know.
+        # The file's path must be STATED, and written in the panel.
         path = c.props["WHEELLY_FILES"]["elements"]["SWEEP"]["value"]
-        ok(path.endswith(".png") and bench.home in path,
-           "the panel says where the plot is on disk", path)
-        # Name with date and time, and in Documents: a plot is something to
+        ok(path.endswith(".csv") and bench.home in path,
+           "the panel says where the sweep is on disk", path)
+        # Name with date and time, and in Documents: a sweep is something to
         # look at, and goes where things are looked at.
-        ok(re.fullmatch(r".*/Documents/\d{4}-\d\d-\d\d_\d\d-\d\d-\d\d_wheelly_sweep\.png",
+        ok(re.fullmatch(r".*/Documents/\d{4}-\d\d-\d\d_\d\d-\d\d-\d\d_wheelly_sweep\.csv",
                         path) is not None,
            "with the right name and in the right folder", path)
         ok(os.path.exists(path), "and it really is there", path)
-        # If the file is not there, the comparison has nothing to compare: it
-        # is skipped, so the fault reads as a defect and not as a bench
-        # accident. The same rule as the missing PNG.
+        # If the file is not there, what follows has nothing to read: it is
+        # skipped, so the fault reads as a defect and not as a bench accident.
         if os.path.exists(path):
-            with open(path, "rb") as f:
-                on_disk = f.read()
-            ok(on_disk == png,
-               "and it is the very same plot that arrived as a BLOB",
-               f"{len(on_disk)} bytes on disk, {len(png)} arrived")
-        ok(path in " ".join(c.messages[-4:]),
-           "and the path is in the log too", " ".join(c.messages[-4:])[-200:])
+            with open(path, encoding="ascii") as f:
+                lines = f.read().splitlines()
+            header = {l[2:].split(",")[0]: l[2:].split(",")[1:] for l in lines if l.startswith("# ") and "," in l}
+            data = [l for l in lines if l and not l.startswith("#")]
+            slots = int(header.get("slots", ["0"])[0])
+            ok(slots == 5 and len(header.get("taught_deg", [])) == slots,
+               "the header gives the slots and one taught angle per slot",
+               str(header))
+            ok(data and data[0] == "angle_deg,magnitude",
+               "then a column header a spreadsheet understands", data[0] if data else "")
+            rows = [tuple(float(x) for x in l.split(",")) for l in data[1:]]
+            ok(len(rows) == count,
+               "and as many samples as the log counted", f"{len(rows)} in the file, {count} in the log")
+            angles = [r[0] for r in rows]
+            mags = [r[1] for r in rows]
+            ok(rows and all(0 <= a_ <= 360 for a_ in angles) and all(m > 0 for m in mags),
+               "angles within 0-360 and a magnet always seen", f"{min(angles, default=0)}..{max(angles, default=0)}")
+            # DATA, not a constant: samples never collected, or the same one
+            # written over and over, would still make a valid file.
+            ok(rows and max(angles) - min(angles) > 300 and max(mags) > min(mags),
+               "and the samples cover the whole turn, with a curve in them",
+               f"angles {min(angles, default=0)}..{max(angles, default=0)}, magnitude {min(mags, default=0)}..{max(mags, default=0)}")
+        text = " ".join(c.messages[-4:])
+        ok(path in text and "sweep viewer" in text,
+           "and the log says where the file is and what opens it", text[-250:])
 
         # The folder can be changed: "~/Documents" is a sensible default, not
         # a truth that holds for every machine.
@@ -1255,20 +1200,18 @@ def test_live_row():
                 c._collect(element)
         ok(defined == 0, "live row: at rest no definition at every poll", f"{defined} in 2 s")
 
-        # a jog, then the sweep: the row goes back BEFORE the turn - a
-        # definition during or after it wipes the plot - and the plot arrives
+        # a jog, then the sweep: the row goes back to its taught angle BEFORE
+        # the turn, since during it the rows are not redefined
         jog("JOG_P1")
         ok(angle_row(c, 1)[0] == "▶ 1 *", "live row: jog before the sweep, '▶ 1 *'",
            str(angle_row(c, 1)))
-        c.send(f"<enableBLOB device='{DEVICE}'>Also</enableBLOB>")
         c.set_switch("WHEELLY_SWEEP", "RUN")
         c.pump(0.3)
         result = c.wait_state("WHEELLY_SWEEP", ("Ok", "Alert"), 60)
         c.pump(1.0)
-        plot = c.props.get("WHEELLY_SWEEP_PLOT", {}).get("elements", {}).get("PLOT", {}).get("value", "")
-        ok(result == "Ok" and angle_row(c, 1) == ("▶ 1", 5.0) and len(plot) > 1000,
-           "live row: the sweep gives the row back its taught angle, and the plot arrives",
-           f"{result} {angle_row(c, 1)} {len(plot)}")
+        ok(result == "Ok" and angle_row(c, 1) == ("▶ 1", 5.0),
+           "live row: the sweep gives the row back its taught angle",
+           f"{result} {angle_row(c, 1)}")
 
         # the register: the confirmation is a teach, the edit a set
         register = os.path.join(bench.home, ".indi", "wheelly_movements.csv")

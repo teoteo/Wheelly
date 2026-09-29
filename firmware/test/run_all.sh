@@ -83,10 +83,8 @@ echo "### the motor driver still holds its setup: each witness of a reset alone"
 /tmp/wheelly_test_driver_check
 
 echo
-echo "### the driver's sweep plot: same-angle samples merged, a minimum window"
-"$CXX" -std=c++11 -Wall -Wextra -Werror -O1 -o /tmp/wheelly_test_plot \
-       test_plot.cpp ../../driver/indi-wheelly/plot.cpp
-/tmp/wheelly_test_plot
+echo "### the sweep viewer: same-angle samples merged, a minimum window"
+node test_sweep_viewer.mjs
 
 echo
 echo "### the real firmware, compiled for this computer"

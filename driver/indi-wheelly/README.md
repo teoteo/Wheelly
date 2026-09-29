@@ -39,7 +39,7 @@ version and device name read from `CMakeLists.txt`, then
 
 ```sh
 g++ -std=c++17 -O2 -Wall -Wextra -Ibuild -I. $(pkg-config --cflags libindi) \
-    wheelly.cpp plot.cpp -o build/indi_wheelly \
+    wheelly.cpp -o build/indi_wheelly \
     $(pkg-config --libs libindi) -lindidriver
 ```
 

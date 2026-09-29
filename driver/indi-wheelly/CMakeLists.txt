@@ -41,7 +41,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/wheelly_config.h.cmake
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/indi_wheelly.xml.cmake
                ${CMAKE_CURRENT_BINARY_DIR}/indi_wheelly.xml)
 
-add_executable(indi_wheelly wheelly.cpp plot.cpp)
+add_executable(indi_wheelly wheelly.cpp)
 
 target_include_directories(indi_wheelly PRIVATE
     ${CMAKE_CURRENT_BINARY_DIR}

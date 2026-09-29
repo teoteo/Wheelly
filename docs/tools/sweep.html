@@ -1,0 +1,433 @@
+<!doctype html>
+<!-- SPDX-FileCopyrightText: 2026 Matteo Beretta -->
+<!-- SPDX-License-Identifier: MIT -->
+<!--
+The sweep viewer: draws the CSV files the Wheelly INDI driver writes after a
+magnet sweep (Calibration and Diagnostics -> Magnet sweep).
+
+Why a page and not the driver: an INDI driver measures and reports, it does
+not draw (INDI's maintainers asked for the drawing code to go). Why ONE
+self-contained file: it has to work opened from the disk, on a computer in a
+field with no network - no library, no font, nothing fetched. The file never
+leaves the reader's computer: it is read and drawn by the browser.
+
+Several files can be dropped together, and they are drawn over each other:
+measuring the magnet is comparing a before and an after.
+
+Files can also be passed in the address, #name=<file name>&csv=<base64 of
+the file>, repeated for several: that is how the project draws known sweeps
+without a person dropping them, and how a comparison is shared as a link.
+lang=en|it chooses the language, and view=figure shows the chart and its
+table only - how the panel guide's figure is drawn (panel_guide.py).
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wheelly sweep viewer</title>
+<style>
+:root {
+  --bg: #f7f7f5; --panel: #ffffff; --ink: #1d2024; --muted: #5d646c; --line: #d9dcdf;
+  --grid: #e7e9eb; --ref: #8a9098; --accent: #b86b00; --limit: #c0392b;
+  /* categorical, fixed order; checked for colour-blind separation and contrast
+     on these surfaces, light and dark */
+  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100; --s5: #e87ba4;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #16191d; --panel: #1f2328; --ink: #e8eaed; --muted: #9aa3ad; --line: #353b42;
+    --grid: #2a3036; --ref: #7d858e; --accent: #efa00b; --limit: #ff6b5b;
+    --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --s5: #d55181;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink);
+  font: 15px/1.5 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+main { max-width: 980px; margin: 0 auto; padding: 20px 16px 40px; }
+body.figure main { padding: 8px; }
+body.figure header, body.figure .lede, body.figure #drop, body.figure #errors,
+body.figure .clear, body.figure .notes { display: none; }
+body.figure #result { margin-top: 0; }
+header { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+h1 { font-size: 22px; margin: 0; }
+.lang button { border: 1px solid var(--line); background: var(--panel); color: var(--muted);
+  padding: 2px 10px; cursor: pointer; font: inherit; }
+.lang button[aria-pressed="true"] { color: var(--ink); border-color: var(--accent); }
+.lang button:first-child { border-radius: 12px 0 0 12px; }
+.lang button:last-child { border-radius: 0 12px 12px 0; }
+p.lede { color: var(--muted); margin: 6px 0 16px; }
+#drop { border: 2px dashed var(--line); border-radius: 10px; background: var(--panel);
+  padding: 22px; text-align: center; cursor: pointer; }
+#drop.over { border-color: var(--accent); }
+#drop strong { display: block; font-size: 16px; }
+#drop span { color: var(--muted); font-size: 13px; }
+#errors { color: var(--limit); margin: 10px 0 0; }
+#result { display: none; margin-top: 18px; }
+.chart { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 8px; }
+svg { display: block; width: 100%; height: auto; }
+svg text { fill: var(--muted); font-size: 12px; }
+table { width: 100%; border-collapse: collapse; margin-top: 14px; font-size: 14px; }
+th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); }
+th { color: var(--muted); font-weight: 600; }
+td.num { font-variant-numeric: tabular-nums; }
+.swatch { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+#tip { position: fixed; pointer-events: none; display: none; background: var(--panel); color: var(--ink);
+  border: 1px solid var(--line); border-radius: 6px; padding: 4px 8px; font-size: 13px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.15); white-space: nowrap; }
+.notes { color: var(--muted); font-size: 13px; margin-top: 14px; }
+.notes li { margin: 3px 0; }
+button.clear { margin-top: 12px; border: 1px solid var(--line); background: var(--panel); color: var(--ink);
+  border-radius: 6px; padding: 5px 12px; cursor: pointer; font: inherit; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1 data-t="title"></h1>
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" data-lang="en">EN</button><button type="button" data-lang="it">IT</button>
+    </div>
+  </header>
+  <p class="lede" data-t="lede"></p>
+  <div id="drop" tabindex="0" role="button">
+    <strong data-t="drop"></strong>
+    <span data-t="dropHint"></span>
+    <input id="file" type="file" accept=".csv,text/csv" multiple hidden>
+  </div>
+  <p id="errors"></p>
+  <div id="tip"></div>
+<section id="result">
+    <div class="chart"><svg id="chart" viewBox="0 0 900 470" role="img"></svg></div>
+    <table id="stats"></table>
+    <button type="button" class="clear" data-t="clear"></button>
+    <ul class="notes">
+      <li data-t="note1"></li>
+      <li data-t="note2"></li>
+      <li data-t="note3"></li>
+    </ul>
+  </section>
+</main>
+<script>
+"use strict";
+// The words of the page, in both languages; the numbers and the file names
+// are never translated.
+const TEXT = {
+  en: {
+    title: "Wheelly sweep viewer",
+    lede: "Draws the magnet sweeps the Wheelly INDI driver writes (Calibration and Diagnostics → Magnet sweep): the strength of the magnetic field against the angle of the wheel. The files are read here, in your browser: nothing is uploaded.",
+    drop: "Drop sweep files here, or click to choose them",
+    dropHint: "The files are named like 2026-09-29_21-14-03_wheelly_sweep.csv and are in the sweeps folder (Documents by default). Drop two to compare a before and an after.",
+    clear: "Clear",
+    note1: "The smaller the variation over the turn - the flatter the curve - the better the magnet is centred over the sensor. Compare a sweep before and after adjusting the sensor gap or the magnet.",
+    note2: "Below the red line (350 counts) the magnet is too far from the sensor or too far off centre.",
+    note3: "The grey vertical lines are the taught angles of the slots, numbered. The dots are the samples; the line between two groups of dots only joins them. Point at a dot to read it.",
+    file: "File", samples: "Samples", min: "Min", max: "Max", excursion: "Excursion",
+    angle: "angle (degrees)", magnitude: "magnitude (counts)", limit: "350: too weak",
+    notSweep: "is not a Wheelly sweep file (no \"angle_deg,magnitude\" header).",
+    tooFew: "has too few samples to draw a curve.",
+    tooMany: "At most five sweeps at a time: clear, then drop the ones to compare."
+  },
+  it: {
+    title: "Visualizzatore delle spazzolate di Wheelly",
+    lede: "Disegna le spazzolate del magnete che scrive il driver INDI di Wheelly (Calibration and Diagnostics → Magnet sweep): la forza del campo magnetico al variare dell'angolo della ruota. I file vengono letti qui, nel tuo browser: niente viene caricato in rete.",
+    drop: "Trascina qui i file delle spazzolate, o fai clic per sceglierli",
+    dropHint: "I file hanno un nome come 2026-09-29_21-14-03_wheelly_sweep.csv e stanno nella cartella delle spazzolate (Documents, se non l'hai cambiata). Trascinane due per confrontare un prima e un dopo.",
+    clear: "Pulisci",
+    note1: "Più la variazione lungo il giro è piccola - più la curva è piatta - più il magnete è centrato sopra il sensore. Confronta una spazzolata prima e dopo aver regolato il traferro o il magnete.",
+    note2: "Sotto la linea rossa (350 conteggi) il magnete è troppo lontano dal sensore o troppo fuori centro.",
+    note3: "Le linee verticali grigie sono gli angoli di taratura delle posizioni, numerati. I punti sono i campioni; la linea fra due gruppi di punti li unisce soltanto. Punta un punto per leggerlo.",
+    file: "File", samples: "Campioni", min: "Minimo", max: "Massimo", excursion: "Escursione",
+    angle: "angolo (gradi)", magnitude: "magnitudine (conteggi)", limit: "350: troppo debole",
+    notSweep: "non è un file di spazzolata di Wheelly (manca l'intestazione \"angle_deg,magnitude\").",
+    tooFew: "ha troppo pochi campioni per disegnare una curva.",
+    tooMany: "Al massimo cinque spazzolate alla volta: pulisci, poi trascina quelle da confrontare."
+  }
+};
+// The magnitude below which the magnet is too far or off centre: the same
+// threshold the driver and the panel guide use.
+const WEAK = 350;
+// Five series at most get a colour of their own; a sixth file is refused
+// with a message rather than given a colour that repeats one already there.
+const COLOURS = ["--s1", "--s2", "--s3", "--s4", "--s5"];
+
+// --- the two decisions about how a sweep is drawn (checked on their own by
+// firmware/test/test_sweep_viewer.mjs, which reads them from this block) ---
+
+// Samples at the same angle (within 0.1 degrees, about one sensor count) are
+// ONE point, at their mean: the wheel rests at every slot for a while, and
+// those samples, drawn as they come, make vertical lines that read as the
+// field jumping where the wheel stands still.
+function mergeSameAngle(data) {
+  const sorted = data.slice().sort((p, q) => p[0] - q[0]);
+  const out = [];
+  let group = [];
+  const flush = () => {
+    if (!group.length) return;
+    const a = group.reduce((s, p) => s + p[0], 0) / group.length;
+    const m = group.reduce((s, p) => s + p[1], 0) / group.length;
+    out.push([a, m]);
+    group = [];
+  };
+  for (const p of sorted) {
+    if (group.length && p[0] - group[0][0] > 0.1) flush();
+    group.push(p);
+  }
+  flush();
+  return out;
+}
+
+// The vertical window: at least MIN_WINDOW counts, centred on the data.
+// Stretched to the data alone, the reference wheel's 390-424 (measured)
+// filled the whole height and read as a collapse of the field when it was an
+// 8% ripple.
+const MIN_WINDOW = 200;
+function verticalWindow(lo, hi) {
+  const span = Math.max(hi - lo, MIN_WINDOW);
+  const middle = (lo + hi) / 2;
+  let bottom = middle - span / 2 * 1.1, top = middle + span / 2 * 1.1;
+  if (bottom < 0) { top -= bottom; bottom = 0; }
+  return [Math.floor(bottom / 10) * 10, Math.ceil(top / 10) * 10];
+}
+// --- end of the two decisions ---
+
+let lang = (navigator.language || "en").toLowerCase().startsWith("it") ? "it" : "en";
+try { lang = localStorage.getItem("wheelly-sweep-lang") || lang; } catch (e) { /* private window */ }
+let sweeps = [];
+let errors = [];
+
+function t(key) { return TEXT[lang][key]; }
+
+function setLanguage(l) {
+  lang = l;
+  try { localStorage.setItem("wheelly-sweep-lang", l); } catch (e) { /* private window */ }
+  document.documentElement.lang = l;
+  document.querySelectorAll("[data-t]").forEach(el => { el.textContent = t(el.dataset.t); });
+  document.querySelectorAll(".lang button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.lang === l)));
+  document.title = t("title");
+  render();
+}
+
+// "# slots,5", "# taught_deg,0.00,72.00,...", then "angle_deg,magnitude" and
+// one "angle,magnitude" line per sample.
+function parse(text, name) {
+  const lines = text.split(/\r?\n/);
+  const header = {};
+  let data = null;
+  for (const line of lines) {
+    if (line.startsWith("#")) {
+      const parts = line.slice(1).trim().split(",");
+      header[parts[0]] = parts.slice(1);
+    } else if (data === null) {
+      if (line.trim() === "angle_deg,magnitude") data = [];
+    } else if (line.trim()) {
+      const [a, m] = line.split(",").map(Number);
+      if (Number.isFinite(a) && Number.isFinite(m)) data.push([a, m]);
+    }
+  }
+  if (data === null) { errors.push(name + " " + t("notSweep")); return null; }
+  if (data.length < 4) { errors.push(name + " " + t("tooFew")); return null; }
+  const taught = (header.taught_deg || []).map(Number).filter(Number.isFinite);
+  const mags = data.map(d => d[1]);
+  const min = Math.min(...mags), max = Math.max(...mags);
+  // min and max over every sample, as the driver's log reports them; the
+  // drawing uses the merged points
+  return { name, data, points: mergeSameAngle(data), taught, min, max };
+}
+
+// "2026-09-29_19-08-24_wheelly_sweep.csv" -> "19:08"; any other name as it is
+function short(name) {
+  const m = /_(\d\d)-(\d\d)-\d\d_wheelly_sweep/.exec(name);
+  return m ? m[1] + ":" + m[2] : name.replace(/\.csv$/, "");
+}
+
+// the hover layer: the nearest sample within 24 px, its file, angle and
+// magnitude
+let hits = [];
+function showTip(ev) {
+  const svg = document.getElementById("chart");
+  const box = svg.getBoundingClientRect();
+  const scale = 900 / box.width;
+  const mx = (ev.clientX - box.left) * scale, my = (ev.clientY - box.top) * scale;
+  let best = null, dist = 24 * scale;
+  for (const h of hits) {
+    const d = Math.hypot(h.px - mx, h.py - my);
+    if (d < dist) { dist = d; best = h; }
+  }
+  const tip = document.getElementById("tip");
+  if (!best) { tip.style.display = "none"; return; }
+  tip.replaceChildren();
+  const sw = document.createElement("span"); sw.className = "swatch"; sw.style.background = best.c;
+  tip.append(sw, document.createTextNode(`${short(best.name)} · ${best.a.toFixed(1)}° · ${Math.round(best.m)}`));
+  tip.style.display = "block";
+  tip.style.left = (ev.clientX + 14) + "px";
+  tip.style.top = (ev.clientY + 14) + "px";
+}
+
+function colour(i) {
+  return getComputedStyle(document.documentElement).getPropertyValue(COLOURS[i % COLOURS.length]).trim();
+}
+
+function el(tag, attrs, text) {
+  const e = document.createElementNS("http://www.w3.org/2000/svg", tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (text !== undefined) e.textContent = text;
+  return e;
+}
+
+function render() {
+  document.getElementById("errors").textContent = errors.join(" ");
+  const result = document.getElementById("result");
+  result.style.display = sweeps.length ? "block" : "none";
+  if (!sweeps.length) return;
+
+  // The plot area, with bands kept free around it for the axes and the slot
+  // numbers, so that labels never sit on the curves.
+  const W = 900, H = 470, L = 70, R = 130, T = 34, B = 56;
+  const svg = document.getElementById("chart");
+  svg.replaceChildren();
+  const css = getComputedStyle(document.documentElement);
+  const grid = css.getPropertyValue("--grid").trim();
+  const line = css.getPropertyValue("--line").trim();
+  const limitColour = css.getPropertyValue("--limit").trim();
+  const ref = css.getPropertyValue("--ref").trim();
+
+  const lo = Math.min(...sweeps.map(s => Math.min(...s.points.map(p => p[1]))));
+  const hi = Math.max(...sweeps.map(s => Math.max(...s.points.map(p => p[1]))));
+  const [y0, y1] = verticalWindow(lo, hi);
+  const x = a => L + (a / 360) * (W - L - R);
+  const y = m => T + (1 - (m - y0) / (y1 - y0)) * (H - T - B);
+
+  // grid: every 45 degrees, and a round step in counts
+  for (let a = 0; a <= 360; a += 45) {
+    svg.append(el("line", { x1: x(a), x2: x(a), y1: T, y2: H - B, stroke: grid }));
+    svg.append(el("text", { x: x(a), y: H - B + 18, "text-anchor": "middle" }, String(a)));
+  }
+  const span = y1 - y0;
+  const step = [25, 50, 100, 200, 250, 500, 1000].find(s => span / s <= 8) || 1000;
+  for (let m = Math.ceil(y0 / step) * step; m <= y1; m += step) {
+    svg.append(el("line", { x1: L, x2: W - R, y1: y(m), y2: y(m), stroke: grid }));
+    svg.append(el("text", { x: L - 8, y: y(m) + 4, "text-anchor": "end" }, String(m)));
+  }
+  svg.append(el("rect", { x: L, y: T, width: W - L - R, height: H - T - B, fill: "none", stroke: line }));
+  svg.append(el("text", { x: (L + W - R) / 2, y: H - 14, "text-anchor": "middle" }, t("angle")));
+  svg.append(el("text", { x: 16, y: (T + H - B) / 2, "text-anchor": "middle",
+    transform: `rotate(-90 16 ${(T + H - B) / 2})` }, t("magnitude")));
+
+  // the threshold, labelled in the band right of the plot, beside its line:
+  // the band above belongs to the slot numbers
+  if (WEAK >= y0 && WEAK <= y1) {
+    svg.append(el("line", { x1: L, x2: W - R, y1: y(WEAK), y2: y(WEAK), stroke: limitColour,
+      "stroke-dasharray": "6 4", "stroke-width": 1.5 }));
+    const tag = el("text", { x: W - R + 8, y: y(WEAK) + 4, "text-anchor": "start" }, t("limit"));
+    tag.style.fill = limitColour;
+    svg.append(tag);
+  }
+
+  // the taught angles of the first file, numbered in the band above
+  const taught = sweeps[0].taught;
+  taught.forEach((a, i) => {
+    svg.append(el("line", { x1: x(a), x2: x(a), y1: T, y2: H - B, stroke: ref,
+      "stroke-dasharray": "2 4", "stroke-width": 1 }));
+    const n = el("text", { x: x(a), y: T - 10, "text-anchor": "middle" }, String(i + 1));
+    n.style.fontWeight = "700";
+    svg.append(n);
+  });
+
+  // each sweep: a 2px line through its points, so the shape reads as a
+  // curve and two sweeps do not blur into one cloud; the points on it, with
+  // a ring in the surface colour, show where the samples really are - they
+  // come in bursts at the slots, and the line between two bursts is only a
+  // join, not a measurement
+  const surface = css.getPropertyValue("--panel").trim();
+  hits = [];
+  const ends = [];
+  sweeps.forEach((s, i) => {
+    const c = colour(i);
+    const d = s.points.map((p, k) => (k ? "L" : "M") + x(p[0]).toFixed(1) + " " + y(p[1]).toFixed(1)).join(" ");
+    svg.append(el("path", { d, fill: "none", stroke: c, "stroke-width": 2,
+      "stroke-linejoin": "round", "stroke-linecap": "round" }));
+    for (const [a, m] of s.points) {
+      svg.append(el("circle", { cx: x(a), cy: y(m), r: 3.5, fill: c, stroke: surface, "stroke-width": 1.5 }));
+      hits.push({ px: x(a), py: y(m), a, m, name: s.name, c });
+    }
+    const last = s.points[s.points.length - 1];
+    ends.push({ y: y(last[1]), x: x(last[0]), c, label: short(s.name) });
+  });
+  // direct labels in the band right of the plot, at the height where each
+  // curve ends; spread apart when they would touch, with a leader line
+  ends.sort((p, q) => p.y - q.y);
+  for (let k = 1; k < ends.length; k++) ends[k].ly = Math.max(ends[k].y, (ends[k - 1].ly ?? ends[k - 1].y) + 15);
+  if (ends.length) ends[0].ly = ends[0].ly ?? ends[0].y;
+  const limitY = WEAK >= y0 && WEAK <= y1 ? y(WEAK) : null;
+  for (const e of ends) {
+    if (limitY !== null && Math.abs(e.ly - limitY) < 14) e.ly = limitY - 14;
+    svg.append(el("line", { x1: e.x + 5, x2: W - R + 6, y1: e.y, y2: e.ly, stroke: e.c, "stroke-width": 1 }));
+    svg.append(el("circle", { cx: W - R + 12, cy: e.ly, r: 4, fill: e.c }));
+    svg.append(el("text", { x: W - R + 20, y: e.ly + 4 }, e.label));
+  }
+
+  const table = document.getElementById("stats");
+  table.replaceChildren();
+  const head = table.insertRow();
+  for (const k of ["file", "samples", "min", "max", "excursion"]) {
+    const th = document.createElement("th"); th.textContent = t(k); head.append(th);
+  }
+  sweeps.forEach((s, i) => {
+    const r = table.insertRow();
+    const name = r.insertCell();
+    const sw = document.createElement("span"); sw.className = "swatch"; sw.style.background = colour(i);
+    name.append(sw, document.createTextNode(s.name));
+    const pct = s.max > 0 ? ((s.max - s.min) / s.max * 100).toFixed(1) : "0.0";
+    for (const v of [String(s.data.length), String(s.min), String(s.max), `${s.max - s.min} (${pct}%)`]) {
+      const td = r.insertCell(); td.className = "num"; td.textContent = v;
+    }
+  });
+}
+
+async function addFiles(files) {
+  errors = [];
+  for (const f of files) {
+    if (sweeps.length >= COLOURS.length) { errors.push(t("tooMany")); break; }
+    const s = parse(await f.text(), f.name);
+    if (s) sweeps.push(s);
+  }
+  render();
+}
+
+const drop = document.getElementById("drop");
+const input = document.getElementById("file");
+drop.addEventListener("click", () => input.click());
+drop.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); input.click(); } });
+input.addEventListener("change", () => { addFiles(input.files); input.value = ""; });
+drop.addEventListener("dragover", e => { e.preventDefault(); drop.classList.add("over"); });
+drop.addEventListener("dragleave", () => drop.classList.remove("over"));
+drop.addEventListener("drop", e => { e.preventDefault(); drop.classList.remove("over"); addFiles(e.dataTransfer.files); });
+document.querySelector("button.clear").addEventListener("click", () => { sweeps = []; errors = []; render(); });
+document.querySelectorAll(".lang button").forEach(b => b.addEventListener("click", () => setLanguage(b.dataset.lang)));
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", render);
+document.getElementById("chart").addEventListener("mousemove", showTip);
+document.getElementById("chart").addEventListener("mouseleave", () => { document.getElementById("tip").style.display = "none"; });
+
+// #name=...&csv=<base64>, repeated: sweeps passed in the address (see the
+// comment at the top); a csv without a name before it is called sweep.csv
+if (location.hash.length > 1) {
+  let name = "sweep.csv";
+  for (const part of location.hash.slice(1).split("&")) {
+    const [key, value = ""] = part.split("=");
+    try {
+      if (key === "lang" && TEXT[value]) lang = value;
+      if (key === "view" && value === "figure") document.body.classList.add("figure");
+      if (key === "name") name = decodeURIComponent(value);
+      if (key === "csv") {
+        const bytes = Uint8Array.from(atob(decodeURIComponent(value)), ch => ch.charCodeAt(0));
+        const s = parse(new TextDecoder().decode(bytes), name);
+        if (s) sweeps.push(s);
+        name = "sweep.csv";
+      }
+    } catch (e) { errors.push(String(e)); }
+  }
+}
+setLanguage(lang);
+</script>
+</body>
+</html>

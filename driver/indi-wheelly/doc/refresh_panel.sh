@@ -43,7 +43,7 @@ ssh "$HOST" "cd $REMOTE/driver/indi-wheelly && mkdir -p build \
          -e 's/@WHEELLY_DEVICE_NAME@/$NAME/' \
          wheelly_config.h.cmake > build/wheelly_config.h \
   && g++ -std=c++17 -O2 -Wall -Wextra -Ibuild -I. \$(pkg-config --cflags libindi) \
-         wheelly.cpp plot.cpp -o build/indi_wheelly \
+         wheelly.cpp -o build/indi_wheelly \
          \$(pkg-config --libs libindi) -lindidriver \
   && python3 doc/capture_panel.py $REMOTE/out"
 scp -q "$HOST:$REMOTE/out/panel_en.xml" "$HERE/"
