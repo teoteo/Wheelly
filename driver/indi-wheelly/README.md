@@ -3,7 +3,7 @@
 
 # indi-wheelly — the INDI driver of the wheel
 
-`indi_wheelly` is an `INDI::FilterWheel` driver for the Wheelly motorised filter wheel.
+`indi_wheelly_wheel` is an `INDI::FilterWheel` driver for the Wheelly motorised filter wheel.
 It translates the firmware's line protocol into INDI properties, and that is all: **the
 decisions are taken in the firmware**. Comparing against the tolerances, retrying and
 giving the final verdict happen on the XIAO, so the wheel behaves the same when driven by
@@ -39,7 +39,7 @@ version and device name read from `CMakeLists.txt`, then
 
 ```sh
 g++ -std=c++17 -O2 -Wall -Wextra -Ibuild -I. $(pkg-config --cflags libindi) \
-    wheelly.cpp -o build/indi_wheelly \
+    wheelly.cpp -o build/indi_wheelly_wheel \
     $(pkg-config --libs libindi) -lindidriver
 ```
 
@@ -65,14 +65,19 @@ style INDI checks, and what is left before proposing the driver to INDI.
 
 | file | what it is for |
 |---|---|
-| `/usr/bin/indi_wheelly` | the driver executable |
+| `/usr/bin/indi_wheelly_wheel` | the driver executable |
 | `/usr/share/indi/indi_wheelly.xml` | what makes the wheel appear in KStars, under *Filter Wheels* |
 
 Configure with **`-DCMAKE_INSTALL_PREFIX=/usr`**: the cmake default is `/usr/local`, where
 INDI does not look, and the result is a silent duplicate with Ekos still using the old
 driver. **Restart KStars** after installing: the Profile Editor reads the XML files only at
 start-up. Then choose *Wheelly* as the filter wheel of an Ekos profile, or start it by hand
-with `indiserver -v indi_wheelly`. To uninstall, delete the two files.
+with `indiserver -v indi_wheelly_wheel`. To uninstall, delete the two files.
+
+The executable used to be called `indi_wheelly`: it follows INDI's convention now,
+every filter wheel's executable ending in `_wheel`. Installing over an older version
+leaves `/usr/bin/indi_wheelly` behind, unused - delete it. Ekos profiles are not
+affected: they choose the driver by its name, *Wheelly*, not by its executable.
 
 ## How the wheel is found
 
@@ -106,13 +111,13 @@ and the bilingual driver it replaced, are in `firmware.md`, section 13.
 ## The bench test
 
 ```sh
-python3 driver_bench.py [path/to/indi_wheelly] [path/to/simulator]
+python3 driver_bench.py [path/to/indi_wheelly_wheel] [path/to/simulator]
 ```
 
 It starts the Python simulator (`firmware/simulator/wheelly_sim.py`) on a fake serial port
 (a pty), runs the **real compiled driver** under its own `indiserver`, and talks to it with
 the same INDI XML that Ekos uses: what the test sees is what Ekos would see. The defaults
-are `build/indi_wheelly` and the simulator; the second argument can instead be the
+are `build/indi_wheelly_wheel` and the simulator; the second argument can instead be the
 **firmware compiled for the PC** (`firmware/test/firmware_bench.cpp`), and running the test
 against both checks that the two halves of the project agree. It checks, among other
 things, which **tab** each property lands in (only visible in the XML: `indi_getprop` does
@@ -128,7 +133,7 @@ To look at it with your own eyes instead:
 
 ```sh
 ../../firmware/simulator/wheelly_sim.py --pty --link /tmp/wheelly &
-indiserver -v ./build/indi_wheelly
+indiserver -v ./build/indi_wheelly_wheel
 ```
 
 then connect KStars to `localhost`, port 7624, and set `/tmp/wheelly` as the port (INDI's

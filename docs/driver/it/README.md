@@ -162,7 +162,7 @@ Informazioni standard di INDI sul driver: il nome, il programma che lo esegue, l
 | Elemento | |
 |---|---|
 | Name | Nome del driver (Wheelly). |
-| Exec | Nome dell'eseguibile (indi_wheelly). |
+| Exec | Il nome dell'eseguibile del driver. |
 | Version | Versione del driver. |
 | Interface | Codice dell'interfaccia INDI; 16 vuol dire ruota portafiltri. |
 

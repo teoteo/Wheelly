@@ -38,12 +38,13 @@ rsync -a --exclude .pio --exclude __pycache__ "$ROOT/firmware/simulator" "$ROOT/
 MAJOR=$(sed -n 's/^set(WHEELLY_VERSION_MAJOR \([0-9]*\)).*/\1/p' "$HERE/../CMakeLists.txt")
 MINOR=$(sed -n 's/^set(WHEELLY_VERSION_MINOR \([0-9]*\)).*/\1/p' "$HERE/../CMakeLists.txt")
 NAME=$(sed -n 's/^set(WHEELLY_DEVICE_NAME "\([^"]*\)".*/\1/p' "$HERE/../CMakeLists.txt")
+EXE=$(sed -n 's/^set(WHEELLY_EXECUTABLE \([a-z_]*\)).*/\1/p' "$HERE/../CMakeLists.txt")
 ssh "$HOST" "cd $REMOTE/driver/indi-wheelly && mkdir -p build \
   && sed -e 's/@WHEELLY_VERSION_MAJOR@/$MAJOR/' -e 's/@WHEELLY_VERSION_MINOR@/$MINOR/' \
          -e 's/@WHEELLY_DEVICE_NAME@/$NAME/' \
          wheelly_config.h.cmake > build/wheelly_config.h \
   && g++ -std=c++17 -O2 -Wall -Wextra -Ibuild -I. \$(pkg-config --cflags libindi) \
-         wheelly.cpp -o build/indi_wheelly \
+         wheelly.cpp -o build/$EXE \
          \$(pkg-config --libs libindi) -lindidriver \
   && python3 doc/capture_panel.py $REMOTE/out"
 scp -q "$HOST:$REMOTE/out/panel_en.xml" "$HERE/"

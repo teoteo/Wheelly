@@ -5,7 +5,7 @@
 
 Tools for the INDI panel guide (docs/driver), run by the mechanical build.
 
-1. `capture_panel.py OUT_DIR [indi_wheelly] [simulator]` - runs **on
+1. `capture_panel.py OUT_DIR [indi_wheelly_wheel] [simulator]` - runs **on
    AstroArch** (the driver builds there, not on the Mac): the compiled driver
    under indiserver against the simulator, the same bench as
    `driver_bench.py`; records the XML it sends, in English and in Italian.

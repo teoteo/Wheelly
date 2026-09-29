@@ -3,7 +3,7 @@
 
 # Proposing the driver to INDI
 
-What is ready, and what is left, for proposing `indi_wheelly` for inclusion in INDI
+What is ready, and what is left, for proposing `indi_wheelly_wheel` for inclusion in INDI
 itself. Everything below was checked against **indilib/indi master `4661ccd`**.
 
 **The copy in INDI is produced, never edited there**:
@@ -64,7 +64,7 @@ of the protocol header differ).
   MyFocuserPro2, ESP32go and the other self-built devices.
 
 **Tried** on a Raspberry Pi (Arch Linux ARM, gcc) against master `4661ccd`: INDI
-cloned in `/tmp`, `to_indi.py` run on it, `make indi_wheelly` - which builds
+cloned in `/tmp`, `to_indi.py` run on it, `make indi_wheelly_wheel` - which builds
 `libindidriver` from the same tree first (82 s with `-j3`). INDI compiles its drivers
 with `-Wall -Wextra -Werror` (checked in the target's `flags.make`): the driver built
 with **no warning**, linked to the tree's own `libindidriver`, and under `indiserver`,

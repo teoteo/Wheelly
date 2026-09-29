@@ -162,7 +162,7 @@ Standard INDI information about the driver: its name, the program that runs it, 
 | Element | |
 |---|---|
 | Name | Driver name (Wheelly). |
-| Exec | Executable name (indi_wheelly). |
+| Exec | The name of the driver's executable. |
 | Version | Driver version. |
 | Interface | INDI interface code; 16 means a filter wheel. |
 

@@ -9,7 +9,7 @@ attached to the simulator through a fake serial port, and it is spoken to in
 the INDI XML protocol - the same one Ekos uses. What is seen here is what Ekos
 would see.
 
-    python3 driver_bench.py [path/to/indi_wheelly] [path/to/simulator]
+    python3 driver_bench.py [path/to/indi_wheelly_wheel] [path/to/simulator]
 
 It checks, in order:
 
@@ -47,7 +47,10 @@ import time
 import xml.etree.ElementTree as ET
 
 HERE = pathlib.Path(__file__).resolve().parent
-DRIVER = pathlib.Path(sys.argv[1]) if len(sys.argv) > 1 else HERE / "build" / "indi_wheelly"
+# the executable's name is read from CMakeLists.txt, where it is set once
+EXECUTABLE = re.search(r"set\(WHEELLY_EXECUTABLE\s+(\w+)\)",
+                       (HERE / "CMakeLists.txt").read_text(encoding="utf-8")).group(1)
+DRIVER = pathlib.Path(sys.argv[1]) if len(sys.argv) > 1 else HERE / "build" / EXECUTABLE
 SIMULATOR = pathlib.Path(sys.argv[2]) if len(sys.argv) > 2 else \
     HERE.parent.parent / "firmware" / "simulator" / "wheelly_sim.py"
 # On the other end of the cable there can be two things: the Python

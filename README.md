@@ -104,7 +104,7 @@ cmake --build build
 sudo cmake --install build
 ```
 
-That installs `indi_wheelly` next to the other drivers and `indi_wheelly.xml`
+That installs `indi_wheelly_wheel` next to the other drivers and `indi_wheelly.xml`
 into `share/indi/`, which is the directory INDI reads to know what it can offer.
 **Use the same prefix your distribution's INDI uses**, normally `/usr`: with
 cmake's default `/usr/local` the XML lands in `/usr/local/share/indi`, where

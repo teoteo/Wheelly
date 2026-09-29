@@ -4,7 +4,7 @@
 <driversList>
 <devGroup group="Filter Wheels">
         <device label="@WHEELLY_DEVICE_NAME@" manufacturer="@WHEELLY_DEVICE_NAME@">
-                <driver name="@WHEELLY_DEVICE_NAME@">indi_wheelly</driver>
+                <driver name="@WHEELLY_DEVICE_NAME@">@WHEELLY_EXECUTABLE@</driver>
                 <version>@WHEELLY_VERSION_MAJOR@.@WHEELLY_VERSION_MINOR@</version>
         </device>
 </devGroup>

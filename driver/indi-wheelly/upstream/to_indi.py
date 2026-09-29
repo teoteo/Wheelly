@@ -61,6 +61,15 @@ BANNER = "# ############### Wheelly Filter Wheel ################"
 GROUP = '<devGroup group="Filter Wheels">'
 
 
+def executable():
+    """The executable's name, from this folder's CMakeLists.txt."""
+    text = (DRIVER / "CMakeLists.txt").read_text(encoding="utf-8")
+    m = re.search(r"set\(WHEELLY_EXECUTABLE\s+(\w+)\)", text)
+    if not m:
+        sys.exit("CMakeLists.txt: WHEELLY_EXECUTABLE not found")
+    return m.group(1)
+
+
 def version():
     """(major, minor) from this folder's CMakeLists.txt: the one place the
     driver's version is written."""
@@ -81,6 +90,7 @@ def cmake_block(major, minor):
     block = text[start:]
     block = block.replace("@WHEELLY_VERSION_MAJOR@", major)
     block = block.replace("@WHEELLY_VERSION_MINOR@", minor)
+    block = block.replace("@WHEELLY_EXECUTABLE@", executable())
     if "@" in block:
         sys.exit("CMakeLists-indi.txt: a placeholder was left unfilled")
     return block.rstrip("\n") + "\n"
@@ -94,6 +104,7 @@ def xml_entry(major, minor):
     if m is None:
         sys.exit("drivers-xml-entry.xml: no <device> entry found")
     entry = m.group(1).replace("@WHEELLY_VERSION@", f"{major}.{minor}")
+    entry = entry.replace("@WHEELLY_EXECUTABLE@", executable())
     if "@" in entry:
         sys.exit("drivers-xml-entry.xml: a placeholder was left unfilled")
     return entry
@@ -146,6 +157,7 @@ def put_docs(tree, major, minor):
     (dest / "wheelly.md").write_text(page, encoding="utf-8")
     meta = (source / "wheelly.yaml").read_text(encoding="utf-8")
     meta = meta.replace("@WHEELLY_VERSION@", f"{major}.{minor}")
+    meta = meta.replace("@WHEELLY_EXECUTABLE@", executable())
     if "@" in meta:
         sys.exit("wheelly.yaml: a placeholder was left unfilled")
     (dest / "wheelly.yaml").write_text(meta, encoding="utf-8")

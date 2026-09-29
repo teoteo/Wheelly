@@ -8,7 +8,7 @@ categories:
 
 # Additional Metadata (Optional)
 website: https://github.com/teoteo/Wheelly
-executable: indi_wheelly
+executable: @WHEELLY_EXECUTABLE@
 platforms: Linux
 author: Matteo Beretta
 version: @WHEELLY_VERSION@

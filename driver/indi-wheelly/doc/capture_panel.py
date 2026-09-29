@@ -13,7 +13,7 @@ with their groups, labels, permissions and rules, in declaration order.
 It uses the same bench as driver_bench.py (simulator on a fake serial port,
 indiserver with a home of its own, so the real configuration is not touched).
 
-    python3 capture_panel.py OUT_DIR [path/to/indi_wheelly] [path/to/simulator]
+    python3 capture_panel.py OUT_DIR [path/to/indi_wheelly_wheel] [path/to/simulator]
 
 Writes OUT_DIR/panel_en.xml: every def*Vector the
 driver sends, in order, then the set*Vector that follow the connection (the

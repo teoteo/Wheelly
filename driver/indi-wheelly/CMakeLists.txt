@@ -15,6 +15,13 @@ include(GNUInstallDirs)
 set(WHEELLY_VERSION_MAJOR 0)
 set(WHEELLY_VERSION_MINOR 1)
 
+# The executable's name, in one place: indi_wheelly.xml, the copy proposed to
+# INDI (upstream/to_indi.py), the bench and the panel capture read it from
+# here. It ends in _wheel because INDI names every filter wheel's executable
+# that way (indi_xagyl_wheel, indi_quantum_wheel, ...), as asked in the review
+# of the INDI pull request; it was indi_wheelly before.
+set(WHEELLY_EXECUTABLE indi_wheelly_wheel)
+
 # The name the device introduces itself with to Ekos, and which appears in
 # INDI's driver list. It lives here, in one place only, because "Wheelly" is a
 # TRADEMARK: whoever starts from this project and modifies it must be able to
@@ -41,23 +48,23 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/wheelly_config.h.cmake
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/indi_wheelly.xml.cmake
                ${CMAKE_CURRENT_BINARY_DIR}/indi_wheelly.xml)
 
-add_executable(indi_wheelly wheelly.cpp)
+add_executable(${WHEELLY_EXECUTABLE} wheelly.cpp)
 
-target_include_directories(indi_wheelly PRIVATE
+target_include_directories(${WHEELLY_EXECUTABLE} PRIVATE
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${INDI_INCLUDE_DIRS})
 
 # pkg-config does not return -lindidriver, and without it linking fails with
 # missing symbols. Worth writing down: it is half an hour of puzzlement.
-target_link_libraries(indi_wheelly ${INDI_LIBRARIES} indidriver)
-target_link_directories(indi_wheelly PRIVATE ${INDI_LIBRARY_DIRS})
+target_link_libraries(${WHEELLY_EXECUTABLE} ${INDI_LIBRARIES} indidriver)
+target_link_directories(${WHEELLY_EXECUTABLE} PRIVATE ${INDI_LIBRARY_DIRS})
 
 # The same warnings INDI's CI compiles with: better to find out here.
-target_compile_options(indi_wheelly PRIVATE
+target_compile_options(${WHEELLY_EXECUTABLE} PRIVATE
     -Wall -Wextra -Werror=unused-parameter -Werror=unused-but-set-variable)
-set_property(TARGET indi_wheelly PROPERTY CXX_STANDARD 17)
+set_property(TARGET ${WHEELLY_EXECUTABLE} PROPERTY CXX_STANDARD 17)
 
-install(TARGETS indi_wheelly RUNTIME DESTINATION bin)
+install(TARGETS ${WHEELLY_EXECUTABLE} RUNTIME DESTINATION bin)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/indi_wheelly.xml
         DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/indi)

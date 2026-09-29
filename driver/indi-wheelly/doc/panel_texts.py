@@ -995,7 +995,7 @@ TEXTS = {
         ),
         "elements": {
             "DRIVER_NAME": "Driver name (Wheelly).",
-            "DRIVER_EXEC": "Executable name (indi_wheelly).",
+            "DRIVER_EXEC": "The name of the driver's executable.",
             "DRIVER_VERSION": "Driver version.",
             "DRIVER_INTERFACE": "INDI interface code; 16 means a filter wheel.",
         },

@@ -6,6 +6,6 @@
      to_indi.py fills the version from WHEELLY_VERSION_MAJOR.MINOR of
      CMakeLists.txt. -->
         <device label="Wheelly" manufacturer="DIY">
-            <driver name="Wheelly">indi_wheelly</driver>
+            <driver name="Wheelly">@WHEELLY_EXECUTABLE@</driver>
             <version>@WHEELLY_VERSION@</version>
         </device>
