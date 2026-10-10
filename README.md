@@ -35,6 +35,12 @@ https://github.com/user-attachments/assets/5631b3ca-ad4b-4891-8fa0-1e935ccc16f4
 <td>The INDI driver's panel in Ekos.</td>
 </tr></table>
 
+<a href="https://youtu.be/Sq2n5chqD-E"><img src="https://img.youtube.com/vi/Sq2n5chqD-E/maxresdefault.jpg" alt="Video: cleaning the filters with the power off, through the grip cover" width="480"></a>
+
+**Cleaning the filters with the power off** (video, 50 s): take off the grip
+cover at the back of the box, roll the clutch with a thumb and the disc brings
+each filter into reach.
+
 <p><a href="https://github.com/sponsors/teoteo"><img src="https://img.shields.io/badge/%E2%99%A5%20Sponsor-the%20repository-efa00b?style=for-the-badge&labelColor=16191d" alt="Sponsor the repository"></a></p>
 
 ## The three guides

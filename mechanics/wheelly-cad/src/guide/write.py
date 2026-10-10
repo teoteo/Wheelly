@@ -105,6 +105,20 @@ def purchased_bodies(view):
                   and not c.startswith("electronics_"))
 
 
+def _air_gap(view):
+    """Top of the magnet to the underside of the AS5600 module, measured on
+    the two solids, over the magnet's own footprint."""
+    import cadquery as cq
+    mag = view.bodies["magnet_AS5600_1"]
+    mb = mag.BoundingBox()
+    column = cq.Solid.makeCylinder(mb.xlen/2, 40.0, cq.Vector(mb.center.x, mb.center.y, mb.zmax),
+                                   cq.Vector(0, 0, 1))
+    above = view.bodies["sensor_module_AS5600"].intersect(column)
+    if above.Volume() <= 0:
+        raise SystemExit("guide: no module above the magnet - the air gap cannot be measured")
+    return above.BoundingBox().zmin - mb.zmax
+
+
 def measures(view):
     """The dimensions the steps quote, measured on the model.
 
@@ -271,11 +285,11 @@ def measures(view):
         # the M2.5 of the sensor cover: the guide asked for the wrong screw
         "vite_presa": _short_name("screw_M3_cover_1"),
         "vite_botola": _short_name("screw_M3_hatch_1"),
-        # The air gap is DECLARED, not measured, and here it says why: the
-        # AS5600 module is not in the model - there is the magnet, there is the
-        # bracket with its hole, but the board that carries the chip is not.
-        # What the model does not contain, no measure can see.
-        "traferro": "%.1f" % D["Gap_nominal"],
+        # The air gap is MEASURED on the solids: from the top of the magnet to
+        # the underside of the module, right above it (the module's lowest
+        # point overall is the capacitor, off to the side). It used to be
+        # Gap_nominal, declared, because the module was not in the model.
+        "traferro": "%.1f" % _air_gap(view),
         # the test feet, from the same parameters solids_attrezzi builds them
         # from: gap = foot - spacer - magnet - glue - chip
         "piedini_n": int(D["N_foot_test"]),
@@ -394,11 +408,11 @@ def _bom(mounted_bodies, quantities, lang="en", references=()):
             continue
         seen[group] = len(rows)
         rows.append([n, label, note])
-    # ELECTRONICS WITH NO BODY IN THE ASSEMBLY: the AS5600 module U3 and its
-    # capacitor C3 are not modelled, so no step can "mount" them and no
-    # chapter would list them, though chapters 11 and 12 wire
-    # and mount the sensor. A chapter names them by reference ("electronics")
-    # and the rows come from bom_electronics, the same source as the bodies'.
+    # ELECTRONICS NAMED BY REFERENCE: the chapters that wire the sensor list
+    # the AS5600 module U3 and its capacitor C3 though they mount no body of
+    # theirs (the module body is mounted in the sensor chapter). They name
+    # them by reference ("electronics") and the rows come from
+    # bom_electronics, the same source as the bodies'.
     every = bom_electronics.rows(lang=lang)
     for ref in references:
         found = [r for it, r in zip(bom_electronics.ITEMS, every) if it[0] == ref]
@@ -690,9 +704,9 @@ def _translate(prep, cap, m, lang):
 # THE ELECTRONICS AND THE CABLE in the first list: they are in the assembly
 # as envelopes, and without this they would be missing from the list of what
 # to get - the electronics has its own bill in pcb/BOM.md, written by hand, and
-# the first list now points there for each of them. The AS5600 module is not
-# in the model at all (see the air gap chapter): it is listed here by hand,
-# and said to be.
+# the first list now points there for each of them. The AS5600 module is in
+# the model as a bought envelope (solids_sensor.module()), and its rows come
+# from bom_electronics like the board's.
 
 
 def _full_bom(lang="en"):

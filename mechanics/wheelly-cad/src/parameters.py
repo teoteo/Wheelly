@@ -1233,7 +1233,9 @@ REFERENCES = ("filter_wheel_body", "filter_disc", "sensor_cable",
               # of them to the machine on its own.
               "collar", "box")
 TOOLS_OUT = ("magnet_cap", "gap_gauges")
-ELECTRONICS_OUT = ("perfboard", "pin_sockets", "xiao", "driver", "components", "gx12", "gx12_nut", "led")
+ELECTRONICS_OUT = ("perfboard", "pin_sockets", "xiao", "driver", "components", "gx12", "gx12_nut", "led",
+                   # the AS5600 module, a bought envelope (solids_sensor.module())
+                   "sensor_module")
 
 
 def out_subdir(name):

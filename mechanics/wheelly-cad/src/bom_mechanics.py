@@ -69,6 +69,45 @@ PRINTED = [
      "piatta sul letto, labbro in su (costampata col pezzo, se hai il multimateriale)"),
 ]
 
+# THE PRINT ORIENTATION AS A NUMBER, next to the sentence above: the OUTWARD
+# normal, in the assembly frame, of the flat face that goes on the bed.
+# export_print.py turns every part so that this face lies on z = 0, and
+# measures that it really does - a normal that points at no flat face, or
+# at the wrong side of it, stops the export. The numbers only SELECT the
+# face: the turn is worked out from the normal of the face found on the
+# solid, so a part whose face tilts takes the bed with it (spring_cup's is
+# the one that is not along an axis). It is kept apart from PRINTED
+# so that the tables built from PRINTED do not change; export_print.py
+# demands that the two lists name the same parts.
+#
+# box_collar: on the electronics door, the first of the two ways above.
+# clutch_tyre: with the hub's normal, so that the two files of the co-print
+# stay in register; printed alone it is flat either way. The gaskets have
+# their own flat face here; in the co-print they follow the box_collar.
+BED_FACE = {
+    "box_collar":     (0, 0, -1),
+    "arm":            (0, 0, 1),
+    "clutch_hub":     (0, 0, 1),
+    "clutch_tyre":    (0, 0, 1),
+    "sensor_bracket": (0, 0, -1),
+    "sensor_cover":   (0, 0, 1),
+    "board_panel":    (0, 0, -1),
+    "spring_cup":     (0.913, 0.408, 0),
+    "grip_cover":     (0, 0, 1),
+    "hatch_cover":    (0, 0, -1),
+    "pivot_washer":   (0, 0, -1),
+    "magnet_spacer":  (0, 0, -1),
+    "front_gasket":   (0, 0, -1),
+    "rear_gasket":    (0, 0, 1),
+}
+
+# The parts printed together in two materials: the ASA part and the TPU ones
+# that go in with it, in the ASA part's orientation.
+COPRINTED = {
+    "clutch_hub": ["clutch_tyre"],
+    "box_collar": ["front_gasket", "rear_gasket"],
+}
+
 # The lengths that exist on the market. A screw is bought this long, not as
 # long as the drawing would like.
 STOCK_LENGTHS = (4, 5, 6, 8, 10, 12, 14, 16, 20, 25, 30, 35, 40)

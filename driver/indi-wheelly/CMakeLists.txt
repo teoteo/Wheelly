@@ -61,8 +61,12 @@ target_link_libraries(${WHEELLY_EXECUTABLE} ${INDI_LIBRARIES} indidriver)
 target_link_directories(${WHEELLY_EXECUTABLE} PRIVATE ${INDI_LIBRARY_DIRS})
 
 # The same warnings INDI's CI compiles with: better to find out here.
+# unused-private-field exists only in clang, and INDI's macOS job turns it into
+# an error: a member left behind by a refactoring failed the PR there, while
+# gcc on Linux never mentions it.
 target_compile_options(${WHEELLY_EXECUTABLE} PRIVATE
-    -Wall -Wextra -Werror=unused-parameter -Werror=unused-but-set-variable)
+    -Wall -Wextra -Werror=unused-parameter -Werror=unused-but-set-variable
+    $<$<CXX_COMPILER_ID:Clang,AppleClang>:-Werror=unused-private-field>)
 set_property(TARGET ${WHEELLY_EXECUTABLE} PROPERTY CXX_STANDARD 17)
 
 install(TARGETS ${WHEELLY_EXECUTABLE} RUNTIME DESTINATION bin)

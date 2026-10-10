@@ -16,13 +16,13 @@ L&#x27;arco del sensore si monta per ultimo. Il suo tampone arriva sopra il cent
 | Q.tà | Pezzo | |
 |---:|---|---|
 | 2 | vite M3 · serraggio del collare | M3 × 14, testa brugola (servono 12,4 sotto testa) |
+| 1 | U3 modulo encoder magnetico AS5600 | tondo Ø16,85 spianato a 15, una fila di 8 piazzole; vuole il ponticello VDD5V-VDD3V3, dopo il quale non accetta più i 5 V |
+| 1 | C3 condensatore ceramico | 100 nF (104), 16 V o più - sulle piazzole del modulo, non sulla basetta |
 | 2 | vite M2 · modulo AS5600 | M2 × 4, testa svasata (servono 4,0 sotto testa) |
 | 1 | coperchio del sensore | stampato, ASA |
 | 2 | vite M2,5 · coperchio del sensore | M2,5 × 8, testa brugola (servono 7,0 sotto testa) |
 | 1 | cavo CAT5 | rigido, Ø5,6 - dal sensore alla basetta |
 | 3 | vite M3 · pannellino | M3 × 8, testa svasata (servono 8,0 sotto testa) |
-| 1 | U3 modulo encoder magnetico AS5600 | tondo Ø16,85 spianato a 15, una fila di 8 piazzole; vuole il ponticello VDD5V-VDD3V3, dopo il quale non accetta più i 5 V |
-| 1 | C3 condensatore ceramico | 100 nF (104), 16 V o più - sulle piazzole del modulo, non sulla basetta |
 
 **Attrezzi:** chiave a brugola da 2,5 mm, chiave a brugola da 2 mm per le viti del coperchio, un cacciavite PH0 per le viti svasate del modulo e del pannellino, una fascetta da 2,5 mm.
 
@@ -32,7 +32,7 @@ L&#x27;arco del sensore si monta per ultimo. Il suo tampone arriva sopra il cent
 </tr></table>
 
 <table><tr>
-<td width="55%"><img src="../img/12-02-sensor-and-closing-up.png" alt="Il modulo AS5600, sulle sue due viti" width="520"></td>
+<td width="55%"><img src="../img/12-02-sensor-and-closing-up.png" alt="Il modulo AS5600, sulle sue due viti" width="476"></td>
 <td valign="top"><h3>Passo 2 — Il modulo AS5600, sulle sue due viti</h3><ul><li>Il modulo AS5600 entra nella sede in cima alla staffa, col chip verso il basso, sopra il foro che guarda il magnete. Fra chip e magnete restano circa 1,2 mm d&#x27;aria.</li><li>Fissalo con due viti svasate <b>M2 × 4</b>, attraverso i suoi due fori nei fori pilota della staffa, con un cacciavite PH0. Si formano da sole il filetto nella plastica: stringile quanto basta, non di più.</li></ul></td>
 </tr></table>
 

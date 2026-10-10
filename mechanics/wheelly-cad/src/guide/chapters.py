@@ -1395,15 +1395,19 @@ CHAPTER_SENSOR = {
                 "screwdriver. They form their own thread in the plastic: "
                 "tighten them snug, no more.",
             ],
-            "mounts": ["screw_M2_module_1", "screw_M2_module_2"],
+            "mounts": ["sensor_module_AS5600", "screw_M2_module_1", "screw_M2_module_2"],
             "context": ["sensor_bracket"],
-            # the module itself is not in the model: the screws stand where
-            # its board would be, above the pilot holes
-            "view": {"direction": (0.45, -0.40, 0.75), "zoom": 0.12,
-                      "frame": ["screw_M2_module_1", "screw_M2_module_2"],
-                      "explode": {"screw_M2_module_1": (0, 0, 10),
-                                 "screw_M2_module_2": (0, 0, 10)},
-                      "arrows": [("screw_M2_module_1", (0, 0, -6)),
+            # the module drops straight down onto its pads, the screws follow
+            # it: lifted further, so in the exploded picture they stand above
+            # the board and not inside it
+            "view": {"direction": (0.45, -0.40, 0.75), "zoom": 0.20,
+                      "frame": ["sensor_module_AS5600", "screw_M2_module_1",
+                                "screw_M2_module_2"],
+                      "explode": {"sensor_module_AS5600": (0, 0, 8),
+                                 "screw_M2_module_1": (0, 0, 16),
+                                 "screw_M2_module_2": (0, 0, 16)},
+                      "arrows": [("sensor_module_AS5600", (0, 0, -5)),
+                                 ("screw_M2_module_1", (0, 0, -6)),
                                  ("screw_M2_module_2", (0, 0, -6))]},
         },
         {
@@ -1420,7 +1424,8 @@ CHAPTER_SENSOR = {
             ],
             "mounts": ["sensor_cover", "screw_M25_cover_1",
                       "screw_M25_cover_2"],
-            "context": ["sensor_bracket", "screw_M2_module_1", "screw_M2_module_2"],
+            "context": ["sensor_bracket", "sensor_module_AS5600", "screw_M2_module_1",
+                        "screw_M2_module_2"],
             "view": {"direction": (0.45, -0.40, 0.75), "zoom": 0.45,
                       "frame": ["sensor_cover", "sensor_bracket"],
                       "explode": {"sensor_cover": (0, 0, 22),
@@ -1707,7 +1712,8 @@ CHAPTER_CHECKS = {
                 "of the thumb moves one filter along.",
                 "Use it now to check by hand what you have just watched under power, "
                 "and use it later whenever the filters or the optical train need "
-                "cleaning with the train off.",
+                "cleaning with the train off. A short video shows it: "
+                "[cleaning the filters with the power off](https://youtu.be/Sq2n5chqD-E).",
                 "The cover goes in **from above**. The two thick tabs under its "
                 "foot drop into their pockets at the bottom of the recess, the "
                 "tongue at the spring end runs down the groove in the end wall, "

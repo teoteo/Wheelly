@@ -287,6 +287,9 @@ figcaption { margin-top: .5rem; font-size: .8rem; color: var(--muto); }
 .guide h2 a:hover { color: var(--accento-testo); }
 .guide p { margin: 0 0 .9rem; font-size: .95rem; flex: 1; }
 .guide .apri { display: block; font-weight: 600; margin-top: .25rem; }
+.video { margin: -1.2rem 0 0; max-width: 720px; }
+.video iframe { display: block; width: 100%; aspect-ratio: 16 / 9; height: auto;
+                border: 0; border-radius: 12px; background: var(--fondo2); }
 
 @media (max-width: 1040px) {
   .pagina { display: block; }
@@ -383,9 +386,9 @@ def filter_field(placeholder, nothing):
 
 def _search_text(step):
     """The words of a step, for the filter: its title and its points, without
-    the marks of emphasis."""
+    the marks of emphasis and of links (the words of a link, not its URL)."""
     points = [x[0] if isinstance(x, (tuple, list)) else x for x in step.get("points", [])]
-    t = " ".join([step["title"]] + points).replace("**", "")
+    t = _unmarked(" ".join([step["title"]] + points))
     return " ".join(t.lstrip("!").split())
 
 
@@ -639,8 +642,13 @@ def _shortcut(cap, towards):
             % (_page_of(cap), towards, cap["num"], _e(cap["title"])))
 
 
+# A link in a step text, written as in Markdown: [words](https://...). The
+# Markdown pages take it as it is; the HTML pages turn it into an anchor.
+_LINK = re.compile(r"\[([^\]]+)\]\((https?://[^)\s]+)\)")
+
+
 def _unmarked(t):
-    return t.replace("**", "")
+    return _LINK.sub(r"\1", t).replace("**", "")
 
 
 # WHAT IDENTIFIES A PART, in bold wherever the text names it: M3 and
@@ -675,7 +683,7 @@ def _bold(t):
     out, pieces = [], _e(t).split("**")
     for i, p in enumerate(pieces):
         out.append(_highlight(p) if i % 2 == 0 else "<b>%s</b>" % p)
-    return "".join(out)
+    return _LINK.sub(r'<a href="\2">\1</a>', "".join(out))
 
 
 def _support(lang):
@@ -815,6 +823,19 @@ BOARD_FILES = {"en": ("en_wheelly-wiring-diagrams.pdf", "en_board-layout.svg"),
                "it": ("it_wheelly-schemi-montaggio.pdf", "it_disposizione-basetta.svg")}
 
 
+# The presentation video on YouTube, embedded from the privacy-enhanced
+# domain: no YouTube cookie until the reader presses play.
+HOME_VIDEO = "iueh7m_XIAk"
+
+
+def _home_video(T):
+    return ("<figure class=\"video\"><iframe src=\"https://www.youtube-nocookie.com/embed/%s\" "
+            "title=\"%s\" loading=\"lazy\" allow=\"accelerometer; encrypted-media; "
+            "gyroscope; picture-in-picture; fullscreen\" referrerpolicy=\"strict-origin-when-cross-origin\" "
+            "allowfullscreen></iframe></figure>"
+            % (HOME_VIDEO, _e(T("home_video_title"))))
+
+
 def write_home(root):
     """The first page of the published site, docs/index.html and its Italian
     twin docs/it/index.html: the three guides side by side, and the support
@@ -863,6 +884,7 @@ def write_home(root):
               _language_switch(lang, "index.html"),
               _logo("insegna", "wheelly-logo-horizontal", 260, root=up + "assembly/"),
               "<p class=\"occhiello\">%s</p>" % _e(T("home_lede")),
+              _home_video(T),
               "<ul class=\"guide\">"]
         cards = (("home_assembly", "%sassembly/%sindex.html" % (up, sub), None),
                  ("home_board", "%spcb/%s" % (up, pdf),

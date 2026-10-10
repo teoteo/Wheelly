@@ -257,6 +257,9 @@ figcaption { margin-top: .5rem; font-size: .8rem; color: var(--muto); }
 .guide h2 a:hover { color: var(--accento-testo); }
 .guide p { margin: 0 0 .9rem; font-size: .95rem; flex: 1; }
 .guide .apri { display: block; font-weight: 600; margin-top: .25rem; }
+.video { margin: -1.2rem 0 0; max-width: 720px; }
+.video iframe { display: block; width: 100%; aspect-ratio: 16 / 9; height: auto;
+                border: 0; border-radius: 12px; background: var(--fondo2); }
 
 @media (max-width: 1040px) {
   .pagina { display: block; }

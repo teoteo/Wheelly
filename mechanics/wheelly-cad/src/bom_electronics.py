@@ -65,9 +65,9 @@ ITEMS = [
      "board", "electronics_perfboard"),
     ("U3", 1, "AS5600 magnetic encoder module", "round Ø16.85 flattened to 15, a row of "
      "8 pads; needs the VDD5V-VDD3V3 bridge, after which it no longer takes 5 V",
-     "off the board", None),
+     "off the board", "sensor_module_AS5600"),
     ("C3", 1, "ceramic capacitor", "100 nF (104), 16 V or more - on the module's pads, "
-     "not on the board", "off the board", None),
+     "not on the board", "off the board", "sensor_module_AS5600"),
     ("D1", 1, "red LED, 3 mm", "outside the board; if it comes pre-wired for 12 V, take "
      "its resistor off", "off the board", "electronics_led"),
     ("", 1, "GX12 connector, 2 pins", "panel socket with its nut, and the matching plug "

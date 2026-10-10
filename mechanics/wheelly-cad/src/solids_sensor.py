@@ -596,6 +596,50 @@ def cover():
 
 
 
+# --- the AS5600 module itself, as a bought part -----------------------------
+# It was not in the model: the bracket had its seat, the cover its skirt, the
+# screws stood where its board would be - and the board was not there. A
+# section of the sensor showed the magnet under empty air, and a check could
+# not see the chip the whole air-gap chain is built around. It is an ENVELOPE,
+# like the other bought parts: the board and the two components that matter
+# for the fit, not the copper.
+#
+# The SOIC-8 body of the AS5600 is ASSUMED from the JEDEC MS-012 package
+# (4.9 x 3.9, nominal, without the leads): only its height below the board,
+# H_body_chip, is measured. Its long side is drawn along the axis of the M2
+# holes - also ASSUMED, it does not change the gap. The 104 capacitor is a
+# through-hole ceramic standing under the board on the cable side: its
+# height, H_capacitor_module, is measured; its width and thickness are
+# ASSUMED (a common 5 mm-pitch disc), and it is placed in the middle of the
+# strip between R_relief_capacitor and the edge of the board, which is where
+# the relief of the bracket was cut to receive it. The small SMD parts under
+# the board (0.93 at most, in the notch) are not drawn.
+CHIP_L, CHIP_W = 4.9, 3.9          # ASSUMED, SOIC-8 nominal body
+CAP_W, CAP_T = 4.0, 2.0            # ASSUMED, ceramic disc across / along the radius
+
+
+def module():
+    """The AS5600 module, in its assembly position: the board resting on the
+    pads at Hc + H_rest_module, chip and capacitor hanging under it."""
+    from drawings import module_holes, rotate_points, module_angle
+    z_rest = Hc + h
+    board = prism(board_outline(0.0), z_rest, D["Th_board_module"])
+    for x, y in module_holes():
+        board = board.cut(cq.Workplane("XY").workplane(offset=z_rest - 1).center(x, y)
+                          .circle(D["D_holes_board"]/2).extrude(D["Th_board_module"] + 2))
+    # both drawn in the frame in which the module was measured (holes on Y,
+    # capacitor towards +X), then turned with it, as everything else of the
+    # module is
+    chip = rotate_points([(-CHIP_W/2, -CHIP_L/2), (CHIP_W/2, -CHIP_L/2),
+                          (CHIP_W/2, CHIP_L/2), (-CHIP_W/2, CHIP_L/2)], module_angle())
+    board = board.union(prism(chip, z_rest - D["H_body_chip"], D["H_body_chip"]))
+    xc = (D["R_relief_capacitor"] + D["L_board_module"]/2)/2
+    cap = rotate_points([(xc - CAP_T/2, -CAP_W/2), (xc + CAP_T/2, -CAP_W/2),
+                         (xc + CAP_T/2, CAP_W/2), (xc - CAP_T/2, CAP_W/2)], module_angle())
+    board = board.union(prism(cap, z_rest - D["H_capacitor_module"], D["H_capacitor_module"]))
+    return board.rotate((0, 0, 0), (0, 0, 1), D["Ang_bracket_sensor"])
+
+
 if __name__ == "__main__":
     st = bracket()
     cq.exporters.export(st, OUT + "sensor_bracket.step")
@@ -604,5 +648,8 @@ if __name__ == "__main__":
     print("sensor cover %.1f cm3 (%.0f g ASA), top at z %.2f"
           % (cov.val().Volume()/1000, cov.val().Volume()*1.07e-3,
              Z_PLATE + D["Th_cover_sensor"]))
+    from parameters import out_subdir
+    os.makedirs(OUT + out_subdir("sensor_module"), exist_ok=True)
+    cq.exporters.export(module(), OUT + out_subdir("sensor_module") + "sensor_module.step")
     print("sensor bracket %.1f cm3 (%.0f g ASA), step at r %.1f, module notch %.1f"
           % (st.val().Volume()/1000, st.val().Volume()*1.07e-3, Rg, D["Dp_notch_module"]))

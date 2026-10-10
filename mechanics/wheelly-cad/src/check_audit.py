@@ -3128,5 +3128,58 @@ _bh = _cover_h.BoundingBox()
 T("hatch: cover flush with the outer face of the floor",
   abs(_bh.zmin - D["Z_floor_box"]) < 0.01, "zmin %.3f against %.3f" % (_bh.zmin, D["Z_floor_box"]))
 
+# ---- THE AS5600 MODULE AND THE AIR GAP, measured on the assembly ------------
+# The module was not in the model, and the air gap - the number the whole
+# sensor chain is built around - could only be declared: the bracket, the
+# spacer, the glue and the chip were each right on paper, and nothing looked
+# at what they add up to. Now the module is a body of the assembly
+# (solids_sensor.module()), and the gap is read off the two SOLIDS, by name,
+# from full_assembly.step: the top of the magnet and the underside of the
+# module right above it. Then the module must rest on the bracket - touching
+# it, not hovering, not sunk in - and touch nothing else.
+_named = {}
+def _walk_named(node, loc):
+    for _c in node.children:
+        _l = loc * _c.loc if _c.loc else loc
+        if _c.obj is not None:
+            _o = _c.obj
+            _sh = _o.val() if hasattr(_o, "val") else _o
+            if isinstance(_o, cq.Workplane) and len(_o.vals()) > 1:
+                _sh = cq.Compound.makeCompound(_o.vals())
+            _named[_c.name] = _sh.moved(_l)
+        _walk_named(_c, _l)
+_walk_named(cq.Assembly.importStep(_ASS), cq.Location())
+_mod = _named.get("sensor_module_AS5600")
+T("AS5600 module: it is in the assembly", _mod is not None,
+  "no body sensor_module_AS5600 in full_assembly.step")
+if _mod is not None:
+    _mag = _named["magnet_AS5600_1"]
+    _mb = _mag.BoundingBox()
+    _col = cq.Solid.makeCylinder(_mb.xlen/2, 40.0, cq.Vector(_mb.center.x, _mb.center.y, _mb.zmax),
+                                 cq.Vector(0, 0, 1))
+    _above = _mod.intersect(_col)
+    _gap = _above.BoundingBox().zmin - _mb.zmax if _above.Volume() > 0 else float("nan")
+    T("AS5600 module: the air gap measured on the solids is the nominal one",
+      abs(_gap - D["Gap_nominal"]) < 0.02 and _gap >= 0.5,
+      "magnet top z %.3f, chip underside z %.3f -> %.3f mm (Gap_nominal %.2f, at least 0.5)"
+      % (_mb.zmax, _above.BoundingBox().zmin if _above.Volume() > 0 else float("nan"),
+         _gap, D["Gap_nominal"]))
+    _br = _named["sensor_bracket"]
+    _rest = _mod.intersect(_br).Volume()
+    _pushed = _mod.moved(cq.Location(cq.Vector(0, 0, -0.05))).intersect(_br).Volume()
+    T("AS5600 module: it rests on the bracket pads, neither hovering nor sunk in",
+      _rest <= 0.01 and _pushed > 0.01,
+      "at rest %.3f mm3 in the bracket, pushed down 0.05: %.3f mm3" % (_rest, _pushed))
+    _hits_mod = []
+    for _n in ("sensor_cover", "magnet_AS5600_1", "magnet_spacer", "sensor_cable",
+               "filter_wheel_body", "filter_disc", "screw_M2_module_1", "screw_M2_module_2",
+               "screw_M25_cover_1", "screw_M25_cover_2", "insert_M25_cover_1",
+               "insert_M25_cover_2"):
+        _v = _mod.intersect(_named[_n]).Volume()
+        if _v > 0.01:
+            _hits_mod.append("%s %.3f mm3" % (_n, _v))
+    T("AS5600 module: it touches nothing but the bracket it rests on",
+      not _hits_mod, "; ".join(_hits_mod))
+
 print("--- OK (%d) ---"%len(ok)); [print("  ",r) for r in ok]
 print("--- INCONSISTENCIES (%d) ---"%len(ko)); [print("  !",r) for r in ko]

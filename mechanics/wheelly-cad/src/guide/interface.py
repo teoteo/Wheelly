@@ -138,6 +138,11 @@ TEXTS = {
               "take you from the printer to the first filter change in Ekos.",
         "it": "Una ruota portafiltri motorizzata, ricavata da una manuale. Tre "
               "guide ti portano dalla stampante al primo cambio di filtro in Ekos."},
+    # The presentation video right under the lede: the wheel at work, before
+    # the guides that tell how to build it.
+    "home_video_title": {
+        "en": "Video: Wheelly, a DIY motorised filter wheel with a magnetic encoder",
+        "it": "Video: Wheelly, una ruota portafiltri motorizzata fai da te con encoder magnetico"},
     "home_assembly": {"en": "Hardware assembly guide",
                       "it": "Guida al montaggio della meccanica"},
     "home_assembly_text": {

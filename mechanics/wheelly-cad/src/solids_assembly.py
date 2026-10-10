@@ -238,6 +238,13 @@ spacer = [s for s in part("magnet_spacer").solids().vals()
 asm.add(cq.Workplane(obj=spacer).translate((0, 0, Hc)),
         name="magnet_spacer", color=cq.Color(0.85, 0.85, 0.88, 1.0))
 
+# 2bis) the AS5600 module, a bought envelope drawn by solids_sensor.module():
+#    board, chip and capacitor, resting on the bracket over the magnet. Its
+#    own name and not electronics_*: it is not on the board, and the stills
+#    and the guide treat it as the bought part it is
+asm.add(part("sensor_module"), name="sensor_module_AS5600",
+        color=cq.Color(0.10, 0.45, 0.22, 1.0))
+
 # 3) the electronics, as ENVELOPES: XIAO and driver are the makers' models,
 #    the rest are declared estimates (solids_electronics.py)
 for part_name, colour in (("perfboard",  (0.20, 0.55, 0.30, 1.00)),

@@ -16,13 +16,13 @@ The sensor arch goes on last. Its pad reaches over the centre of the wheel, a ha
 | Qty | Part | |
 |---:|---|---|
 | 2 | M3 screw · collar clamp | M3 × 14, hex socket head (12.4 mm needed under the head) |
+| 1 | U3 AS5600 magnetic encoder module | round Ø16.85 flattened to 15, a row of 8 pads; needs the VDD5V-VDD3V3 bridge, after which it no longer takes 5 V |
+| 1 | C3 ceramic capacitor | 100 nF (104), 16 V or more - on the module's pads, not on the board |
 | 2 | M2 screw · AS5600 module | M2 × 4, countersunk head (4.0 mm needed under the head) |
 | 1 | sensor cover | printed, ASA |
 | 2 | M2.5 screw · sensor cover | M2.5 × 8, hex socket head (7.0 mm needed under the head) |
 | 1 | CAT5 cable | solid, Ø5.6 - sensor to board |
 | 3 | M3 screw · panel | M3 × 8, countersunk head (8.0 mm needed under the head) |
-| 1 | U3 AS5600 magnetic encoder module | round Ø16.85 flattened to 15, a row of 8 pads; needs the VDD5V-VDD3V3 bridge, after which it no longer takes 5 V |
-| 1 | C3 ceramic capacitor | 100 nF (104), 16 V or more - on the module's pads, not on the board |
 
 **Tools:** 2.5 mm hex key, 2 mm hex key for the cover screws, a PH0 screwdriver for the countersunk module and panel screws, one 2.5 mm cable tie.
 
@@ -32,7 +32,7 @@ The sensor arch goes on last. Its pad reaches over the centre of the wheel, a ha
 </tr></table>
 
 <table><tr>
-<td width="55%"><img src="img/12-02-sensor-and-closing-up.png" alt="The AS5600 module, on its two screws" width="520"></td>
+<td width="55%"><img src="img/12-02-sensor-and-closing-up.png" alt="The AS5600 module, on its two screws" width="476"></td>
 <td valign="top"><h3>Step 2 — The AS5600 module, on its two screws</h3><ul><li>The AS5600 module drops into the seat in the top of the bracket, chip side down, over the hole that looks at the magnet. It leaves about 1.2 mm of air between the chip and the magnet.</li><li>Fix it with two <b>M2 × 4</b> countersunk screws, through its two holes into the pilot holes of the bracket, with a PH0 screwdriver. They form their own thread in the plastic: tighten them snug, no more.</li></ul></td>
 </tr></table>
 

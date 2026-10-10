@@ -35,7 +35,8 @@ OTHERS = ("magnet_spacer", "box_collar")          # real parts, outside the asse
 # the envelopes of the electronics: they are not printed, they live in
 # out/electronics/, and they go in the assembly because they are what the
 # compartment must allow for
-ELECTRONICS = ("perfboard", "pin_sockets", "xiao", "driver", "components", "gx12", "gx12_nut", "led")
+ELECTRONICS = ("perfboard", "pin_sockets", "xiao", "driver", "components", "gx12", "gx12_nut", "led",
+               "sensor_module")
 
 
 def _step(name):
